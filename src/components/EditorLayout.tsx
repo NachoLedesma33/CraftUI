@@ -1,54 +1,65 @@
 import React from 'react';
-import { Canvas } from './canvas';
 
 interface EditorLayoutProps {
   children?: React.ReactNode;
+  toolbar?: React.ReactNode;
+  leftPanel?: React.ReactNode;
+  layersPanel?: React.ReactNode;
+  propertiesPanel?: React.ReactNode;
 }
 
-export const EditorLayout: React.FC<EditorLayoutProps> = ({ children }) => {
+export const EditorLayout: React.FC<EditorLayoutProps> = ({
+  children,
+  toolbar,
+  leftPanel,
+  layersPanel,
+  propertiesPanel,
+}) => {
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-900">
-      <header className="h-10 bg-gray-800 border-b border-gray-700 flex items-center px-4">
-        <div className="text-white text-sm font-medium">Visual UI Editor</div>
-      </header>
+    <div className="h-screen w-screen flex flex-col bg-gray-900 overflow-hidden">
+      {toolbar && (
+        toolbar
+      )}
       
       <div className="flex-1 flex overflow-hidden">
-        <aside className="w-64 bg-gray-800 border-r border-gray-700">
-          <div className="p-3 border-b border-gray-700">
-            <h2 className="text-white text-sm font-medium">Components</h2>
-          </div>
-          <div className="p-2">
-            {children}
-          </div>
-        </aside>
+        {leftPanel && (
+          <aside className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col shrink-0">
+            <div className="p-3 border-b border-gray-700">
+              <h2 className="text-white text-sm font-medium">Components</h2>
+            </div>
+            <div className="flex-1 overflow-auto p-2">
+              {leftPanel}
+            </div>
+          </aside>
+        )}
         
-        <main className="flex-1 flex flex-col">
-          <div className="h-8 bg-gray-800 border-b border-gray-700 flex items-center px-2 gap-2">
-            <button className="px-2 py-1 text-xs text-gray-300 hover:text-white hover:bg-gray-700 rounded">
-              📐
-            </button>
-            <div className="flex-1" />
-            <button className="px-2 py-1 text-xs text-gray-300 hover:text-white hover:bg-gray-700 rounded">
-              📱
-            </button>
-            <button className="px-2 py-1 text-xs text-gray-300 hover:text-white hover:bg-gray-700 rounded">
-              💻
-            </button>
-            <button className="px-2 py-1 text-xs text-gray-300 hover:text-white hover:bg-gray-700 rounded">
-              📱
-            </button>
-          </div>
-          
+        {layersPanel && (
+          <aside className="w-56 bg-gray-800 border-r border-gray-700 flex flex-col shrink-0">
+            <div className="p-3 border-b border-gray-700">
+              <h2 className="text-white text-sm font-medium">Layers</h2>
+            </div>
+            <div className="flex-1 overflow-auto p-2">
+              {layersPanel}
+            </div>
+          </aside>
+        )}
+        
+        <main className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-hidden">
-            <Canvas />
+            {children}
           </div>
         </main>
         
-        <aside className="w-72 bg-gray-800 border-l border-gray-700">
-          <div className="p-3 border-b border-gray-700">
-            <h2 className="text-white text-sm font-medium">Properties</h2>
-          </div>
-        </aside>
+        {propertiesPanel && (
+          <aside className="w-80 bg-gray-800 border-l border-gray-700 flex flex-col shrink-0">
+            <div className="p-3 border-b border-gray-700">
+              <h2 className="text-white text-sm font-medium">Properties</h2>
+            </div>
+            <div className="flex-1 overflow-auto">
+              {propertiesPanel}
+            </div>
+          </aside>
+        )}
       </div>
     </div>
   );

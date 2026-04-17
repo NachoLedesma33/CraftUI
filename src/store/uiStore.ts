@@ -1,6 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { subscribeWithSelector } from 'zustand/middleware/subscribeWithSelector';
+import { persist, createJSONStorage, subscribeWithSelector } from 'zustand/middleware';
 import type { UIComponent } from '@/types/canvas';
 
 interface Toast {
