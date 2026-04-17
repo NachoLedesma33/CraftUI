@@ -1,21 +1,27 @@
-import type { UIComponent, AnimationConfig } from '@/types/canvas';
-import { generateKeyframesCSS } from './animationGenerator';
+import type { UIComponent, AnimationConfig } from "@/types/canvas";
+import { generateKeyframesCSS } from "./animationGenerator";
 
 /**
  * Genera CSS para todas las animaciones de los componentes
  */
 export const generateAnimationsCSS = (
-  components: Record<string, UIComponent>
+  components: Record<string, UIComponent>,
 ): string => {
   const animationCSS: string[] = [];
   const seenAnimations = new Set<string>();
 
   for (const component of Object.values(components)) {
-    if (component.styles.animation && !seenAnimations.has(component.styles.animation.name)) {
+    if (
+      component.styles.animation &&
+      !seenAnimations.has(component.styles.animation.name)
+    ) {
       const animation = component.styles.animation;
 
       if (animation.keyframes && animation.keyframes.length > 0) {
-        const keyframesCSS = generateKeyframesCSS(animation.name, animation.keyframes);
+        const keyframesCSS = generateKeyframesCSS(
+          animation.name,
+          animation.keyframes,
+        );
         animationCSS.push(keyframesCSS);
       }
 
@@ -23,13 +29,15 @@ export const generateAnimationsCSS = (
     }
   }
 
-  return animationCSS.join('\n\n');
+  return animationCSS.join("\n\n");
 };
 
 /**
  * Genera atributos de estilo de animación para un componente
  */
-export const getAnimationStyles = (component: UIComponent): Record<string, string> => {
+export const getAnimationStyles = (
+  component: UIComponent,
+): Record<string, string> => {
   const styles: Record<string, string> = {};
 
   if (!component.styles.animation) {
@@ -38,16 +46,16 @@ export const getAnimationStyles = (component: UIComponent): Record<string, strin
 
   const anim = component.styles.animation;
 
-  styles['animation-name'] = anim.name;
-  styles['animation-duration'] = `${anim.duration}ms`;
-  styles['animation-delay'] = `${anim.delay}ms`;
-  styles['animation-timing-function'] = anim.easing;
-  styles['animation-fill-mode'] = anim.fillMode;
+  styles["animation-name"] = anim.name;
+  styles["animation-duration"] = `${anim.duration}ms`;
+  styles["animation-delay"] = `${anim.delay}ms`;
+  styles["animation-timing-function"] = anim.easing;
+  styles["animation-fill-mode"] = anim.fillMode;
 
-  if (anim.iterations === 'infinite') {
-    styles['animation-iteration-count'] = 'infinite';
+  if (anim.iterations === "infinite") {
+    styles["animation-iteration-count"] = "infinite";
   } else {
-    styles['animation-iteration-count'] = anim.iterations.toString();
+    styles["animation-iteration-count"] = anim.iterations.toString();
   }
 
   return styles;
@@ -57,13 +65,15 @@ export const getAnimationStyles = (component: UIComponent): Record<string, strin
  * Convierte estilos de animación CSS a una clase Tailwind equivalente (si es posible)
  * La mayoría de animaciones no pueden ser representadas en Tailwind, por lo que retorna null
  */
-export const tryAnimationToTailwind = (animation: AnimationConfig): string | null => {
+export const tryAnimationToTailwind = (
+  animation: AnimationConfig,
+): string | null => {
   // Tailwind solo tiene pulse, bounce, ping, spin
   // Mapeamos los presets a clases de Tailwind si es posible
   const tailwindMap: Record<string, string> = {
-    pulse: 'animate-pulse',
-    bounce: 'animate-bounce',
-    spin: 'animate-spin',
+    pulse: "animate-pulse",
+    bounce: "animate-bounce",
+    spin: "animate-spin",
   };
 
   const tailwindClass = tailwindMap[animation.name];
@@ -81,17 +91,17 @@ export const tryAnimationToTailwind = (animation: AnimationConfig): string | nul
  */
 export const generateAnimationTriggerHTML = (
   component: UIComponent,
-  elementId: string
+  elementId: string,
 ): { html: string; script: string } => {
   const animation = component.styles.animation;
 
   if (!animation) {
-    return { html: '', script: '' };
+    return { html: "", script: "" };
   }
 
-  let script = '';
+  let script = "";
 
-  if (animation.trigger === 'onHover') {
+  if (animation.trigger === "onHover") {
     script += `
 const elem_${elementId} = document.getElementById('${elementId}');
 if (elem_${elementId}) {
@@ -103,7 +113,7 @@ if (elem_${elementId}) {
   });
 }
     `;
-  } else if (animation.trigger === 'inView') {
+  } else if (animation.trigger === "inView") {
     script += `
 const observer_${elementId} = new IntersectionObserver(function(entries) {
   entries.forEach(function(entry) {
@@ -119,18 +129,20 @@ if (elem_${elementId}_inView) {
     `;
   }
 
-  return { html: '', script };
+  return { html: "", script };
 };
 
 /**
  * Genera atributos de datos para trackear animaciones en React
  */
-export const generateAnimationDataAttributes = (component: UIComponent): Record<string, string> => {
+export const generateAnimationDataAttributes = (
+  component: UIComponent,
+): Record<string, string> => {
   const attrs: Record<string, string> = {};
 
   if (component.styles.animation) {
-    attrs['data-animation'] = component.styles.animation.name;
-    attrs['data-animation-trigger'] = component.styles.animation.trigger;
+    attrs["data-animation"] = component.styles.animation.name;
+    attrs["data-animation-trigger"] = component.styles.animation.trigger;
   }
 
   return attrs;

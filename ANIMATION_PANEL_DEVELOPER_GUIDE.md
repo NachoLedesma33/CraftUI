@@ -8,13 +8,13 @@
 // AnimationPanel.tsx está integrado en PropertiesPanel
 // Se accede automáticamente en la pestaña "animations"
 
-import { AnimationPanel } from '@/components/panels';
+import { AnimationPanel } from "@/components/panels";
 
 export const PropertiesPanel = () => {
   return (
     <div className="tabs">
       {/* ... otros tabs ... */}
-      {activeTab === 'animations' && <AnimationPanel />}
+      {activeTab === "animations" && <AnimationPanel />}
     </div>
   );
 };
@@ -25,19 +25,19 @@ export const PropertiesPanel = () => {
 ### Actualizar la Animación de un Componente
 
 ```tsx
-import { useEditorStore } from '@/store';
-import type { AnimationConfig } from '@/types/canvas';
+import { useEditorStore } from "@/store";
+import type { AnimationConfig } from "@/types/canvas";
 
 function MyComponent() {
-  const updateComponent = useEditorStore(s => s.updateComponent);
-  const selectedComponent = useEditorStore(s => 
-    s.components[s.selectedIds[0]]
+  const updateComponent = useEditorStore((s) => s.updateComponent);
+  const selectedComponent = useEditorStore(
+    (s) => s.components[s.selectedIds[0]],
   );
 
   // Programáticamente asignar una animación
   const setAnimation = (newAnimation: AnimationConfig) => {
     if (!selectedComponent) return;
-    
+
     updateComponent(selectedComponent.id, {
       styles: {
         ...selectedComponent.styles,
@@ -49,16 +49,16 @@ function MyComponent() {
   // Ejemplo: Aplicar fadeIn
   const handleFadeIn = () => {
     setAnimation({
-      name: 'fadeIn',
+      name: "fadeIn",
       duration: 600,
       delay: 0,
-      easing: 'ease-out',
+      easing: "ease-out",
       iterations: 1,
-      fillMode: 'forwards',
-      trigger: 'onLoad',
+      fillMode: "forwards",
+      trigger: "onLoad",
       keyframes: [
-        { percent: 0, properties: { opacity: '0' } },
-        { percent: 100, properties: { opacity: '1' } },
+        { percent: 0, properties: { opacity: "0" } },
+        { percent: 100, properties: { opacity: "1" } },
       ],
     });
   };
@@ -72,20 +72,20 @@ function MyComponent() {
 ### Aplicar un Preset
 
 ```tsx
-import { ANIMATION_PRESETS } from '@/constants/animationPresets';
-import { useEditorStore } from '@/store';
+import { ANIMATION_PRESETS } from "@/constants/animationPresets";
+import { useEditorStore } from "@/store";
 
 function ApplyPreset() {
-  const updateComponent = useEditorStore(s => s.updateComponent);
-  const selectedId = useEditorStore(s => s.selectedIds[0]);
-  const components = useEditorStore(s => s.components);
+  const updateComponent = useEditorStore((s) => s.updateComponent);
+  const selectedId = useEditorStore((s) => s.selectedIds[0]);
+  const components = useEditorStore((s) => s.components);
 
   const applyPreset = (presetId: string) => {
     const preset = ANIMATION_PRESETS[presetId];
     if (!preset || !selectedId) return;
 
     const component = components[selectedId];
-    
+
     // Usar todos los valores del preset
     updateComponent(selectedId, {
       styles: {
@@ -96,8 +96,8 @@ function ApplyPreset() {
           delay: 0,
           easing: preset.easing,
           iterations: 1,
-          fillMode: 'forwards',
-          trigger: 'onLoad',
+          fillMode: "forwards",
+          trigger: "onLoad",
           keyframes: preset.keyframes,
         },
       },
@@ -121,22 +121,25 @@ function ApplyPreset() {
 ### Usar el Generador de Keyframes
 
 ```tsx
-import { generateKeyframesCSS, generateAnimationCSS } from '@/utils/animation';
-import type { AnimationConfig } from '@/types/canvas';
+import { generateKeyframesCSS, generateAnimationCSS } from "@/utils/animation";
+import type { AnimationConfig } from "@/types/canvas";
 
 // Generar @keyframes CSS
 const animation: AnimationConfig = {
-  name: 'myCustomAnim',
+  name: "myCustomAnim",
   duration: 500,
   delay: 0,
-  easing: 'ease-out',
+  easing: "ease-out",
   iterations: 1,
-  fillMode: 'forwards',
-  trigger: 'onLoad',
+  fillMode: "forwards",
+  trigger: "onLoad",
   keyframes: [
-    { percent: 0, properties: { opacity: '0', transform: 'translateY(10px)' } },
-    { percent: 50, properties: { opacity: '0.5', transform: 'translateY(5px)' } },
-    { percent: 100, properties: { opacity: '1', transform: 'translateY(0)' } },
+    { percent: 0, properties: { opacity: "0", transform: "translateY(10px)" } },
+    {
+      percent: 50,
+      properties: { opacity: "0.5", transform: "translateY(5px)" },
+    },
+    { percent: 100, properties: { opacity: "1", transform: "translateY(0)" } },
   ],
 };
 
@@ -183,16 +186,16 @@ console.log(animationCSS);
 ### Preview en Tiempo Real
 
 ```tsx
-import { injectKeyframesCSS, applyAnimationPreview } from '@/utils/animation';
-import type { AnimationConfig } from '@/types/canvas';
+import { injectKeyframesCSS, applyAnimationPreview } from "@/utils/animation";
+import type { AnimationConfig } from "@/types/canvas";
 
 async function playAnimationPreview(
   componentId: string,
-  animation: AnimationConfig
+  animation: AnimationConfig,
 ) {
   // 1. Obtener el elemento del DOM
   const element = document.querySelector(
-    `[data-component-id="${componentId}"]`
+    `[data-component-id="${componentId}"]`,
   ) as HTMLElement | null;
 
   if (!element) {
@@ -202,31 +205,34 @@ async function playAnimationPreview(
 
   // 2. Inyectar los @keyframes
   if (animation.keyframes) {
-    const keyframesCSS = generateKeyframesCSS(animation.name, animation.keyframes);
+    const keyframesCSS = generateKeyframesCSS(
+      animation.name,
+      animation.keyframes,
+    );
     injectKeyframesCSS(componentId, animation.name, keyframesCSS);
   }
 
   // 3. Aplicar la animación
   try {
     await applyAnimationPreview(element, animation);
-    console.log('Animation completed');
+    console.log("Animation completed");
   } catch (error) {
-    console.error('Animation error:', error);
+    console.error("Animation error:", error);
   }
 }
 
 // Uso:
-playAnimationPreview('comp-123', {
-  name: 'fadeIn',
+playAnimationPreview("comp-123", {
+  name: "fadeIn",
   duration: 600,
   delay: 0,
-  easing: 'ease-out',
+  easing: "ease-out",
   iterations: 1,
-  fillMode: 'forwards',
-  trigger: 'onLoad',
+  fillMode: "forwards",
+  trigger: "onLoad",
   keyframes: [
-    { percent: 0, properties: { opacity: '0' } },
-    { percent: 100, properties: { opacity: '1' } },
+    { percent: 0, properties: { opacity: "0" } },
+    { percent: 100, properties: { opacity: "1" } },
   ],
 });
 ```
@@ -236,12 +242,12 @@ playAnimationPreview('comp-123', {
 ### Generar Código React con Animaciones
 
 ```tsx
-import { generateAnimationsCSS, getAnimationStyles } from '@/utils/animation';
-import type { UIComponent } from '@/types/canvas';
+import { generateAnimationsCSS, getAnimationStyles } from "@/utils/animation";
+import type { UIComponent } from "@/types/canvas";
 
 function generateReactComponentWithAnimations(
   component: UIComponent,
-  allComponents: Record<string, UIComponent>
+  allComponents: Record<string, UIComponent>,
 ) {
   // 1. Recolectar todas las animaciones
   const animationsCSS = generateAnimationsCSS(allComponents);
@@ -284,12 +290,15 @@ export default AnimatedComponent;
 ### Generar HTML con Triggers
 
 ```tsx
-import { generateAnimationsCSS, generateAnimationTriggerHTML } from '@/utils/animation';
-import type { UIComponent } from '@/types/canvas';
+import {
+  generateAnimationsCSS,
+  generateAnimationTriggerHTML,
+} from "@/utils/animation";
+import type { UIComponent } from "@/types/canvas";
 
 function generateHTMLWithAnimations(
   rootComponent: UIComponent,
-  allComponents: Record<string, UIComponent>
+  allComponents: Record<string, UIComponent>,
 ) {
   // 1. Generar CSS de animaciones
   const animationsCSS = generateAnimationsCSS(allComponents);
@@ -318,7 +327,7 @@ function generateHTMLWithAnimations(
   <div id="root">${renderHTMLElement(rootComponent, allComponents)}</div>
   
   <script>
-    ${triggers.join('\n\n')}
+    ${triggers.join("\n\n")}
   </script>
 </body>
 </html>
@@ -333,23 +342,23 @@ function generateHTMLWithAnimations(
 ### Stagger (Animaciones Secuenciales)
 
 ```tsx
-import { generateAnimationName } from '@/utils/animation';
-import { useEditorStore } from '@/store';
+import { generateAnimationName } from "@/utils/animation";
+import { useEditorStore } from "@/store";
 
 function createStaggerAnimation(
   componentIds: string[],
   baseAnimation: Partial<AnimationConfig>,
-  delayStep: number = 100
+  delayStep: number = 100,
 ) {
-  const updateComponent = useEditorStore(s => s.updateComponent);
-  const components = useEditorStore(s => s.components);
+  const updateComponent = useEditorStore((s) => s.updateComponent);
+  const components = useEditorStore((s) => s.components);
 
   componentIds.forEach((componentId, index) => {
     const component = components[componentId];
     if (!component) return;
 
     const delay = index * delayStep;
-    const animationName = generateAnimationName(componentId, 'stagger');
+    const animationName = generateAnimationName(componentId, "stagger");
 
     updateComponent(componentId, {
       styles: {
@@ -358,10 +367,10 @@ function createStaggerAnimation(
           name: animationName,
           duration: baseAnimation.duration || 600,
           delay,
-          easing: baseAnimation.easing || 'ease-out',
+          easing: baseAnimation.easing || "ease-out",
           iterations: baseAnimation.iterations || 1,
-          fillMode: baseAnimation.fillMode || 'forwards',
-          trigger: baseAnimation.trigger || 'onLoad',
+          fillMode: baseAnimation.fillMode || "forwards",
+          trigger: baseAnimation.trigger || "onLoad",
           keyframes: baseAnimation.keyframes || [],
         },
       },
@@ -370,8 +379,8 @@ function createStaggerAnimation(
 }
 
 // Uso: Animar 5 items secuencialmente con 100ms entre cada uno
-const itemIds = ['item-1', 'item-2', 'item-3', 'item-4', 'item-5'];
-const preset = ANIMATION_PRESETS['fadeIn'];
+const itemIds = ["item-1", "item-2", "item-3", "item-4", "item-5"];
+const preset = ANIMATION_PRESETS["fadeIn"];
 
 createStaggerAnimation(itemIds, preset, 100);
 // item-1: delay 0ms
@@ -388,11 +397,11 @@ createStaggerAnimation(itemIds, preset, 100);
 ```tsx
 async function safePlayPreview(
   componentId: string,
-  animation: AnimationConfig
+  animation: AnimationConfig,
 ) {
   try {
     const element = document.querySelector(
-      `[data-component-id="${componentId}"]`
+      `[data-component-id="${componentId}"]`,
     );
 
     if (!element) {
@@ -400,16 +409,16 @@ async function safePlayPreview(
     }
 
     if (!animation) {
-      throw new Error('No animation configuration provided');
+      throw new Error("No animation configuration provided");
     }
 
     if (animation.keyframes?.length === 0) {
-      console.warn('No keyframes defined, using CSS properties only');
+      console.warn("No keyframes defined, using CSS properties only");
     }
 
     await applyAnimationPreview(element, animation);
   } catch (error) {
-    console.error('Animation error:', error);
+    console.error("Animation error:", error);
     // Mostrar notificación al usuario
     showErrorNotification(`Animation error: ${error.message}`);
   }
@@ -420,8 +429,8 @@ async function safePlayPreview(
 
 ```tsx
 function DebugAnimationConfig() {
-  const selectedComponent = useEditorStore(s => 
-    s.components[s.selectedIds[0]]
+  const selectedComponent = useEditorStore(
+    (s) => s.components[s.selectedIds[0]],
   );
 
   if (!selectedComponent?.styles.animation) {
@@ -462,32 +471,32 @@ function DebugAnimationConfig() {
 
 ### Funciones Principales
 
-| Función | Descripción |
-|---------|-------------|
-| `generateKeyframesCSS(name, steps)` | Genera string CSS @keyframes |
-| `generateAnimationCSS(config)` | Genera propiedades CSS animation |
-| `injectKeyframesCSS(id, name, css)` | Inyecta <style> en el DOM |
-| `applyAnimationPreview(element, config)` | Aplica animación a elemento |
-| `generateAnimationName(id, preset)` | Crea nombre único |
-| `generateAnimationsCSS(components)` | CSS de todas las animaciones |
-| `getAnimationStyles(component)` | Extrae propiedades animation |
+| Función                                  | Descripción                      |
+| ---------------------------------------- | -------------------------------- |
+| `generateKeyframesCSS(name, steps)`      | Genera string CSS @keyframes     |
+| `generateAnimationCSS(config)`           | Genera propiedades CSS animation |
+| `injectKeyframesCSS(id, name, css)`      | Inyecta <style> en el DOM        |
+| `applyAnimationPreview(element, config)` | Aplica animación a elemento      |
+| `generateAnimationName(id, preset)`      | Crea nombre único                |
+| `generateAnimationsCSS(components)`      | CSS de todas las animaciones     |
+| `getAnimationStyles(component)`          | Extrae propiedades animation     |
 
 ### Tipos
 
 ```typescript
 interface AnimationConfig {
   name: string;
-  duration: number;      // ms
-  delay: number;         // ms
-  easing: string;        // CSS timing function
-  iterations: number | 'infinite';
-  fillMode: 'none' | 'forwards' | 'backwards' | 'both';
-  trigger: 'onLoad' | 'onHover' | 'inView';
+  duration: number; // ms
+  delay: number; // ms
+  easing: string; // CSS timing function
+  iterations: number | "infinite";
+  fillMode: "none" | "forwards" | "backwards" | "both";
+  trigger: "onLoad" | "onHover" | "inView";
   keyframes?: KeyframeStep[];
 }
 
 interface KeyframeStep {
-  percent: number;       // 0-100
+  percent: number; // 0-100
   properties: Record<string, string>;
 }
 ```

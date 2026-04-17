@@ -1,20 +1,22 @@
-import type { KeyframeStep, AnimationConfig } from '@/types/canvas';
+import type { KeyframeStep, AnimationConfig } from "@/types/canvas";
 
 /**
  * Genera un bloque CSS @keyframes basado en los pasos de keyframes
  */
 export const generateKeyframesCSS = (
   animationName: string,
-  keyframes: KeyframeStep[]
+  keyframes: KeyframeStep[],
 ): string => {
   const keyframeRules = keyframes
     .map(
       (step) =>
         `  ${step.percent}% {\n${Object.entries(step.properties)
-          .map(([prop, value]) => `    ${camelCaseToCSSProperty(prop)}: ${value};`)
-          .join('\n')}\n  }`
+          .map(
+            ([prop, value]) => `    ${camelCaseToCSSProperty(prop)}: ${value};`,
+          )
+          .join("\n")}\n  }`,
     )
-    .join('\n');
+    .join("\n");
 
   return `@keyframes ${animationName} {\n${keyframeRules}\n}`;
 };
@@ -23,29 +25,31 @@ export const generateKeyframesCSS = (
  * Convierte propiedades de camelCase a CSS kebab-case
  */
 export const camelCaseToCSSProperty = (camelCase: string): string => {
-  return camelCase.replace(/([A-Z])/g, '-$1').toLowerCase();
+  return camelCase.replace(/([A-Z])/g, "-$1").toLowerCase();
 };
 
 /**
  * Genera las propiedades de animación CSS basadas en AnimationConfig
  */
-export const generateAnimationCSS = (config: AnimationConfig): {
+export const generateAnimationCSS = (
+  config: AnimationConfig,
+): {
   properties: Record<string, string>;
   keyframes?: string;
   keyframesCSS?: string;
 } => {
   const properties: Record<string, string> = {
-    'animation-name': config.name,
-    'animation-duration': `${config.duration}ms`,
-    'animation-delay': `${config.delay}ms`,
-    'animation-timing-function': config.easing,
-    'animation-fill-mode': config.fillMode,
+    "animation-name": config.name,
+    "animation-duration": `${config.duration}ms`,
+    "animation-delay": `${config.delay}ms`,
+    "animation-timing-function": config.easing,
+    "animation-fill-mode": config.fillMode,
   };
 
-  if (config.iterations === 'infinite') {
-    properties['animation-iteration-count'] = 'infinite';
+  if (config.iterations === "infinite") {
+    properties["animation-iteration-count"] = "infinite";
   } else {
-    properties['animation-iteration-count'] = config.iterations.toString();
+    properties["animation-iteration-count"] = config.iterations.toString();
   }
 
   const result = {
@@ -66,10 +70,12 @@ export const generateAnimationCSS = (config: AnimationConfig): {
  */
 export const cleanupAnimationCSS = (
   componentId: string,
-  animationName: string
+  animationName: string,
 ): void => {
   // Buscar estilos inyectados y removerlos
-  const styleElement = document.getElementById(`style-animation-${componentId}-${animationName}`);
+  const styleElement = document.getElementById(
+    `style-animation-${componentId}-${animationName}`,
+  );
   if (styleElement) {
     styleElement.remove();
   }
@@ -81,13 +87,13 @@ export const cleanupAnimationCSS = (
 export const injectKeyframesCSS = (
   componentId: string,
   animationName: string,
-  keyframesCSS: string
+  keyframesCSS: string,
 ): void => {
   // Primero remover si existe
   cleanupAnimationCSS(componentId, animationName);
 
   // Crear nuevo estilo
-  const styleElement = document.createElement('style');
+  const styleElement = document.createElement("style");
   styleElement.id = `style-animation-${componentId}-${animationName}`;
   styleElement.textContent = keyframesCSS;
   document.head.appendChild(styleElement);
@@ -99,12 +105,12 @@ export const injectKeyframesCSS = (
 export const applyAnimationPreview = (
   element: HTMLElement,
   config: AnimationConfig,
-  keyframesCSS?: string
+  keyframesCSS?: string,
 ): Promise<void> => {
   return new Promise((resolve) => {
     // Inyectar keyframes si están disponibles
     if (keyframesCSS) {
-      const componentId = element.id || 'preview';
+      const componentId = element.id || "preview";
       injectKeyframesCSS(componentId, config.name, keyframesCSS);
     }
 
@@ -116,28 +122,34 @@ export const applyAnimationPreview = (
 
     // Después de que termine la animación, remover estilos para volver al estado base
     const handleAnimationEnd = () => {
-      element.removeEventListener('animationend', handleAnimationEnd);
-      element.style.removeProperty('animation-name');
-      element.style.removeProperty('animation-duration');
-      element.style.removeProperty('animation-delay');
-      element.style.removeProperty('animation-timing-function');
-      element.style.removeProperty('animation-fill-mode');
-      element.style.removeProperty('animation-iteration-count');
+      element.removeEventListener("animationend", handleAnimationEnd);
+      element.style.removeProperty("animation-name");
+      element.style.removeProperty("animation-duration");
+      element.style.removeProperty("animation-delay");
+      element.style.removeProperty("animation-timing-function");
+      element.style.removeProperty("animation-fill-mode");
+      element.style.removeProperty("animation-iteration-count");
       resolve();
     };
 
-    element.addEventListener('animationend', handleAnimationEnd);
+    element.addEventListener("animationend", handleAnimationEnd);
 
     // Timeout de seguridad por si acaso
-    setTimeout(() => {
-      handleAnimationEnd();
-    }, config.duration + config.delay + 5000);
+    setTimeout(
+      () => {
+        handleAnimationEnd();
+      },
+      config.duration + config.delay + 5000,
+    );
   });
 };
 
 /**
  * Genera un nombre de animación único basado en el componente
  */
-export const generateAnimationName = (componentId: string, presetId: string): string => {
+export const generateAnimationName = (
+  componentId: string,
+  presetId: string,
+): string => {
   return `anim-${componentId.substring(0, 8)}-${presetId}`;
 };

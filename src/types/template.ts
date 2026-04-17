@@ -1,6 +1,12 @@
-import type { UIComponent } from './canvas';
+import type { UIComponent } from "./canvas";
 
-export type TemplateCategory = 'landing' | 'dashboard' | 'portfolio' | 'ecommerce' | 'auth' | 'custom';
+export type TemplateCategory =
+  | "landing"
+  | "dashboard"
+  | "portfolio"
+  | "ecommerce"
+  | "auth"
+  | "custom";
 
 export interface TemplateData {
   components: Record<string, UIComponent>;
@@ -36,7 +42,7 @@ export interface SerializedEditorState {
     width: number;
     height: number;
     scale: number;
-    device: 'mobile' | 'tablet' | 'desktop';
+    device: "mobile" | "tablet" | "desktop";
   };
   version: string;
 }

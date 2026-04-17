@@ -1,40 +1,41 @@
-import React, { useState, useMemo } from 'react';
-import { useEditorStore } from '@/store';
-import type { AnimationConfig, KeyframeStep } from '@/types/canvas';
+import React, { useState, useMemo } from "react";
+import { useEditorStore } from "@/store";
+import type { AnimationConfig, KeyframeStep } from "@/types/canvas";
 import {
   ANIMATION_PRESETS,
   EASING_OPTIONS,
   ANIMATION_TRIGGERS,
-} from '@/constants/animationPresets';
+} from "@/constants/animationPresets";
 import {
   generateAnimationName,
   generateAnimationCSS,
   applyAnimationPreview,
-} from '@/utils/animation/animationGenerator';
-import { Play, Trash2, Plus, Minus, X } from 'lucide-react';
+} from "@/utils/animation/animationGenerator";
+import { Play, Trash2, Plus, Minus, X } from "lucide-react";
 
 const INPUT_CLASSES =
-  'w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none';
-const LABEL_CLASSES = 'text-xs text-slate-400 mb-1 block font-medium';
+  "w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none";
+const LABEL_CLASSES = "text-xs text-slate-400 mb-1 block font-medium";
 const BUTTON_CLASS =
-  'px-2 py-1 text-xs rounded bg-blue-600 hover:bg-blue-700 text-white transition-colors disabled:bg-slate-600';
+  "px-2 py-1 text-xs rounded bg-blue-600 hover:bg-blue-700 text-white transition-colors disabled:bg-slate-600";
 const BUTTON_OUTLINE =
-  'px-2 py-1 text-xs rounded border border-slate-600 hover:bg-slate-700 text-slate-200 transition-colors';
+  "px-2 py-1 text-xs rounded border border-slate-600 hover:bg-slate-700 text-slate-200 transition-colors";
 
 interface PresetSelectorProps {
   onSelect: (presetId: string) => void;
 }
 
 const PresetSelector: React.FC<PresetSelectorProps> = ({ onSelect }) => {
-  const categories = ['entrada', 'énfasis', 'transformación'] as const;
-  const [activeCategory, setActiveCategory] = useState<typeof categories[number]>('entrada');
+  const categories = ["entrada", "énfasis", "transformación"] as const;
+  const [activeCategory, setActiveCategory] =
+    useState<(typeof categories)[number]>("entrada");
 
   const filteredPresets = useMemo(
     () =>
       Object.values(ANIMATION_PRESETS).filter(
-        (preset) => preset.category === activeCategory
+        (preset) => preset.category === activeCategory,
       ),
-    [activeCategory]
+    [activeCategory],
   );
 
   return (
@@ -46,8 +47,8 @@ const PresetSelector: React.FC<PresetSelectorProps> = ({ onSelect }) => {
             onClick={() => setActiveCategory(cat)}
             className={`px-2 py-1 text-xs rounded transition-colors capitalize ${
               activeCategory === cat
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                ? "bg-blue-600 text-white"
+                : "bg-slate-700 text-slate-300 hover:bg-slate-600"
             }`}
           >
             {cat}
@@ -86,7 +87,7 @@ const PropertySlider: React.FC<PropertySliderProps> = ({
   min,
   max,
   step,
-  unit = '',
+  unit = "",
   onChange,
 }) => {
   return (
@@ -126,7 +127,11 @@ const EasingSelector: React.FC<EasingSelectorProps> = ({ value, onChange }) => {
   return (
     <div className="space-y-1">
       <label className={LABEL_CLASSES}>Easing (Timing Function)</label>
-      <select value={value} onChange={(e) => onChange(e.target.value)} className={INPUT_CLASSES}>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={INPUT_CLASSES}
+      >
         {EASING_OPTIONS.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
@@ -138,17 +143,22 @@ const EasingSelector: React.FC<EasingSelectorProps> = ({ value, onChange }) => {
 };
 
 interface TriggerSelectorProps {
-  value: 'onLoad' | 'onHover' | 'inView';
-  onChange: (value: 'onLoad' | 'onHover' | 'inView') => void;
+  value: "onLoad" | "onHover" | "inView";
+  onChange: (value: "onLoad" | "onHover" | "inView") => void;
 }
 
-const TriggerSelector: React.FC<TriggerSelectorProps> = ({ value, onChange }) => {
+const TriggerSelector: React.FC<TriggerSelectorProps> = ({
+  value,
+  onChange,
+}) => {
   return (
     <div className="space-y-1">
       <label className={LABEL_CLASSES}>Activador</label>
       <select
         value={value}
-        onChange={(e) => onChange(e.target.value as 'onLoad' | 'onHover' | 'inView')}
+        onChange={(e) =>
+          onChange(e.target.value as "onLoad" | "onHover" | "inView")
+        }
         className={INPUT_CLASSES}
       >
         {ANIMATION_TRIGGERS.map((trigger) => (
@@ -162,11 +172,14 @@ const TriggerSelector: React.FC<TriggerSelectorProps> = ({ value, onChange }) =>
 };
 
 interface IterationsInputProps {
-  value: number | 'infinite';
-  onChange: (value: number | 'infinite') => void;
+  value: number | "infinite";
+  onChange: (value: number | "infinite") => void;
 }
 
-const IterationsInput: React.FC<IterationsInputProps> = ({ value, onChange }) => {
+const IterationsInput: React.FC<IterationsInputProps> = ({
+  value,
+  onChange,
+}) => {
   return (
     <div className="space-y-1">
       <label className={LABEL_CLASSES}>Iteraciones</label>
@@ -174,16 +187,16 @@ const IterationsInput: React.FC<IterationsInputProps> = ({ value, onChange }) =>
         <input
           type="number"
           min="1"
-          value={value === 'infinite' ? 1 : value}
+          value={value === "infinite" ? 1 : value}
           onChange={(e) => onChange(Number(e.target.value))}
-          disabled={value === 'infinite'}
+          disabled={value === "infinite"}
           className={`${INPUT_CLASSES} flex-1 disabled:opacity-50`}
         />
         <button
-          onClick={() => onChange(value === 'infinite' ? 1 : 'infinite')}
-          className={`${BUTTON_OUTLINE} ${value === 'infinite' ? 'bg-blue-600 border-blue-600 text-white' : ''}`}
+          onClick={() => onChange(value === "infinite" ? 1 : "infinite")}
+          className={`${BUTTON_OUTLINE} ${value === "infinite" ? "bg-blue-600 border-blue-600 text-white" : ""}`}
         >
-          {value === 'infinite' ? '∞' : 'Fin'}
+          {value === "infinite" ? "∞" : "Fin"}
         </button>
       </div>
     </div>
@@ -195,14 +208,18 @@ interface KeyframeEditorProps {
   onChange: (keyframes: KeyframeStep[]) => void;
 }
 
-const KeyframeEditor: React.FC<KeyframeEditorProps> = ({ keyframes, onChange }) => {
+const KeyframeEditor: React.FC<KeyframeEditorProps> = ({
+  keyframes,
+  onChange,
+}) => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const addKeyframe = () => {
-    const lastPercent = keyframes.length > 0 ? keyframes[keyframes.length - 1].percent : 0;
+    const lastPercent =
+      keyframes.length > 0 ? keyframes[keyframes.length - 1].percent : 0;
     const newStep: KeyframeStep = {
       percent: Math.min(lastPercent + 20, 100),
-      properties: { opacity: '1', transform: 'scale(1)' },
+      properties: { opacity: "1", transform: "scale(1)" },
     };
     onChange([...keyframes, newStep]);
   };
@@ -222,7 +239,7 @@ const KeyframeEditor: React.FC<KeyframeEditorProps> = ({ keyframes, onChange }) 
   const updateProperty = (
     index: number,
     propKey: string,
-    propValue: string
+    propValue: string,
   ) => {
     const updated = [...keyframes];
     updated[index].properties = {
@@ -243,7 +260,10 @@ const KeyframeEditor: React.FC<KeyframeEditorProps> = ({ keyframes, onChange }) 
     <div className="space-y-2 bg-slate-800 rounded p-2">
       <div className="flex items-center justify-between">
         <label className={LABEL_CLASSES}>Keyframes</label>
-        <button onClick={addKeyframe} className={`${BUTTON_CLASS} flex items-center gap-1`}>
+        <button
+          onClick={addKeyframe}
+          className={`${BUTTON_CLASS} flex items-center gap-1`}
+        >
           <Plus size={12} />
           Agregar
         </button>
@@ -251,23 +271,30 @@ const KeyframeEditor: React.FC<KeyframeEditorProps> = ({ keyframes, onChange }) 
 
       <div className="space-y-1">
         {keyframes.map((step, idx) => (
-          <div key={idx} className="border border-slate-700 rounded bg-slate-900 overflow-hidden">
+          <div
+            key={idx}
+            className="border border-slate-700 rounded bg-slate-900 overflow-hidden"
+          >
             <button
-              onClick={() => setExpandedIndex(expandedIndex === idx ? null : idx)}
+              onClick={() =>
+                setExpandedIndex(expandedIndex === idx ? null : idx)
+              }
               className="w-full px-2 py-1 flex items-center justify-between hover:bg-slate-800 transition-colors"
             >
               <span className="text-xs font-medium text-slate-300">
                 {step.percent}% - {Object.keys(step.properties).length} props
               </span>
               <span className="text-xs text-slate-400">
-                {expandedIndex === idx ? '▼' : '▶'}
+                {expandedIndex === idx ? "▼" : "▶"}
               </span>
             </button>
 
             {expandedIndex === idx && (
               <div className="border-t border-slate-700 p-2 space-y-2 bg-slate-850">
                 <div className="space-y-1">
-                  <label className="text-xs text-slate-400 block">Posición (%)</label>
+                  <label className="text-xs text-slate-400 block">
+                    Posición (%)
+                  </label>
                   <input
                     type="number"
                     min="0"
@@ -275,7 +302,10 @@ const KeyframeEditor: React.FC<KeyframeEditorProps> = ({ keyframes, onChange }) 
                     value={step.percent}
                     onChange={(e) =>
                       updateKeyframe(idx, {
-                        percent: Math.max(0, Math.min(100, Number(e.target.value))),
+                        percent: Math.max(
+                          0,
+                          Math.min(100, Number(e.target.value)),
+                        ),
                       })
                     }
                     className={INPUT_CLASSES}
@@ -284,13 +314,15 @@ const KeyframeEditor: React.FC<KeyframeEditorProps> = ({ keyframes, onChange }) 
 
                 <div className="border-t border-slate-700 pt-2">
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs text-slate-400 font-medium">Propiedades</label>
+                    <label className="text-xs text-slate-400 font-medium">
+                      Propiedades
+                    </label>
                     {Object.keys(step.properties).length > 0 && (
                       <select
                         onChange={(e) => {
                           if (e.target.value) {
-                            updateProperty(idx, e.target.value, '');
-                            e.target.value = '';
+                            updateProperty(idx, e.target.value, "");
+                            e.target.value = "";
                           }
                         }}
                         className={`${INPUT_CLASSES} text-xs`}
@@ -307,31 +339,38 @@ const KeyframeEditor: React.FC<KeyframeEditorProps> = ({ keyframes, onChange }) 
                     )}
                   </div>
 
-                  {Object.entries(step.properties).map(([propKey, propValue]) => (
-                    <div key={propKey} className="flex items-center gap-1 mb-1">
-                      <span className="text-xs text-slate-400 w-20">{propKey}</span>
-                      <input
-                        type="text"
-                        value={propValue}
-                        onChange={(e) => updateProperty(idx, propKey, e.target.value)}
-                        className={`${INPUT_CLASSES} flex-1 text-xs`}
-                        placeholder="value"
-                      />
-                      <button
-                        onClick={() => removeProperty(idx, propKey)}
-                        className="p-1 hover:bg-red-600/20 rounded transition-colors"
+                  {Object.entries(step.properties).map(
+                    ([propKey, propValue]) => (
+                      <div
+                        key={propKey}
+                        className="flex items-center gap-1 mb-1"
                       >
-                        <X size={12} className="text-red-400" />
-                      </button>
-                    </div>
-                  ))}
+                        <span className="text-xs text-slate-400 w-20">
+                          {propKey}
+                        </span>
+                        <input
+                          type="text"
+                          value={propValue}
+                          onChange={(e) =>
+                            updateProperty(idx, propKey, e.target.value)
+                          }
+                          className={`${INPUT_CLASSES} flex-1 text-xs`}
+                          placeholder="value"
+                        />
+                        <button
+                          onClick={() => removeProperty(idx, propKey)}
+                          className="p-1 hover:bg-red-600/20 rounded transition-colors"
+                        >
+                          <X size={12} className="text-red-400" />
+                        </button>
+                      </div>
+                    ),
+                  )}
                 </div>
 
                 {Object.keys(step.properties).length === 0 && (
                   <button
-                    onClick={() =>
-                      updateProperty(idx, 'opacity', '1')
-                    }
+                    onClick={() => updateProperty(idx, "opacity", "1")}
                     className={`${BUTTON_OUTLINE} w-full text-xs`}
                   >
                     Añadir Primera Propiedad
@@ -359,7 +398,7 @@ const KeyframeEditor: React.FC<KeyframeEditorProps> = ({ keyframes, onChange }) 
 export const AnimationPanel: React.FC = () => {
   const selectedId = useEditorStore((state) => state.selectedIds[0]);
   const selectedComponent = useEditorStore((state) =>
-    selectedId ? state.components[selectedId] : null
+    selectedId ? state.components[selectedId] : null,
   );
   const updateComponent = useEditorStore((state) => state.updateComponent);
 
@@ -371,13 +410,16 @@ export const AnimationPanel: React.FC = () => {
     if (!selectedComponent) return;
 
     const animation: AnimationConfig = {
-      name: updates.name || currentAnimation?.name || generateAnimationName(selectedComponent.id, 'custom'),
+      name:
+        updates.name ||
+        currentAnimation?.name ||
+        generateAnimationName(selectedComponent.id, "custom"),
       duration: updates.duration ?? currentAnimation?.duration ?? 600,
       delay: updates.delay ?? currentAnimation?.delay ?? 0,
-      easing: updates.easing ?? currentAnimation?.easing ?? 'ease-out',
+      easing: updates.easing ?? currentAnimation?.easing ?? "ease-out",
       iterations: updates.iterations ?? currentAnimation?.iterations ?? 1,
-      fillMode: updates.fillMode ?? currentAnimation?.fillMode ?? 'forwards',
-      trigger: updates.trigger ?? currentAnimation?.trigger ?? 'onLoad',
+      fillMode: updates.fillMode ?? currentAnimation?.fillMode ?? "forwards",
+      trigger: updates.trigger ?? currentAnimation?.trigger ?? "onLoad",
       keyframes: updates.keyframes ?? currentAnimation?.keyframes ?? [],
     };
 
@@ -407,11 +449,11 @@ export const AnimationPanel: React.FC = () => {
 
     try {
       const element = document.querySelector(
-        `[data-component-id="${selectedComponent.id}"]`
+        `[data-component-id="${selectedComponent.id}"]`,
       ) as HTMLElement | null;
 
       if (!element) {
-        console.warn('Element not found for preview');
+        console.warn("Element not found for preview");
         setIsPreviewRunning(false);
         return;
       }
@@ -421,10 +463,10 @@ export const AnimationPanel: React.FC = () => {
       await applyAnimationPreview(
         element,
         currentAnimation,
-        animationCSS.keyframesCSS
+        animationCSS.keyframesCSS,
       );
     } catch (error) {
-      console.error('Preview error:', error);
+      console.error("Preview error:", error);
     } finally {
       setIsPreviewRunning(false);
     }
@@ -453,7 +495,9 @@ export const AnimationPanel: React.FC = () => {
     <div className="p-4 space-y-4 text-sm">
       {/* Selector de Presets */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Efecto</h3>
+        <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+          Efecto
+        </h3>
         <PresetSelector onSelect={handlePresetSelect} />
       </div>
 
@@ -487,7 +531,9 @@ export const AnimationPanel: React.FC = () => {
 
               <IterationsInput
                 value={currentAnimation.iterations}
-                onChange={(value) => handleAnimationChange({ iterations: value })}
+                onChange={(value) =>
+                  handleAnimationChange({ iterations: value })
+                }
               />
 
               <EasingSelector
@@ -518,9 +564,12 @@ export const AnimationPanel: React.FC = () => {
               className={`${BUTTON_CLASS} flex-1 flex items-center justify-center gap-1`}
             >
               <Play size={14} />
-              {isPreviewRunning ? 'Reproduciendo...' : 'Reproducir'}
+              {isPreviewRunning ? "Reproduciendo..." : "Reproducir"}
             </button>
-            <button onClick={clearAnimation} className={`${BUTTON_OUTLINE} flex-1 flex items-center justify-center gap-1`}>
+            <button
+              onClick={clearAnimation}
+              className={`${BUTTON_OUTLINE} flex-1 flex items-center justify-center gap-1`}
+            >
               <Trash2 size={14} />
               Eliminar
             </button>

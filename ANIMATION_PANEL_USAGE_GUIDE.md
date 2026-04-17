@@ -43,7 +43,7 @@
 
 ```typescript
 // Lo que sucede internamente:
-const preset = ANIMATION_PRESETS['fadeIn'];
+const preset = ANIMATION_PRESETS["fadeIn"];
 // {
 //   duration: 600,
 //   easing: 'ease-out',
@@ -60,29 +60,36 @@ updateComponent(selectedId, { styles: { animation: preset } });
 Una vez seleccionado un preset, aparecen los controles de configuración:
 
 ### Duración (Velocidad)
+
 ```
 Duración (ms)  [━━━━━━━━━] 600
                0ms      5000ms
 ```
+
 - **Rango**: 0-5000ms
 - **Default**: Depende del preset
 
 ### Delay (Retraso)
+
 ```
 Delay (ms)     [━━━━━] 0
                0ms   5000ms
 ```
+
 - Retraso antes de que comience la animación
 - Útil para animaciones secuenciales
 
 ### Iteraciones
+
 ```
 Iteraciones    [___3___] [Fin|∞]
 ```
+
 - Toggle **Fin** (número específico) o **∞** (infinito)
 - Default: 1 (una sola vez)
 
 ### Easing (Timing Function)
+
 ```
 Easing         ▼ ease-out
                ├─ linear
@@ -95,6 +102,7 @@ Easing         ▼ ease-out
 ```
 
 ### Activador (Trigger)
+
 ```
 Activador      ▼ Al Cargar
                ├─ Al Cargar ✓
@@ -103,6 +111,7 @@ Activador      ▼ Al Cargar
 ```
 
 **Explicación de triggers**:
+
 - **Al Cargar (onLoad)**: La animación se ejecuta apenas carga la página
 - **Al Pasar el Ratón (onHover)**: Se ejecuta cuando el usuario pasa el mouse
 - **Al Entrar en Vista (inView)**: Se ejecuta cuando el elemento entra en el viewport (scroll)
@@ -129,17 +138,21 @@ Keyframes      [+ Agregar]
 ### 2. Modificar un Keyframe Existente
 
 **Cambiar la posición (%)**:
+
 ```
 Posición (%)   [50___]
 ```
+
 Cambia dónde ocurre este keyframe en la animación.
 
 **Editar una propiedad**:
+
 ```
 opacity = [    1    ]  [×]
 ```
 
 **Agregar una propiedad**:
+
 ```
 [+ Agregar propiedad]
 ├─ opacity
@@ -161,6 +174,7 @@ opacity = [    1    ]  [×]
    100%: opacity: 1, transform: scale(1)
    ```
 3. Espera el resultado del bounce, agrega otro keyframe al 80%:
+
    ```
    80%:  transform: scale(1.1)
    ```
@@ -178,6 +192,7 @@ opacity = [    1    ]  [×]
 ```
 
 **Haz click en "Reproducir"**:
+
 1. La animación se ejecuta **una sola vez** en el elemento seleccionado del canvas
 2. Puedes verla en tiempo real
 3. Después de completarse, el elemento vuelve a su estado base
@@ -186,6 +201,7 @@ opacity = [    1    ]  [×]
 ### Ejemplos:
 
 **Fade In Preview**:
+
 ```
 Canvas:
 ┌─────────────────────┐
@@ -195,6 +211,7 @@ Canvas:
 ```
 
 **Bounce Preview**:
+
 ```
 ┌─────────────────────┐
 │                     │
@@ -209,6 +226,7 @@ Canvas:
 ```
 
 **Rotate Preview**:
+
 ```
         ↻
     ↻     (gira)       (gira)     ↻
@@ -219,6 +237,7 @@ Canvas:
 ## Paso 6: Eliminar Animación
 
 Haz click en el botón **"Eliminar"** o **"Trash"** para:
+
 1. Remover la configuración de animación del componente
 2. Limpiar los estilos inyectados
 3. El componente vuelve a su estado sin animación
@@ -307,14 +326,15 @@ Flujo:
 Cuando exportas el proyecto:
 
 ### React Export
+
 ```tsx
-import React from 'react';
+import React from "react";
 
 const GeneratedUI = () => {
   return (
     <div
       style={{
-        animation: 'anim-comp1-fadeIn 600ms ease-out 1 forwards',
+        animation: "anim-comp1-fadeIn 600ms ease-out 1 forwards",
       }}
     >
       {/* children */}
@@ -326,39 +346,49 @@ const GeneratedUI = () => {
 ```
 
 ### HTML Export
+
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <style>
-    @keyframes anim-comp1-fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    
-    @keyframes anim-comp2-bounce {
-      /* ... */
-    }
-  </style>
-</head>
-<body>
-  <div data-animation="anim-comp1-fadeIn">
-    <!-- Si trigger es onHover/inView, scripts aquí -->
-  </div>
-  
-  <script>
-    // Código para manejar onHover y inView triggers
-  </script>
-</body>
+  <head>
+    <style>
+      @keyframes anim-comp1-fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes anim-comp2-bounce {
+        /* ... */
+      }
+    </style>
+  </head>
+  <body>
+    <div data-animation="anim-comp1-fadeIn">
+      <!-- Si trigger es onHover/inView, scripts aquí -->
+    </div>
+
+    <script>
+      // Código para manejar onHover y inView triggers
+    </script>
+  </body>
 </html>
 ```
 
 ### CSS Pure Export
+
 ```css
 /* animations.css */
 @keyframes anim-comp1-fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes anim-comp2-bounce {
@@ -372,7 +402,7 @@ const GeneratedUI = () => {
 
 2. **Performance**: Las animaciones personalizadas con muchos keyframes pueden afectar performance. Usa presets para mejor optimización.
 
-3. **Triggers en Exportación**: 
+3. **Triggers en Exportación**:
    - `onLoad` funciona en todos los formatos
    - `onHover` + `inView` requieren JavaScript en HTML
 
@@ -385,16 +415,19 @@ const GeneratedUI = () => {
 Si algo no funciona:
 
 ### "Preview no funciona"
+
 - [ ] ¿Está el componente seleccionado?
 - [ ] ¿Revisaste la console para errores?
 - [ ] ¿El elemento tiene `data-component-id`?
 
 ### "Animación no se anima al exportar"
+
 - [ ] ¿Incluye el archivo CSS @keyframes?
 - [ ] ¿El nombre de la animación es correcto?
 - [ ] ¿Revisaste la exportación final?
 
 ### "Keyframes no se guardan"
+
 - [ ] Click en un preset después de editar
 - [ ] Los cambios se aplican directamente sin botón "Guardar"
 

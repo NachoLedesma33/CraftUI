@@ -1,14 +1,14 @@
-import React, { useState, useMemo } from 'react';
-import { templateLibrary } from '@/utils/templates';
-import type { Template, TemplateCategory } from '@/types/template';
-import { Download, Upload, Trash2, Search, Filter } from 'lucide-react';
+import React, { useState, useMemo } from "react";
+import { templateLibrary } from "@/utils/templates";
+import type { Template, TemplateCategory } from "@/types/template";
+import { Download, Upload, Trash2, Search, Filter } from "lucide-react";
 
 const BUTTON_CLASS =
-  'px-3 py-2 text-xs rounded bg-blue-600 hover:bg-blue-700 text-white transition-colors disabled:bg-slate-600';
+  "px-3 py-2 text-xs rounded bg-blue-600 hover:bg-blue-700 text-white transition-colors disabled:bg-slate-600";
 const BUTTON_OUTLINE =
-  'px-3 py-2 text-xs rounded border border-slate-600 hover:bg-slate-700 text-slate-200 transition-colors';
+  "px-3 py-2 text-xs rounded border border-slate-600 hover:bg-slate-700 text-slate-200 transition-colors";
 const INPUT_CLASS =
-  'w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none';
+  "w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none";
 
 interface TemplateModalProps {
   isOpen: boolean;
@@ -116,17 +116,19 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
   onClose,
   onTemplateSelect,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState<TemplateCategory | 'all'>(
-    'all'
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<
+    TemplateCategory | "all"
+  >("all");
+  const [selectedTab, setSelectedTab] = useState<"system" | "user">("system");
+  const [loadingTemplateId, setLoadingTemplateId] = useState<string | null>(
+    null,
   );
-  const [selectedTab, setSelectedTab] = useState<'system' | 'user'>('system');
-  const [loadingTemplateId, setLoadingTemplateId] = useState<string | null>(null);
 
   const systemTemplates = useMemo(
     () =>
       templateLibrary.getPredefinedTemplates().filter((t) => {
-        if (activeCategory !== 'all' && t.category !== activeCategory)
+        if (activeCategory !== "all" && t.category !== activeCategory)
           return false;
         if (!searchQuery) return true;
 
@@ -134,17 +136,17 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
           t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           t.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           t.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
+            tag.toLowerCase().includes(searchQuery.toLowerCase()),
           )
         );
       }),
-    [searchQuery, activeCategory]
+    [searchQuery, activeCategory],
   );
 
   const userTemplates = useMemo(
     () =>
       templateLibrary.getUserTemplates().filter((t) => {
-        if (activeCategory !== 'all' && t.category !== activeCategory)
+        if (activeCategory !== "all" && t.category !== activeCategory)
           return false;
         if (!searchQuery) return true;
 
@@ -152,14 +154,14 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
           t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           t.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           t.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
+            tag.toLowerCase().includes(searchQuery.toLowerCase()),
           )
         );
       }),
-    [searchQuery, activeCategory]
+    [searchQuery, activeCategory],
   );
 
-  const templates = selectedTab === 'system' ? systemTemplates : userTemplates;
+  const templates = selectedTab === "system" ? systemTemplates : userTemplates;
 
   const handleSelectTemplate = async (templateId: string) => {
     setLoadingTemplateId(templateId);
@@ -177,10 +179,10 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
   };
 
   const handleDeleteTemplate = (templateId: string) => {
-    if (confirm('Are you sure you want to delete this template?')) {
+    if (confirm("Are you sure you want to delete this template?")) {
       const result = templateLibrary.deleteTemplate(templateId);
       if (result.success) {
-        alert('Template deleted');
+        alert("Template deleted");
       } else {
         alert(`Failed to delete template: ${result.error}`);
       }
@@ -191,7 +193,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
     const result = templateLibrary.exportTemplateAsJSON(templateId);
     if (result.blob && result.filename) {
       const url = URL.createObjectURL(result.blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = result.filename;
       document.body.appendChild(a);
@@ -210,12 +212,15 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
     const reader = new FileReader();
     reader.onload = async (e) => {
       const content = e.target?.result as string;
-      const templateName = file.name.replace('.json', '');
+      const templateName = file.name.replace(".json", "");
 
-      const result = await templateLibrary.importFromJSON(content, templateName);
+      const result = await templateLibrary.importFromJSON(
+        content,
+        templateName,
+      );
       if (result.success) {
-        alert('Template imported successfully');
-        setSelectedTab('user');
+        alert("Template imported successfully");
+        setSelectedTab("user");
       } else {
         alert(`Failed to import: ${result.error}`);
       }
@@ -226,11 +231,11 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
   if (!isOpen) return null;
 
   const categories: TemplateCategory[] = [
-    'landing',
-    'dashboard',
-    'portfolio',
-    'ecommerce',
-    'auth',
+    "landing",
+    "dashboard",
+    "portfolio",
+    "ecommerce",
+    "auth",
   ];
 
   return (
@@ -250,26 +255,26 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
         {/* Tabs */}
         <div className="flex border-b border-slate-700 px-4">
           <button
-            onClick={() => setSelectedTab('system')}
+            onClick={() => setSelectedTab("system")}
             className={`px-4 py-2 text-sm transition-colors ${
-              selectedTab === 'system'
-                ? 'text-blue-400 border-b-2 border-blue-400'
-                : 'text-slate-400 hover:text-white'
+              selectedTab === "system"
+                ? "text-blue-400 border-b-2 border-blue-400"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             System Templates
           </button>
           <button
-            onClick={() => setSelectedTab('user')}
+            onClick={() => setSelectedTab("user")}
             className={`px-4 py-2 text-sm transition-colors ${
-              selectedTab === 'user'
-                ? 'text-blue-400 border-b-2 border-blue-400'
-                : 'text-slate-400 hover:text-white'
+              selectedTab === "user"
+                ? "text-blue-400 border-b-2 border-blue-400"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             My Templates ({userTemplates.length})
           </button>
-          {selectedTab === 'user' && (
+          {selectedTab === "user" && (
             <div className="ml-auto flex items-center gap-2">
               <label className={`${BUTTON_OUTLINE} cursor-pointer`}>
                 <Upload size={14} />
@@ -299,11 +304,11 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
 
           <div className="flex items-center gap-2 overflow-x-auto">
             <button
-              onClick={() => setActiveCategory('all')}
+              onClick={() => setActiveCategory("all")}
               className={`px-3 py-1 text-xs rounded whitespace-nowrap transition-colors ${
-                activeCategory === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                activeCategory === "all"
+                  ? "bg-blue-600 text-white"
+                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
               }`}
             >
               All
@@ -314,8 +319,8 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
                 onClick={() => setActiveCategory(cat)}
                 className={`px-3 py-1 text-xs rounded whitespace-nowrap capitalize transition-colors ${
                   activeCategory === cat
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                 }`}
               >
                 {cat}

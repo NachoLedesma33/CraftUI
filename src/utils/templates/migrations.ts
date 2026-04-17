@@ -1,11 +1,11 @@
-import type { TemplateData, MigrationResult } from '@/types/template';
+import type { TemplateData, MigrationResult } from "@/types/template";
 
 /**
  * Sistema de migraciones para manejar cambios en la estructura de plantillas
  * Permite compatibilidad hacia atrás y forwards
  */
 
-const CURRENT_VERSION = '1.0.0';
+const CURRENT_VERSION = "1.0.0";
 
 type MigrationFunction = (data: TemplateData) => TemplateData;
 
@@ -17,8 +17,8 @@ interface Migration {
 
 const migrations: Migration[] = [
   {
-    fromVersion: '0.9.0',
-    toVersion: '1.0.0',
+    fromVersion: "0.9.0",
+    toVersion: "1.0.0",
     migrate: (data) => {
       // Ejemplo: Si en 0.9 no había animation, agregar la propiedad
       const updatedComponents = { ...data.components };
@@ -28,7 +28,7 @@ const migrations: Migration[] = [
           comp.styles.animation = undefined;
         }
       });
-      return { ...data, version: '1.0.0' };
+      return { ...data, version: "1.0.0" };
     },
   },
   // Futuras migraciones aquí
@@ -39,15 +39,15 @@ const migrations: Migration[] = [
  */
 function findMigrationPath(
   fromVersion: string,
-  toVersion: string
+  toVersion: string,
 ): Migration[] {
   // Implementación simple para versiones lineales
   if (fromVersion === toVersion) return [];
-  
+
   return migrations.filter(
     (m) =>
       compareVersions(m.fromVersion, fromVersion) >= 0 &&
-      compareVersions(m.toVersion, toVersion) <= 0
+      compareVersions(m.toVersion, toVersion) <= 0,
   );
 }
 
@@ -56,8 +56,8 @@ function findMigrationPath(
  * Retorna: -1 si a < b, 0 si a === b, 1 si a > b
  */
 function compareVersions(a: string, b: string): number {
-  const [aMajor, aMinor, aPatch] = a.split('.').map(Number);
-  const [bMajor, bMinor, bPatch] = b.split('.').map(Number);
+  const [aMajor, aMinor, aPatch] = a.split(".").map(Number);
+  const [bMajor, bMinor, bPatch] = b.split(".").map(Number);
 
   if (aMajor !== bMajor) return aMajor < bMajor ? -1 : 1;
   if (aMinor !== bMinor) return aMinor < bMinor ? -1 : 1;
@@ -70,25 +70,25 @@ function compareVersions(a: string, b: string): number {
  */
 export function migrateTemplateData(
   data: unknown,
-  fromVersion?: string
+  fromVersion?: string,
 ): MigrationResult {
   const warnings: string[] = [];
 
   // Validación básica
-  if (!data || typeof data !== 'object') {
+  if (!data || typeof data !== "object") {
     return {
       success: false,
       version: CURRENT_VERSION,
-      data: { components: {}, rootId: '', version: CURRENT_VERSION },
-      warnings: ['Invalid template data format'],
+      data: { components: {}, rootId: "", version: CURRENT_VERSION },
+      warnings: ["Invalid template data format"],
     };
   }
 
   const templateData = data as any;
   let currentData: TemplateData = {
     components: templateData.components || {},
-    rootId: templateData.rootId || '',
-    version: fromVersion || templateData.version || '0.9.0',
+    rootId: templateData.rootId || "",
+    version: fromVersion || templateData.version || "0.9.0",
   };
 
   // Si ya es la versión actual, retorna directamente
@@ -106,7 +106,7 @@ export function migrateTemplateData(
   if (path.length === 0) {
     if (compareVersions(currentData.version, CURRENT_VERSION) > 0) {
       warnings.push(
-        `Template version ${currentData.version} is newer than current ${CURRENT_VERSION}`
+        `Template version ${currentData.version} is newer than current ${CURRENT_VERSION}`,
       );
     } else {
       warnings.push(`No migration path found from ${currentData.version}`);
@@ -125,7 +125,7 @@ export function migrateTemplateData(
       data: currentData,
       warnings: [
         ...warnings,
-        `Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Migration failed: ${error instanceof Error ? error.message : "Unknown error"}`,
       ],
     };
   }
@@ -150,23 +150,23 @@ export function validateTemplateData(data: unknown): {
 } {
   const errors: string[] = [];
 
-  if (!data || typeof data !== 'object') {
-    errors.push('Template data must be an object');
+  if (!data || typeof data !== "object") {
+    errors.push("Template data must be an object");
     return { valid: false, errors };
   }
 
   const template = data as any;
 
-  if (!template.components || typeof template.components !== 'object') {
-    errors.push('Template must have a components object');
+  if (!template.components || typeof template.components !== "object") {
+    errors.push("Template must have a components object");
   }
 
-  if (typeof template.rootId !== 'string') {
-    errors.push('Template must have a rootId string');
+  if (typeof template.rootId !== "string") {
+    errors.push("Template must have a rootId string");
   }
 
   if (template.rootId && !template.components[template.rootId]) {
-    errors.push('rootId does not reference a valid component');
+    errors.push("rootId does not reference a valid component");
   }
 
   // Validar que todos los parent/children referencias sean válidas
@@ -175,17 +175,13 @@ export function validateTemplateData(data: unknown): {
     const comp = component as any;
 
     if (comp.parent && !componentIds.has(comp.parent)) {
-      errors.push(
-        `Component ${id} references invalid parent ${comp.parent}`
-      );
+      errors.push(`Component ${id} references invalid parent ${comp.parent}`);
     }
 
     if (Array.isArray(comp.children)) {
       for (const childId of comp.children) {
         if (!componentIds.has(childId)) {
-          errors.push(
-            `Component ${id} references invalid child ${childId}`
-          );
+          errors.push(`Component ${id} references invalid child ${childId}`);
         }
       }
     }

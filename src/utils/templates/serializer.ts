@@ -1,6 +1,6 @@
-import type { SerializedEditorState, TemplateData } from '@/types/template';
-import type { UIComponent } from '@/types/canvas';
-import { CURRENT_TEMPLATE_VERSION } from './migrations';
+import type { SerializedEditorState, TemplateData } from "@/types/template";
+import type { UIComponent } from "@/types/canvas";
+import { CURRENT_TEMPLATE_VERSION } from "./migrations";
 
 /**
  * Sistema de serialización/deserialización de estado del editor
@@ -11,7 +11,7 @@ import { CURRENT_TEMPLATE_VERSION } from './migrations';
  */
 export function cleanStateForSerialization(
   components: Record<string, UIComponent>,
-  rootId: string
+  rootId: string,
 ): Record<string, UIComponent> {
   const cleaned: Record<string, UIComponent> = {};
 
@@ -41,7 +41,7 @@ export function serializeEditorState(
   metadata?: {
     createdAt?: number;
     updatedAt?: number;
-  }
+  },
 ): TemplateData {
   return {
     components: cleanStateForSerialization(components, rootId),
@@ -67,13 +67,13 @@ export function jsonToTemplate(json: string): TemplateData | null {
     const parsed = JSON.parse(json);
     return {
       components: parsed.components || {},
-      rootId: parsed.rootId || '',
-      version: parsed.version || '1.0',
+      rootId: parsed.rootId || "",
+      version: parsed.version || "1.0",
       createdAt: parsed.createdAt,
       updatedAt: parsed.updatedAt,
     };
   } catch (error) {
-    console.error('Failed to parse template JSON:', error);
+    console.error("Failed to parse template JSON:", error);
     return null;
   }
 }
@@ -87,13 +87,15 @@ export function compressTemplateData(data: TemplateData): string {
   const json = templateToJSON(data);
 
   // Remover espacios en blanco innecesarios
-  return json.replace(/\s+/g, ' ').trim();
+  return json.replace(/\s+/g, " ").trim();
 }
 
 /**
  * Descomprime datos de plantilla
  */
-export function decompressTemplateData(compressed: string): TemplateData | null {
+export function decompressTemplateData(
+  compressed: string,
+): TemplateData | null {
   // Por ahora es JSON simple
   return jsonToTemplate(compressed);
 }
@@ -104,14 +106,14 @@ export function decompressTemplateData(compressed: string): TemplateData | null 
  */
 export function optimizeThumbnail(
   thumbnail: string,
-  maxSizeKB: number = 50
+  maxSizeKB: number = 50,
 ): string {
-  if (!thumbnail || !thumbnail.startsWith('data:')) {
+  if (!thumbnail || !thumbnail.startsWith("data:")) {
     return thumbnail; // Si es URL, no optimizar
   }
 
   // Extraer tipo y datos
-  const [header, data] = thumbnail.split(',');
+  const [header, data] = thumbnail.split(",");
 
   // Calcular tamaño en KB
   const sizeKB = (data.length * 0.75) / 1024; // Base64 es 33% más grande
@@ -119,7 +121,7 @@ export function optimizeThumbnail(
   if (sizeKB > maxSizeKB) {
     // Si es muy grande, crear un placeholder
     console.warn(
-      `Thumbnail too large (${sizeKB.toFixed(1)}KB), using placeholder`
+      `Thumbnail too large (${sizeKB.toFixed(1)}KB), using placeholder`,
     );
     return createPlaceholderThumbnail();
   }
@@ -131,7 +133,7 @@ export function optimizeThumbnail(
  * Crea un thumbnail placeholder (1x1 px transparente)
  */
 export function createPlaceholderThumbnail(): string {
-  return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+  return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 }
 
 /**
@@ -163,7 +165,10 @@ export function formatTemplateSize(data: TemplateData): string {
  * Valida el tamaño de una plantilla para localStorage
  * localStorage típicamente tiene límite de 5-10MB por dominio
  */
-export function validateTemplateSize(data: TemplateData, maxSizeMB: number = 5): {
+export function validateTemplateSize(
+  data: TemplateData,
+  maxSizeMB: number = 5,
+): {
   valid: boolean;
   sizeMB: number;
   message: string;
@@ -199,7 +204,7 @@ Template Snapshot:
   - Root ID: ${data.rootId}
   - Version: ${data.version}
   - Size: ${size.toFixed(2)}KB
-  - Created: ${data.createdAt ? new Date(data.createdAt).toISOString() : 'N/A'}
-  - Updated: ${data.updatedAt ? new Date(data.updatedAt).toISOString() : 'N/A'}
+  - Created: ${data.createdAt ? new Date(data.createdAt).toISOString() : "N/A"}
+  - Updated: ${data.updatedAt ? new Date(data.updatedAt).toISOString() : "N/A"}
     `.trim();
 }

@@ -1,10 +1,10 @@
-import type { Template, TemplateData, TemplateExport } from '@/types/template';
-import { useEditorStore } from '@/store';
+import type { Template, TemplateData, TemplateExport } from "@/types/template";
+import { useEditorStore } from "@/store";
 import {
   getPredefinedTemplates,
   getPredefinedTemplate,
   searchPredefinedTemplates,
-} from './predefinedTemplates';
+} from "./predefinedTemplates";
 import {
   serializeEditorState,
   templateToJSON,
@@ -12,12 +12,12 @@ import {
   optimizeThumbnail,
   estimateTemplateSize,
   validateTemplateSize,
-} from './serializer';
-import { migrateTemplateData, validateTemplateData } from './migrations';
-import { v4 as uuidv4 } from 'uuid';
+} from "./serializer";
+import { migrateTemplateData, validateTemplateData } from "./migrations";
+import { v4 as uuidv4 } from "uuid";
 
-const STORAGE_KEY_PREFIX = 'craftui-template-';
-const STORAGE_INDEX_KEY = 'craftui-templates-index';
+const STORAGE_KEY_PREFIX = "craftui-template-";
+const STORAGE_INDEX_KEY = "craftui-templates-index";
 const MAX_USER_TEMPLATES = 50;
 
 /**
@@ -56,7 +56,7 @@ export const templateLibrary = {
 
       return templates;
     } catch (error) {
-      console.error('Failed to load user templates:', error);
+      console.error("Failed to load user templates:", error);
       return [];
     }
   },
@@ -112,8 +112,8 @@ export const templateLibrary = {
    */
   saveTemplate(
     name: string,
-    description: string = '',
-    tags: string[] = []
+    description: string = "",
+    tags: string[] = [],
   ): { success: boolean; templateId?: string; error?: string } {
     try {
       // Validar cantidad de plantillas
@@ -143,7 +143,7 @@ export const templateLibrary = {
       if (!validation.valid) {
         return {
           success: false,
-          error: `Invalid template data: ${validation.errors.join(', ')}`,
+          error: `Invalid template data: ${validation.errors.join(", ")}`,
         };
       }
 
@@ -152,7 +152,7 @@ export const templateLibrary = {
         id: `template-${uuidv4()}`,
         name,
         description,
-        category: 'custom',
+        category: "custom",
         thumbnail: undefined,
         tags,
         data: templateData,
@@ -166,7 +166,7 @@ export const templateLibrary = {
       localStorage.setItem(storageKey, JSON.stringify(template));
 
       // Actualizar índice
-      const index = JSON.parse(localStorage.getItem(STORAGE_INDEX_KEY) || '[]');
+      const index = JSON.parse(localStorage.getItem(STORAGE_INDEX_KEY) || "[]");
       index.push(template.id);
       localStorage.setItem(STORAGE_INDEX_KEY, JSON.stringify(index));
 
@@ -177,7 +177,7 @@ export const templateLibrary = {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   },
@@ -187,18 +187,18 @@ export const templateLibrary = {
    */
   updateTemplate(
     templateId: string,
-    updates: Partial<Template>
+    updates: Partial<Template>,
   ): { success: boolean; error?: string } {
     try {
       const template = this.getTemplate(templateId);
       if (!template) {
-        return { success: false, error: 'Template not found' };
+        return { success: false, error: "Template not found" };
       }
 
       if (template.isSystem) {
         return {
           success: false,
-          error: 'Cannot edit system templates',
+          error: "Cannot edit system templates",
         };
       }
 
@@ -217,7 +217,7 @@ export const templateLibrary = {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   },
@@ -229,13 +229,13 @@ export const templateLibrary = {
     try {
       const template = this.getTemplate(templateId);
       if (!template) {
-        return { success: false, error: 'Template not found' };
+        return { success: false, error: "Template not found" };
       }
 
       if (template.isSystem) {
         return {
           success: false,
-          error: 'Cannot delete system templates',
+          error: "Cannot delete system templates",
         };
       }
 
@@ -243,7 +243,7 @@ export const templateLibrary = {
       localStorage.removeItem(STORAGE_KEY_PREFIX + templateId);
 
       // Actualizar índice
-      const index = JSON.parse(localStorage.getItem(STORAGE_INDEX_KEY) || '[]');
+      const index = JSON.parse(localStorage.getItem(STORAGE_INDEX_KEY) || "[]");
       const newIndex = index.filter((id: string) => id !== templateId);
       localStorage.setItem(STORAGE_INDEX_KEY, JSON.stringify(newIndex));
 
@@ -251,7 +251,7 @@ export const templateLibrary = {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   },
@@ -261,12 +261,12 @@ export const templateLibrary = {
    */
   async loadTemplate(
     templateId: string,
-    confirmIfNotEmpty: boolean = true
+    confirmIfNotEmpty: boolean = true,
   ): Promise<{ success: boolean; error?: string }> {
     try {
       const template = this.getTemplate(templateId);
       if (!template) {
-        return { success: false, error: 'Template not found' };
+        return { success: false, error: "Template not found" };
       }
 
       const state = useEditorStore.getState();
@@ -277,14 +277,14 @@ export const templateLibrary = {
         // Por ahora, retornar error
         return {
           success: false,
-          error: 'Canvas is not empty. Please clear before loading template.',
+          error: "Canvas is not empty. Please clear before loading template.",
         };
       }
 
       // Migrar datos si es necesario
       const migrationResult = migrateTemplateData(template.data);
       if (!migrationResult.success) {
-        console.warn('Migration warnings:', migrationResult.warnings);
+        console.warn("Migration warnings:", migrationResult.warnings);
       }
 
       // Validar datos
@@ -305,7 +305,7 @@ export const templateLibrary = {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   },
@@ -320,9 +320,9 @@ export const templateLibrary = {
     const export_obj: TemplateExport = {
       template: {
         id: `export-${uuidv4()}`,
-        name: 'Exported Template',
-        description: '',
-        category: 'custom',
+        name: "Exported Template",
+        description: "",
+        category: "custom",
         tags: [],
         data: templateData,
         isSystem: false,
@@ -330,11 +330,11 @@ export const templateLibrary = {
         updatedAt: Date.now(),
       },
       exportedAt: Date.now(),
-      editorVersion: '1.0.0',
+      editorVersion: "1.0.0",
     };
 
     const json = JSON.stringify(export_obj, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
+    const blob = new Blob([json], { type: "application/json" });
     const filename = `craftui-template-${new Date().toISOString().slice(0, 10)}.json`;
 
     return { blob, filename };
@@ -351,23 +351,23 @@ export const templateLibrary = {
     try {
       const template = this.getTemplate(templateId);
       if (!template) {
-        return { error: 'Template not found' };
+        return { error: "Template not found" };
       }
 
       const export_obj: TemplateExport = {
         template,
         exportedAt: Date.now(),
-        editorVersion: '1.0.0',
+        editorVersion: "1.0.0",
       };
 
       const json = JSON.stringify(export_obj, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const filename = `${template.name.replace(/\s+/g, '-').toLowerCase()}.json`;
+      const blob = new Blob([json], { type: "application/json" });
+      const filename = `${template.name.replace(/\s+/g, "-").toLowerCase()}.json`;
 
       return { blob, filename };
     } catch (error) {
       return {
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   },
@@ -377,7 +377,7 @@ export const templateLibrary = {
    */
   async importFromJSON(
     jsonString: string,
-    saveName?: string
+    saveName?: string,
   ): Promise<{ success: boolean; templateId?: string; error?: string }> {
     try {
       // Parsear JSON
@@ -385,7 +385,7 @@ export const templateLibrary = {
       try {
         export_obj = JSON.parse(jsonString);
       } catch {
-        return { success: false, error: 'Invalid JSON format' };
+        return { success: false, error: "Invalid JSON format" };
       }
 
       const obj = export_obj as any;
@@ -398,14 +398,14 @@ export const templateLibrary = {
         // JSON directo de datos
         const migrationResult = migrateTemplateData(obj);
         if (!migrationResult.success) {
-          return { success: false, error: 'Failed to migrate template data' };
+          return { success: false, error: "Failed to migrate template data" };
         }
 
         template = {
           id: `imported-${uuidv4()}`,
-          name: saveName || 'Imported Template',
-          description: '',
-          category: 'custom',
+          name: saveName || "Imported Template",
+          description: "",
+          category: "custom",
           tags: [],
           data: migrationResult.data,
           isSystem: false,
@@ -413,7 +413,7 @@ export const templateLibrary = {
           updatedAt: Date.now(),
         };
       } else {
-        return { success: false, error: 'Invalid template structure' };
+        return { success: false, error: "Invalid template structure" };
       }
 
       // Validar
@@ -436,7 +436,7 @@ export const templateLibrary = {
       localStorage.setItem(storageKey, JSON.stringify(template));
 
       // Actualizar índice
-      const index = JSON.parse(localStorage.getItem(STORAGE_INDEX_KEY) || '[]');
+      const index = JSON.parse(localStorage.getItem(STORAGE_INDEX_KEY) || "[]");
       index.push(template.id);
       localStorage.setItem(STORAGE_INDEX_KEY, JSON.stringify(index));
 
@@ -444,7 +444,7 @@ export const templateLibrary = {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   },
@@ -454,7 +454,7 @@ export const templateLibrary = {
    */
   clearUserTemplates(): { success: boolean; count: number } {
     try {
-      const index = JSON.parse(localStorage.getItem(STORAGE_INDEX_KEY) || '[]');
+      const index = JSON.parse(localStorage.getItem(STORAGE_INDEX_KEY) || "[]");
 
       for (const id of index) {
         localStorage.removeItem(STORAGE_KEY_PREFIX + id);

@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useEditorStore } from '@/store/editorStore';
-import { useUIStore } from '@/store/uiStore';
+import { useEffect, useState, useCallback } from "react";
+import { useEditorStore } from "@/store/editorStore";
+import { useUIStore } from "@/store/uiStore";
 
 /**
  * Determines if the keyboard event originates from a text input element
@@ -8,24 +8,26 @@ import { useUIStore } from '@/store/uiStore';
  */
 const isTypingElement = (e: KeyboardEvent): boolean => {
   const target = e.target as HTMLElement;
-  
+
   if (!target) return false;
 
   const tagName = target.tagName.toLowerCase();
-  const contentEditable = target.getAttribute('contenteditable');
+  const contentEditable = target.getAttribute("contenteditable");
 
   // Check if target is input or textarea
-  if (tagName === 'input' || tagName === 'textarea') {
+  if (tagName === "input" || tagName === "textarea") {
     const inputType = (target as HTMLInputElement).type?.toLowerCase();
     // Allow shortcuts in hidden/submit/button inputs
-    if (['hidden', 'submit', 'button', 'checkbox', 'radio'].includes(inputType)) {
+    if (
+      ["hidden", "submit", "button", "checkbox", "radio"].includes(inputType)
+    ) {
       return false;
     }
     return true;
   }
 
   // Check if contenteditable
-  if (contentEditable === 'true' || contentEditable === '') {
+  if (contentEditable === "true" || contentEditable === "") {
     return true;
   }
 
@@ -38,16 +40,16 @@ const isTypingElement = (e: KeyboardEvent): boolean => {
  */
 const isTextEditingShortcut = (e: KeyboardEvent): boolean => {
   const isMod = e.ctrlKey || e.metaKey;
-  
+
   // Shortcuts that should be allowed in text fields
   return (
-    (isMod && e.key.toLowerCase() === 'z') || // Undo
-    (isMod && e.key.toLowerCase() === 'y') || // Redo  
-    (isMod && e.key.toLowerCase() === 'a') || // Select all
-    (isMod && e.key.toLowerCase() === 'c') || // Copy
-    (isMod && e.key.toLowerCase() === 'x') || // Cut
-    (isMod && e.key.toLowerCase() === 'v') || // Paste
-    e.key === 'Escape' // Escape to close/deselect
+    (isMod && e.key.toLowerCase() === "z") || // Undo
+    (isMod && e.key.toLowerCase() === "y") || // Redo
+    (isMod && e.key.toLowerCase() === "a") || // Select all
+    (isMod && e.key.toLowerCase() === "c") || // Copy
+    (isMod && e.key.toLowerCase() === "x") || // Cut
+    (isMod && e.key.toLowerCase() === "v") || // Paste
+    e.key === "Escape" // Escape to close/deselect
   );
 };
 
@@ -97,7 +99,11 @@ export const useKeyboardShortcuts = () => {
 
     if (selectedComponents.length > 0) {
       copyComponents(selectedComponents);
-      addToast(`Copied ${selectedComponents.length} component(s)`, 'success', 2000);
+      addToast(
+        `Copied ${selectedComponents.length} component(s)`,
+        "success",
+        2000,
+      );
     }
   }, [selectedIds, components, copyComponents, addToast]);
 
@@ -109,7 +115,11 @@ export const useKeyboardShortcuts = () => {
 
     // For now, we'll just show a toast
     // Full paste implementation would need to add components to the selected parent
-    addToast(`Paste feature coming soon (${clipboard.length} item(s) in clipboard)`, 'info', 2000);
+    addToast(
+      `Paste feature coming soon (${clipboard.length} item(s) in clipboard)`,
+      "info",
+      2000,
+    );
   }, [clipboard, addToast]);
 
   /**
@@ -124,7 +134,7 @@ export const useKeyboardShortcuts = () => {
 
     if (newId) {
       selectComponent(newId, false);
-      addToast('Component duplicated', 'success', 2000);
+      addToast("Component duplicated", "success", 2000);
     }
   }, [selectedIds, duplicateComponent, selectComponent, addToast]);
 
@@ -157,31 +167,33 @@ export const useKeyboardShortcuts = () => {
       const key = e.key.toLowerCase();
 
       // ===== PROJECT MANAGEMENT =====
-      if (isMod && key === 's') {
+      if (isMod && key === "s") {
         e.preventDefault();
-        addToast('Project saved (mock)', 'success', 2000);
+        addToast("Project saved (mock)", "success", 2000);
         return;
       }
 
-      if (isMod && key === 'e') {
+      if (isMod && key === "e") {
         e.preventDefault();
-        addToast('Opening export modal...', 'info', 2000);
+        addToast("Opening export modal...", "info", 2000);
         // This would be dispatched to open ExportModal
-        window.dispatchEvent(
-          new CustomEvent('openExportModal')
+        window.dispatchEvent(new CustomEvent("openExportModal"));
+        return;
+      }
+
+      if (isMod && key === "p") {
+        e.preventDefault();
+        setPreviewMode(!previewMode);
+        addToast(
+          `Preview ${!previewMode ? "enabled" : "disabled"}`,
+          "info",
+          2000,
         );
         return;
       }
 
-      if (isMod && key === 'p') {
-        e.preventDefault();
-        setPreviewMode(!previewMode);
-        addToast(`Preview ${!previewMode ? 'enabled' : 'disabled'}`, 'info', 2000);
-        return;
-      }
-
       // ===== EDITING STRUCTURAL =====
-      if (isMod && key === 'z') {
+      if (isMod && key === "z") {
         if (isTyping) {
           // Allow default browser undo in text inputs
           return;
@@ -191,7 +203,7 @@ export const useKeyboardShortcuts = () => {
         return;
       }
 
-      if (isMod && key === 'y') {
+      if (isMod && key === "y") {
         if (isTyping) {
           return;
         }
@@ -200,7 +212,7 @@ export const useKeyboardShortcuts = () => {
         return;
       }
 
-      if (isMod && key === 'd') {
+      if (isMod && key === "d") {
         if (isTyping) {
           return;
         }
@@ -209,19 +221,19 @@ export const useKeyboardShortcuts = () => {
         return;
       }
 
-      if (key === 'Delete' || key === 'Backspace') {
+      if (key === "Delete" || key === "Backspace") {
         if (isTyping) {
           return;
         }
         e.preventDefault();
         if (selectedIds.length > 0) {
           deleteSelected();
-          addToast('Component(s) deleted', 'success', 2000);
+          addToast("Component(s) deleted", "success", 2000);
         }
         return;
       }
 
-      if (isMod && key === 'c') {
+      if (isMod && key === "c") {
         if (isTyping && e.target !== document.body) {
           return;
         }
@@ -230,7 +242,7 @@ export const useKeyboardShortcuts = () => {
         return;
       }
 
-      if (isMod && key === 'v') {
+      if (isMod && key === "v") {
         if (isTyping && e.target !== document.body) {
           return;
         }
@@ -239,61 +251,61 @@ export const useKeyboardShortcuts = () => {
         return;
       }
 
-      if (isMod && key === 'a') {
+      if (isMod && key === "a") {
         // Only prevent default when not typing
         if (!isTyping) {
           e.preventDefault();
           selectAllAtLevel();
           const count = components ? Object.keys(components).length : 0;
-          addToast(`Selected all components (total: ${count})`, 'info', 2000);
+          addToast(`Selected all components (total: ${count})`, "info", 2000);
         }
         return;
       }
 
-      if (key === 'F2' || key === 'f2') {
+      if (key === "F2" || key === "f2") {
         e.preventDefault();
         handleStartRenaming();
-        addToast('Rename mode activated', 'info', 2000);
+        addToast("Rename mode activated", "info", 2000);
         return;
       }
 
       // ===== VISUALIZATION (CANVAS) =====
-      if (isMod && key === 'g') {
+      if (isMod && key === "g") {
         e.preventDefault();
         if (e.shiftKey) {
           // Ctrl+Shift+G: Toggle Snap to Grid
           toggleSnapToGrid();
-          addToast('Snap to grid toggled', 'info', 2000);
+          addToast("Snap to grid toggled", "info", 2000);
         } else {
           // Ctrl+G: Toggle Grid visibility
           toggleGrid();
-          addToast('Grid toggled', 'info', 2000);
+          addToast("Grid toggled", "info", 2000);
         }
         return;
       }
 
-      if (key === '+' || key === '=') {
+      if (key === "+" || key === "=") {
         e.preventDefault();
         zoomIn();
-        addToast('Zoomed in', 'info', 1500);
+        addToast("Zoomed in", "info", 1500);
         return;
       }
 
-      if (key === '-' || key === '_') {
+      if (key === "-" || key === "_") {
         e.preventDefault();
         zoomOut();
-        addToast('Zoomed out', 'info', 1500);
+        addToast("Zoomed out", "info", 1500);
         return;
       }
 
-      if (key === '0') {
+      if (key === "0") {
         e.preventDefault();
         resetZoom();
-        addToast('Zoom reset to 100%', 'info', 1500);
+        addToast("Zoom reset to 100%", "info", 1500);
         return;
       }
 
-      if (key === 'Escape') {
+      if (key === "Escape") {
         e.preventDefault();
         clearSelection();
         setIsRenaming(false);
@@ -301,7 +313,7 @@ export const useKeyboardShortcuts = () => {
       }
 
       // ===== HELP/SHORTCUTS =====
-      if (key === '?' || (isMod && key === '/')) {
+      if (key === "?" || (isMod && key === "/")) {
         e.preventDefault();
         setShowShortcutsModal(!showShortcutsModal);
         return;
@@ -328,14 +340,14 @@ export const useKeyboardShortcuts = () => {
       selectAllAtLevel,
       addToast,
       showShortcutsModal,
-    ]
+    ],
   );
 
   // Register global keyboard listener
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
 

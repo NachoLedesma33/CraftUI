@@ -1,16 +1,16 @@
 export const ComponentType = {
-  Box: 'box',
-  Text: 'text',
-  Button: 'button',
-  Image: 'image',
-  Container: 'container',
-  Flex: 'flex',
-  Grid: 'grid',
+  Box: "box",
+  Text: "text",
+  Button: "button",
+  Image: "image",
+  Container: "container",
+  Flex: "flex",
+  Grid: "grid",
 } as const;
 
-export type ComponentType = typeof ComponentType[keyof typeof ComponentType];
+export type ComponentType = (typeof ComponentType)[keyof typeof ComponentType];
 
-export type Breakpoint = 'base' | 'tablet' | 'desktop';
+export type Breakpoint = "base" | "tablet" | "desktop";
 
 export type ResponsiveValue<T> = {
   base: T;
@@ -19,13 +19,35 @@ export type ResponsiveValue<T> = {
 };
 
 export interface Styles {
-  display?: ResponsiveValue<'block' | 'inline' | 'inline-block' | 'flex' | 'grid' | 'none'>;
-  position?: ResponsiveValue<'static' | 'relative' | 'absolute' | 'fixed' | 'sticky'>;
-  flexDirection?: ResponsiveValue<'row' | 'column' | 'row-reverse' | 'column-reverse'>;
-  flexWrap?: ResponsiveValue<'nowrap' | 'wrap' | 'wrap-reverse'>;
-  justifyContent?: ResponsiveValue<'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly'>;
-  alignItems?: ResponsiveValue<'stretch' | 'flex-start' | 'flex-end' | 'center' | 'baseline'>;
-  alignContent?: ResponsiveValue<'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'stretch'>;
+  display?: ResponsiveValue<
+    "block" | "inline" | "inline-block" | "flex" | "grid" | "none"
+  >;
+  position?: ResponsiveValue<
+    "static" | "relative" | "absolute" | "fixed" | "sticky"
+  >;
+  flexDirection?: ResponsiveValue<
+    "row" | "column" | "row-reverse" | "column-reverse"
+  >;
+  flexWrap?: ResponsiveValue<"nowrap" | "wrap" | "wrap-reverse">;
+  justifyContent?: ResponsiveValue<
+    | "flex-start"
+    | "flex-end"
+    | "center"
+    | "space-between"
+    | "space-around"
+    | "space-evenly"
+  >;
+  alignItems?: ResponsiveValue<
+    "stretch" | "flex-start" | "flex-end" | "center" | "baseline"
+  >;
+  alignContent?: ResponsiveValue<
+    | "flex-start"
+    | "flex-end"
+    | "center"
+    | "space-between"
+    | "space-around"
+    | "stretch"
+  >;
   gap?: ResponsiveValue<string>;
   gridTemplateColumns?: ResponsiveValue<string>;
   gridTemplateRows?: ResponsiveValue<string>;
@@ -57,7 +79,7 @@ export interface Styles {
   backgroundRepeat?: ResponsiveValue<string>;
 
   borderWidth?: ResponsiveValue<string>;
-  borderStyle?: ResponsiveValue<'solid' | 'dashed' | 'dotted' | 'none'>;
+  borderStyle?: ResponsiveValue<"solid" | "dashed" | "dotted" | "none">;
   borderColor?: ResponsiveValue<string>;
   borderRadius?: ResponsiveValue<string>;
   borderTopLeftRadius?: ResponsiveValue<string>;
@@ -70,14 +92,16 @@ export interface Styles {
   fontWeight?: ResponsiveValue<string | number>;
   fontFamily?: ResponsiveValue<string>;
   lineHeight?: ResponsiveValue<string>;
-  textAlign?: ResponsiveValue<'left' | 'center' | 'right' | 'justify'>;
-  textDecoration?: ResponsiveValue<'none' | 'underline' | 'line-through'>;
-  textTransform?: ResponsiveValue<'none' | 'uppercase' | 'lowercase' | 'capitalize'>;
+  textAlign?: ResponsiveValue<"left" | "center" | "right" | "justify">;
+  textDecoration?: ResponsiveValue<"none" | "underline" | "line-through">;
+  textTransform?: ResponsiveValue<
+    "none" | "uppercase" | "lowercase" | "capitalize"
+  >;
 
   opacity?: ResponsiveValue<number>;
-  overflow?: ResponsiveValue<'visible' | 'hidden' | 'scroll' | 'auto'>;
-  overflowX?: ResponsiveValue<'visible' | 'hidden' | 'scroll' | 'auto'>;
-  overflowY?: ResponsiveValue<'visible' | 'hidden' | 'scroll' | 'auto'>;
+  overflow?: ResponsiveValue<"visible" | "hidden" | "scroll" | "auto">;
+  overflowX?: ResponsiveValue<"visible" | "hidden" | "scroll" | "auto">;
+  overflowY?: ResponsiveValue<"visible" | "hidden" | "scroll" | "auto">;
 
   boxShadow?: ResponsiveValue<string>;
   zIndex?: ResponsiveValue<number>;
@@ -88,14 +112,18 @@ export interface Styles {
 
   transition?: ResponsiveValue<string>;
   transform?: ResponsiveValue<string>;
-  cursor?: ResponsiveValue<'auto' | 'default' | 'pointer' | 'not-allowed' | 'move' | 'text'>;
+  cursor?: ResponsiveValue<
+    "auto" | "default" | "pointer" | "not-allowed" | "move" | "text"
+  >;
 
   animationName?: ResponsiveValue<string>;
   animationDuration?: ResponsiveValue<string>;
   animationDelay?: ResponsiveValue<string>;
   animationIterationCount?: ResponsiveValue<string | number>;
   animationTimingFunction?: ResponsiveValue<string>;
-  animationFillMode?: ResponsiveValue<'none' | 'forwards' | 'backwards' | 'both'>;
+  animationFillMode?: ResponsiveValue<
+    "none" | "forwards" | "backwards" | "both"
+  >;
 }
 
 export interface KeyframeStep {
@@ -108,9 +136,9 @@ export interface AnimationConfig {
   duration: number;
   delay: number;
   easing: string;
-  iterations: number | 'infinite';
-  fillMode: 'none' | 'forwards' | 'backwards' | 'both';
-  trigger: 'onLoad' | 'onHover' | 'inView';
+  iterations: number | "infinite";
+  fillMode: "none" | "forwards" | "backwards" | "both";
+  trigger: "onLoad" | "onHover" | "inView";
   keyframes?: KeyframeStep[];
 }
 
@@ -121,7 +149,7 @@ export interface ComponentProps {
   alt?: string;
   placeholder?: string;
   value?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
 }
 
