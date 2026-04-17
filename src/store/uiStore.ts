@@ -24,11 +24,26 @@ interface PanelsState {
   properties: boolean;
 }
 
+interface AutoSaveState {
+  enabled: boolean;
+  interval: number; // in milliseconds
+  lastSaved: number | null;
+  versions: AutoSaveVersion[];
+}
+
+interface AutoSaveVersion {
+  id: string;
+  timestamp: number;
+  componentCount: number;
+  data: string; // JSON string of the state
+}
+
 export interface UIState {
   view: ViewState;
   panels: PanelsState;
   clipboard: UIComponent[] | null;
   toasts: Toast[];
+  autoSave: AutoSaveState;
 }
 
 export interface UIActions {
@@ -37,7 +52,9 @@ export interface UIActions {
   zoomOut: () => void;
   resetZoom: () => void;
   setShowGrid: (show: boolean) => void;
+  toggleGrid: () => void;
   setSnapToGrid: (snap: boolean) => void;
+  toggleSnapToGrid: () => void;
   setGridSize: (size: number) => void;
   setPreviewMode: (mode: boolean) => void;
   setActiveDevice: (device: 'mobile' | 'tablet' | 'desktop') => void;
@@ -47,6 +64,14 @@ export interface UIActions {
   clearClipboard: () => void;
   addToast: (message: string, type?: 'success' | 'error' | 'info', duration?: number) => string;
   removeToast: (id: string) => void;
+  // Auto-save actions
+  setAutoSaveEnabled: (enabled: boolean) => void;
+  setAutoSaveInterval: (interval: number) => void;
+  updateLastSaved: (timestamp: number) => void;
+  addAutoSaveVersion: (version: AutoSaveVersion) => void;
+  getAutoSaveVersions: () => AutoSaveVersion[];
+  restoreAutoSaveVersion: (versionId: string) => AutoSaveVersion | null;
+  clearAutoSaveVersions: () => void;
 }
 
 type UIStore = UIState & UIActions;
@@ -70,6 +95,13 @@ const initialPanels: PanelsState = {
   properties: true,
 };
 
+const initialAutoSave: AutoSaveState = {
+  enabled: true,
+  interval: 30000, // 30 seconds
+  lastSaved: null,
+  versions: [],
+};
+
 export const useUIStore = create<UIStore>()(
   subscribeWithSelector(
     persist(
@@ -78,6 +110,7 @@ export const useUIStore = create<UIStore>()(
         panels: initialPanels,
         clipboard: null,
         toasts: [],
+        autoSave: initialAutoSave,
 
         setZoom: (zoom: number) => {
           const clampedZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
@@ -104,8 +137,18 @@ export const useUIStore = create<UIStore>()(
           set((s) => ({ view: { ...s.view, showGrid: show } }));
         },
 
+        toggleGrid: () => {
+          const currentState = get().view.showGrid;
+          set((s) => ({ view: { ...s.view, showGrid: !currentState } }));
+        },
+
         setSnapToGrid: (snap: boolean) => {
           set((s) => ({ view: { ...s.view, snapToGrid: snap } }));
+        },
+
+        toggleSnapToGrid: () => {
+          const currentState = get().view.snapToGrid;
+          set((s) => ({ view: { ...s.view, snapToGrid: !currentState } }));
         },
 
         setGridSize: (size: number) => {
@@ -154,6 +197,57 @@ export const useUIStore = create<UIStore>()(
         removeToast: (id: string) => {
           set((s) => ({
             toasts: s.toasts.filter((t) => t.id !== id),
+          }));
+        },
+
+        // Auto-save actions
+        setAutoSaveEnabled: (enabled: boolean) => {
+          set((s) => ({
+            autoSave: { ...s.autoSave, enabled },
+          }));
+        },
+
+        setAutoSaveInterval: (interval: number) => {
+          set((s) => ({
+            autoSave: { ...s.autoSave, interval },
+          }));
+        },
+
+        updateLastSaved: (timestamp: number) => {
+          set((s) => ({
+            autoSave: { ...s.autoSave, lastSaved: timestamp },
+          }));
+        },
+
+        addAutoSaveVersion: (version: AutoSaveVersion) => {
+          set((s) => {
+            const newVersions = [...s.autoSave.versions, version];
+            // Keep only the last 10 versions (FIFO)
+            if (newVersions.length > 10) {
+              newVersions.shift();
+            }
+            return {
+              autoSave: {
+                ...s.autoSave,
+                versions: newVersions,
+                lastSaved: version.timestamp,
+              },
+            };
+          });
+        },
+
+        getAutoSaveVersions: () => {
+          return get().autoSave.versions;
+        },
+
+        restoreAutoSaveVersion: (versionId: string) => {
+          const version = get().autoSave.versions.find((v) => v.id === versionId);
+          return version || null;
+        },
+
+        clearAutoSaveVersions: () => {
+          set((s) => ({
+            autoSave: { ...s.autoSave, versions: [] },
           }));
         },
       }),

@@ -43,8 +43,18 @@ export interface EditorActions {
   
   loadState: (components: Record<string, UIComponent>) => void;
   
+  setComponents: (components: Record<string, UIComponent>) => void;
+  
   startHistoryBatch: () => void;
   endHistoryBatch: () => void;
+  
+  deleteSelected: () => void;
+  selectAllAtLevel: () => void;
+  startRenaming: (id: string) => void;
+  endRenaming: (id: string, newName: string) => void;
+  cancelRenaming: (id: string) => void;
+  
+  restoreFromAutoSave: (autoSaveData: string) => void;
 }
 
 const DEFAULT_CANVAS_CONFIG: CanvasConfig = {
@@ -332,6 +342,12 @@ export const useEditorStore = create<EditorWithImmer>()(
           });
         },
 
+        setComponents: (components: Record<string, UIComponent>) => {
+          set((state: EditorWithImmer) => {
+            state.components = components;
+          });
+        },
+
         startHistoryBatch: () => {
           historyBatchDepth++;
         },
@@ -340,6 +356,87 @@ export const useEditorStore = create<EditorWithImmer>()(
           historyBatchDepth = Math.max(0, historyBatchDepth - 1);
           if (historyBatchDepth === 0) {
             get().saveToHistory();
+          }
+        },
+
+        deleteSelected: () => {
+          const state = get();
+          const selectedIds = [...state.selectedIds];
+          selectedIds.forEach((id) => {
+            if (state.components[id]) {
+              get().deleteComponent(id);
+            }
+          });
+          get().clearSelection();
+        },
+
+        selectAllAtLevel: () => {
+          const state = get();
+          if (state.selectedIds.length === 0) return;
+          
+          const selectedComponent = state.components[state.selectedIds[0]];
+          if (!selectedComponent) return;
+
+          const parentId = selectedComponent.parent;
+          const parent = parentId ? state.components[parentId] : null;
+          
+          if (parent) {
+            get().setSelection(parent.children);
+          } else {
+            // Root level: select all root children
+            const roots = Object.values(state.components).filter(c => !c.parent);
+            get().setSelection(roots.map(r => r.id));
+          }
+        },
+
+        startRenaming: (id: string) => {
+          const component = get().components[id];
+          if (component) {
+            set((s: EditorWithImmer) => {
+              s.components[id].metadata.isRenaming = true;
+            });
+          }
+        },
+
+        endRenaming: (id: string, newName: string) => {
+          const component = get().components[id];
+          if (component) {
+            set((s: EditorWithImmer) => {
+              s.components[id].metadata.name = newName;
+              s.components[id].metadata.isRenaming = false;
+            });
+            get().saveToHistory();
+          }
+        },
+
+        cancelRenaming: (id: string) => {
+          const component = get().components[id];
+          if (component) {
+            set((s: EditorWithImmer) => {
+              s.components[id].metadata.isRenaming = false;
+            });
+          }
+        },
+
+        restoreFromAutoSave: (autoSaveData: string) => {
+          try {
+            const parsedData = JSON.parse(autoSaveData);
+            if (parsedData.components && typeof parsedData.components === 'object') {
+              set((s: EditorWithImmer) => {
+                s.components = parsedData.components;
+                s.rootId = parsedData.rootId || s.rootId;
+                s.canvasConfig = parsedData.canvasConfig || s.canvasConfig;
+                s.selectedIds = [];
+                s.history = {
+                  past: [],
+                  future: [],
+                };
+              });
+              get().saveToHistory();
+            }
+          } catch (error) {
+            console.error('Failed to restore from auto-save:', error);
+            throw new Error('Invalid auto-save data format');
           }
         },
       })),

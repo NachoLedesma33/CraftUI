@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useEditorStore, useSelectedId } from '@/store';
 import type { Styles, ResponsiveValue, UIComponent, ComponentType } from '@/types/canvas';
+import { AnimationPanel } from './AnimationPanel';
 
 const INPUT_CLASSES = "w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none";
 const LABEL_CLASSES = "text-xs text-slate-400 mb-1 block";
@@ -547,7 +548,7 @@ export const PropertiesPanel: React.FC = () => {
   const components = useEditorStore((s) => s.components);
   const updateComponent = useEditorStore((s) => s.updateComponent);
   
-  const [activeTab, setActiveTab] = useState<'styles' | 'content' | 'layout' | 'advanced'>('styles');
+  const [activeTab, setActiveTab] = useState<'styles' | 'content' | 'layout' | 'advanced' | 'animations'>('styles');
 
   const component = selectedId ? components[selectedId] : null;
 
@@ -580,12 +581,12 @@ export const PropertiesPanel: React.FC = () => {
         <span className="text-xs text-slate-500">({component.type})</span>
       </div>
       
-      <div className="flex border-b border-slate-700">
-        {(['styles', 'content', 'layout', 'advanced'] as const).map((tab) => (
+      <div className="flex border-b border-slate-700 overflow-x-auto">
+        {(['styles', 'content', 'layout', 'advanced', 'animations'] as const).map((tab) => (
           <button
             key={tab}
             type="button"
-            className={`flex-1 py-2 text-xs capitalize transition-colors ${
+            className={`flex-1 py-2 text-xs capitalize transition-colors whitespace-nowrap ${
               activeTab === tab
                 ? 'text-blue-400 border-b-2 border-blue-400'
                 : 'text-slate-400 hover:text-white'
@@ -602,6 +603,7 @@ export const PropertiesPanel: React.FC = () => {
         {activeTab === 'content' && <ContentTab component={component} updateComponent={updateComponent} />}
         {activeTab === 'layout' && <LayoutTab component={component} updateComponent={updateComponent} />}
         {activeTab === 'advanced' && <AdvancedTab component={component} updateComponent={updateComponent} />}
+        {activeTab === 'animations' && <AnimationPanel />}
       </div>
     </div>
   );

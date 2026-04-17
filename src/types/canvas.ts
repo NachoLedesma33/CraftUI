@@ -89,6 +89,29 @@ export interface Styles {
   transition?: ResponsiveValue<string>;
   transform?: ResponsiveValue<string>;
   cursor?: ResponsiveValue<'auto' | 'default' | 'pointer' | 'not-allowed' | 'move' | 'text'>;
+
+  animationName?: ResponsiveValue<string>;
+  animationDuration?: ResponsiveValue<string>;
+  animationDelay?: ResponsiveValue<string>;
+  animationIterationCount?: ResponsiveValue<string | number>;
+  animationTimingFunction?: ResponsiveValue<string>;
+  animationFillMode?: ResponsiveValue<'none' | 'forwards' | 'backwards' | 'both'>;
+}
+
+export interface KeyframeStep {
+  percent: number;
+  properties: Record<string, string>;
+}
+
+export interface AnimationConfig {
+  name: string;
+  duration: number;
+  delay: number;
+  easing: string;
+  iterations: number | 'infinite';
+  fillMode: 'none' | 'forwards' | 'backwards' | 'both';
+  trigger: 'onLoad' | 'onHover' | 'inView';
+  keyframes?: KeyframeStep[];
 }
 
 export interface ComponentProps {
@@ -106,6 +129,7 @@ export interface ComponentMetadata {
   isVisible: boolean;
   isLocked: boolean;
   name: string;
+  isRenaming?: boolean;
 }
 
 export interface UIComponent {

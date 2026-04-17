@@ -109,6 +109,14 @@ const resolveStyles = (styles: Styles, device: 'mobile' | 'tablet' | 'desktop'):
   if (styles.transform) resolved.transform = resolveStyleValue(styles.transform, device);
   if (styles.cursor) resolved.cursor = resolveStyleValue(styles.cursor, device);
   
+  // Animation styles
+  if (styles.animationName) resolved.animationName = resolveStyleValue(styles.animationName, device);
+  if (styles.animationDuration) resolved.animationDuration = resolveStyleValue(styles.animationDuration, device);
+  if (styles.animationDelay) resolved.animationDelay = resolveStyleValue(styles.animationDelay, device);
+  if (styles.animationIterationCount) resolved.animationIterationCount = resolveStyleValue(styles.animationIterationCount, device);
+  if (styles.animationTimingFunction) resolved.animationTimingFunction = resolveStyleValue(styles.animationTimingFunction, device);
+  if (styles.animationFillMode) resolved.animationFillMode = resolveStyleValue(styles.animationFillMode, device);
+  
   return resolved;
 };
 
@@ -213,6 +221,7 @@ const RendererInner: React.FC<RendererProps> = ({ componentId, isPreview, onClic
   const element = (
     <Tag
       id={componentId}
+      data-component-id={componentId}
       style={inlineStyles}
       onClick={handleClick}
       {...component.props}

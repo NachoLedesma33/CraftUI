@@ -17,13 +17,23 @@ import {
   Keyboard,
   ChevronRight,
   Loader2,
+  FileText,
+  HardDrive,
 } from 'lucide-react';
 import { useEditorStore } from '@/store';
 import { useUIStore } from '@/store';
 import type { UIComponent } from '@/types/canvas';
+import { AutoSaveIndicator } from '@/components/ui/AutoSaveIndicator';
 
 interface ToolbarProps {
   onExport?: () => void;
+  onTemplates?: () => void;
+  onAutoSave?: () => void;
+  autoSaveStatus?: {
+    lastSaved: number | null;
+    isEnabled: boolean;
+    hasChanges: boolean;
+  };
 }
 
 const HistoryControls: React.FC<{
@@ -299,7 +309,12 @@ const ConfirmDialog: React.FC<{
   );
 };
 
-export const Toolbar: React.FC<ToolbarProps> = ({ onExport }) => {
+export const Toolbar: React.FC<ToolbarProps> = ({
+  onExport,
+  onTemplates,
+  onAutoSave,
+  autoSaveStatus
+}) => {
   const undo = useEditorStore((s) => s.undo);
   const redo = useEditorStore((s) => s.redo);
   const canUndo = useEditorStore((s) => s.history.past.length > 0);
@@ -392,6 +407,30 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onExport }) => {
         <ViewModeToggle />
         
         <div className="h-6 w-px bg-slate-700" />
+        
+        {autoSaveStatus && (
+          <AutoSaveIndicator
+            lastSaved={autoSaveStatus.lastSaved}
+            isEnabled={autoSaveStatus.isEnabled}
+            hasChanges={autoSaveStatus.hasChanges}
+          />
+        )}
+        
+        <button
+          onClick={() => onAutoSave?.()}
+          className="p-2 rounded text-slate-300 hover:bg-slate-700"
+          title="Auto-Save Versions"
+        >
+          <HardDrive size={16} />
+        </button>
+        
+        <button
+          onClick={() => onTemplates?.()}
+          className="p-2 rounded text-slate-300 hover:bg-slate-700"
+          title="Templates & Projects"
+        >
+          <FileText size={16} />
+        </button>
         
         <button
           onClick={handleSave}
