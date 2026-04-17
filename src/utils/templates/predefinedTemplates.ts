@@ -1,5 +1,4 @@
-import type { Template, TemplateData } from "@/types/template";
-import { v4 as uuidv4 } from "uuid";
+import type { Template } from "@/types/template";
 
 /**
  * Plantillas predefinidas del sistema

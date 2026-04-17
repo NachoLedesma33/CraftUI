@@ -271,7 +271,8 @@ export const useDragDrop = () => {
   };
 };
 
-export const getDragOverlayContent = (item: DragItem): React.ReactNode => {
+export const getDragOverlayContent = (item: DragItem | null): React.ReactNode => {
+  if (!item) return null;
   if (item.type === "new") {
     return (
       <div className="px-3 py-2 bg-blue-500 text-white rounded shadow-lg text-sm">

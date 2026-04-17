@@ -11,7 +11,7 @@ import {
   generateAnimationCSS,
   applyAnimationPreview,
 } from "@/utils/animation/animationGenerator";
-import { Play, Trash2, Plus, Minus, X } from "lucide-react";
+import { Play, Trash2, Plus, X } from "lucide-react";
 
 const INPUT_CLASSES =
   "w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none";

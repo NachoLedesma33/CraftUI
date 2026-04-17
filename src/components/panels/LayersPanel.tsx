@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import {
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable,
 } from '@dnd-kit/sortable';
@@ -348,22 +347,11 @@ export const LayersPanel: React.FC = () => {
   const components = useEditorStore((s) => s.components);
   const rootId = useEditorStore((s) => s.rootId);
   const addComponent = useEditorStore((s) => s.addComponent);
-  const moveComponent = useEditorStore((s) => s.moveComponent);
   const selectComponent = useEditorStore((s) => s.selectComponent);
 
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; componentId: string } | null>(null);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   const handleToggleExpand = useCallback((id: string) => {
     setExpandedIds((prev) => {
@@ -412,7 +400,7 @@ export const LayersPanel: React.FC = () => {
 
   if (!rootId || !components[rootId]) {
     return (
-      <div className="w-64 border-r bg-slate-800 flex flex-col">
+      <div className="bg-slate-800 flex flex-col h-full w-full">
         <div className="p-3 border-b border-slate-700 flex items-center justify-between">
           <h2 className="text-sm font-medium text-white">Layers</h2>
         </div>
@@ -424,7 +412,7 @@ export const LayersPanel: React.FC = () => {
   }
 
   return (
-    <div className="w-64 border-r bg-slate-800 flex flex-col">
+    <div className="bg-slate-800 flex flex-col h-full w-full">
       <div className="p-3 border-b border-slate-700 flex items-center justify-between">
         <h2 className="text-sm font-medium text-white">Layers</h2>
         <button

@@ -181,7 +181,7 @@ export const ComponentLibrary: React.FC = () => {
   ];
 
   return (
-    <div className="w-64 border-r border-l border-slate-700 flex flex-col bg-slate-800 h-full">
+    <div className="flex flex-col bg-slate-800 h-full w-full">
       <div className="p-3 border-b border-slate-700">
         <h3 className="text-sm font-medium text-white mb-3">Components</h3>
         <div className="relative">

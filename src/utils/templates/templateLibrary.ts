@@ -1,4 +1,4 @@
-import type { Template, TemplateData, TemplateExport } from "@/types/template";
+import type { Template, TemplateExport } from "@/types/template";
 import { useEditorStore } from "@/store";
 import {
   getPredefinedTemplates,
@@ -7,9 +7,6 @@ import {
 } from "./predefinedTemplates";
 import {
   serializeEditorState,
-  templateToJSON,
-  jsonToTemplate,
-  optimizeThumbnail,
   estimateTemplateSize,
   validateTemplateSize,
 } from "./serializer";

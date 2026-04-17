@@ -674,8 +674,8 @@ export const PropertiesPanel: React.FC = () => {
 
   if (!component) {
     return (
-      <div className="w-72 border-l bg-slate-800 flex items-center justify-center p-4">
-        <p className="text-slate-400 text-sm text-center">
+      <div className="bg-slate-800 flex items-center justify-center p-4 h-full w-full">
+        <p className="text-slate-400 text-sm text-center italic">
           Select an element to edit its properties
         </p>
       </div>
@@ -704,7 +704,7 @@ export const PropertiesPanel: React.FC = () => {
   };
 
   return (
-    <div className="w-72 border-l bg-slate-800 flex flex-col h-full">
+    <div className="bg-slate-800 flex flex-col h-full w-full">
       <div className="p-3 border-b border-slate-700 flex items-center gap-2">
         <span className="text-lg">{typeIcon(component.type)}</span>
         <span className="text-sm font-medium text-white">

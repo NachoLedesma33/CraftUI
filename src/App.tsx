@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { DndContext, DragOverlay, pointerWithin } from '@dnd-kit/core';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { Panel, Group, Separator } from 'react-resizable-panels';
 import { Toolbar } from '@/components/layout';
 import { Canvas, CanvasOverlays, ResponsivePreview } from '@/components/canvas';
-import { LayersPanel } from '@/components/panels/LayersPanel';
 import { PropertiesPanel } from '@/components/panels/PropertiesPanel';
 import { ComponentLibrary } from '@/components/panels/ComponentLibrary';
+import { LayersPanel } from '@/components/panels/LayersPanel';
 import { ExportModal } from '@/components/modals/ExportModal';
 import { TemplateModal } from '@/components/modals/TemplateModal';
 import { ShortcutsModal } from '@/components/modals/ShortcutsModal';
@@ -21,11 +21,12 @@ function App() {
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [isAutoSaveModalOpen, setIsAutoSaveModalOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
+  const [activeRightTab, setActiveRightTab] = useState<'properties' | 'layers'>('properties');
 
   // Initialize hooks
   const { showShortcutsModal, setShowShortcutsModal } = useKeyboardShortcuts();
   const { lastSaved, isEnabled, hasChanges } = useAutoSave();
-  const { activeId, sensors, handleDragStart, handleDragEnd, handleDragOver } = useDragDrop();
+  const { activeItem, sensors, handleDragStart, handleDragEnd, handleDragOver } = useDragDrop();
 
   const previewMode = useUIStore((s) => s.view.previewMode);
 
@@ -40,7 +41,7 @@ function App() {
     setMousePosition(position);
   }, []);
 
-  const dragOverlayContent = getDragOverlayContent(activeId);
+  const dragOverlayContent = activeItem ? getDragOverlayContent(activeItem) : null;
 
   if (previewMode) {
     return (
@@ -62,7 +63,7 @@ function App() {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="h-screen flex flex-col bg-slate-900" style={{ backgroundColor: 'var(--bg-primary)' }}>
+          <div className="h-screen w-screen flex flex-col bg-slate-900 overflow-hidden" style={{ backgroundColor: 'var(--bg-primary)' }}>
             {/* Toolbar */}
             <Toolbar
               onExport={() => setIsExportOpen(true)}
@@ -72,48 +73,58 @@ function App() {
             />
 
             {/* Main Content Area */}
-            <div className="flex-1 overflow-hidden">
-              <PanelGroup direction="horizontal" className="h-full">
+            <div className="flex-1 min-h-0 relative">
+              <Group orientation="horizontal" className="h-full">
                 {/* Left Panel - Component Library */}
-                <Panel defaultSize={20} minSize={15} maxSize={35}>
-                  <div className="h-full bg-slate-800 border-r border-slate-700" style={{ backgroundColor: 'var(--bg-secondary)', borderRightColor: 'var(--border-color)' }}>
-                    <ComponentLibrary />
-                  </div>
+                <Panel defaultSize={20} minSize={15} maxSize={30} className="z-10 bg-slate-800 border-r border-slate-700" style={{ backgroundColor: 'var(--bg-secondary)', borderRightColor: 'var(--border-color)' }}>
+                  <ComponentLibrary />
                 </Panel>
 
-                <PanelResizeHandle className="w-1 bg-slate-700 hover:bg-blue-500 transition-colors" style={{ backgroundColor: 'var(--border-color)' }} />
+                <Separator className="w-1 bg-slate-800 hover:bg-blue-600 transition-colors cursor-col-resize z-20 group" style={{ borderRight: '1px solid var(--border-color)' }}>
+                  <div className="h-full w-px bg-slate-700 mx-auto group-hover:bg-blue-400" />
+                </Separator>
 
                 {/* Center Panel - Canvas */}
-                <Panel defaultSize={60} minSize={30}>
-                  <div className="h-full bg-slate-900" style={{ backgroundColor: 'var(--bg-primary)' }}>
+                <Panel defaultSize={60} minSize={40} className="relative z-0 overflow-hidden flex flex-col">
+                  <div className="flex-1 bg-slate-950 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-primary)' }}>
                     <CanvasOverlays onMouseMove={handleMouseMove}>
                       <Canvas />
                     </CanvasOverlays>
                   </div>
                 </Panel>
 
-                <PanelResizeHandle className="w-1 bg-slate-700 hover:bg-blue-500 transition-colors" style={{ backgroundColor: 'var(--border-color)' }} />
+                <Separator className="w-1 bg-slate-800 hover:bg-blue-600 transition-colors cursor-col-resize z-20 group" style={{ borderLeft: '1px solid var(--border-color)' }}>
+                  <div className="h-full w-px bg-slate-700 mx-auto group-hover:bg-blue-400" />
+                </Separator>
 
                 {/* Right Panel - Properties/Layers Tabs */}
-                <Panel defaultSize={20} minSize={15} maxSize={35}>
-                  <div className="h-full bg-slate-800 border-l border-slate-700 flex flex-col" style={{ backgroundColor: 'var(--bg-secondary)', borderLeftColor: 'var(--border-color)' }}>
-                    {/* Tab Navigation */}
-                    <div className="flex border-b border-slate-700" style={{ borderBottomColor: 'var(--border-color)' }}>
-                      <button className="flex-1 px-4 py-2 text-sm text-slate-300 bg-slate-700 border-r border-slate-600" style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--bg-tertiary)', borderRightColor: 'var(--border-color)' }}>
-                        Properties
-                      </button>
-                      <button className="flex-1 px-4 py-2 text-sm text-slate-400 hover:text-slate-300" style={{ color: 'var(--text-muted)' }}>
-                        Layers
-                      </button>
-                    </div>
+                <Panel defaultSize={20} minSize={15} maxSize={30} className="z-10 bg-slate-800 flex flex-col" style={{ backgroundColor: 'var(--bg-secondary)', borderLeftColor: 'var(--border-color)' }}>
+                  {/* Tab Navigation */}
+                  <div className="flex border-b border-slate-700 bg-slate-800/50" style={{ borderBottomColor: 'var(--border-color)' }}>
+                    <button 
+                      onClick={() => setActiveRightTab('properties')}
+                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all ${activeRightTab === 'properties' ? 'text-blue-400 bg-slate-700 border-b-2 border-blue-500' : 'text-slate-400 hover:text-slate-200'}`}
+                    >
+                      Properties
+                    </button>
+                    <button 
+                      onClick={() => setActiveRightTab('layers')}
+                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all ${activeRightTab === 'layers' ? 'text-blue-400 bg-slate-700 border-b-2 border-blue-500' : 'text-slate-400 hover:text-slate-200'}`}
+                    >
+                      Layers
+                    </button>
+                  </div>
 
-                    {/* Tab Content */}
-                    <div className="flex-1 overflow-hidden">
+                  {/* Tab Content */}
+                  <div className="flex-1 overflow-hidden">
+                    {activeRightTab === 'properties' ? (
                       <PropertiesPanel />
-                    </div>
+                    ) : (
+                      <LayersPanel />
+                    )}
                   </div>
                 </Panel>
-              </PanelGroup>
+              </Group>
             </div>
 
             {/* Status Bar */}

@@ -1,4 +1,5 @@
-import React, { Component, ReactNode } from "react";
+import React, { Component } from "react";
+import type { ReactNode } from "react";
 import { useEditorStore } from "@/store/editorStore";
 import { useUIStore } from "@/store/uiStore";
 

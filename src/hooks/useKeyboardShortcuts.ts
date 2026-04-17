@@ -69,7 +69,6 @@ export const useKeyboardShortcuts = () => {
   const selectComponent = useEditorStore((s) => s.selectComponent);
   const clearSelection = useEditorStore((s) => s.clearSelection);
   const startRenaming = useEditorStore((s) => s.startRenaming);
-  const cancelRenaming = useEditorStore((s) => s.cancelRenaming);
   const selectAllAtLevel = useEditorStore((s) => s.selectAllAtLevel);
   const selectedIds = useEditorStore((s) => s.selectedIds);
   const components = useEditorStore((s) => s.components);
@@ -84,7 +83,6 @@ export const useKeyboardShortcuts = () => {
   const previewMode = useUIStore((s) => s.view.previewMode);
   const copyComponents = useUIStore((s) => s.copyComponents);
   const clipboard = useUIStore((s) => s.clipboard);
-  const clearClipboard = useUIStore((s) => s.clearClipboard);
   const addToast = useUIStore((s) => s.addToast);
 
   /**

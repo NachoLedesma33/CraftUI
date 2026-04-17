@@ -52,7 +52,10 @@ export const generateAnimationCSS = (
     properties["animation-iteration-count"] = config.iterations.toString();
   }
 
-  const result = {
+  const result: {
+    properties: Record<string, string>;
+    keyframesCSS?: string;
+  } = {
     properties,
   };
 

@@ -124,6 +124,13 @@ export interface Styles {
   animationFillMode?: ResponsiveValue<
     "none" | "forwards" | "backwards" | "both"
   >;
+  flex?: ResponsiveValue<string>;
+  animation?: AnimationConfig;
+  border?: ResponsiveValue<string>;
+  borderTop?: ResponsiveValue<string>;
+  borderRight?: ResponsiveValue<string>;
+  borderBottom?: ResponsiveValue<string>;
+  borderLeft?: ResponsiveValue<string>;
 }
 
 export interface KeyframeStep {

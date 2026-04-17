@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { v4 as uuidv4 } from 'uuid';
 import App from './App';
 import './index.css';
 import { GlobalErrorBoundary } from '@/components/ui';
 import { useEditorStore } from '@/store/editorStore';
-import { useUIStore } from '@/store/uiStore';
 import type { UIComponent } from '@/types/canvas';
 
 // Application version for logging and backups

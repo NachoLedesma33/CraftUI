@@ -72,6 +72,7 @@ export interface UIActions {
   getAutoSaveVersions: () => AutoSaveVersion[];
   restoreAutoSaveVersion: (versionId: string) => AutoSaveVersion | null;
   clearAutoSaveVersions: () => void;
+  clearToasts: () => void;
 }
 
 type UIStore = UIState & UIActions;
@@ -249,6 +250,9 @@ export const useUIStore = create<UIStore>()(
           set((s) => ({
             autoSave: { ...s.autoSave, versions: [] },
           }));
+        },
+        clearToasts: () => {
+          set({ toasts: [] });
         },
       }),
       {

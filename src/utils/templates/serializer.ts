@@ -1,4 +1,4 @@
-import type { SerializedEditorState, TemplateData } from "@/types/template";
+import type { TemplateData } from "@/types/template";
 import type { UIComponent } from "@/types/canvas";
 import { CURRENT_TEMPLATE_VERSION } from "./migrations";
 
@@ -11,7 +11,6 @@ import { CURRENT_TEMPLATE_VERSION } from "./migrations";
  */
 export function cleanStateForSerialization(
   components: Record<string, UIComponent>,
-  rootId: string,
 ): Record<string, UIComponent> {
   const cleaned: Record<string, UIComponent> = {};
 
@@ -44,7 +43,7 @@ export function serializeEditorState(
   },
 ): TemplateData {
   return {
-    components: cleanStateForSerialization(components, rootId),
+    components: cleanStateForSerialization(components),
     rootId,
     version: CURRENT_TEMPLATE_VERSION,
     createdAt: metadata?.createdAt || Date.now(),
@@ -113,7 +112,7 @@ export function optimizeThumbnail(
   }
 
   // Extraer tipo y datos
-  const [header, data] = thumbnail.split(",");
+  const [_, data] = thumbnail.split(",");
 
   // Calcular tamaño en KB
   const sizeKB = (data.length * 0.75) / 1024; // Base64 es 33% más grande
