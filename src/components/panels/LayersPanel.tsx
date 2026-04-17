@@ -17,15 +17,6 @@ import {
   AlignJustify,
 } from 'lucide-react';
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from '@dnd-kit/core';
-import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -391,43 +382,6 @@ export const LayersPanel: React.FC = () => {
     setContextMenu({ x: e.clientX, y: e.clientY, componentId: id });
   }, []);
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-    
-    if (!over || active.id === over.id) return;
-    
-    const activeId = active.id as string;
-    const overId = over.id as string;
-    
-    const activeComponent = components[activeId];
-    const overComponent = components[overId];
-    
-    if (!activeComponent || !overComponent) return;
-
-    let canMove = true;
-    let current = overComponent;
-    while (current?.parent) {
-      if (current.parent === activeId) {
-        canMove = false;
-        break;
-      }
-      current = components[current.parent];
-    }
-
-    if (!canMove) return;
-
-    const targetParentId = overComponent.parent || rootId;
-    const targetParent = components[targetParentId];
-    
-    if (targetParent) {
-      const children = [...targetParent.children];
-      const overIndex = children.indexOf(overId);
-      const newIndex = overIndex >= 0 ? overIndex : children.length;
-      
-      moveComponent(activeId, targetParentId, newIndex);
-    }
-  }, [components, rootId, moveComponent]);
-
   const handleAddRoot = useCallback(() => {
     const newId = addComponent(rootId, 'box');
     selectComponent(newId);
@@ -483,21 +437,15 @@ export const LayersPanel: React.FC = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto py-1">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext items={flattenedIds} strategy={verticalListSortingStrategy}>
-            <SortableTreeItem
-              componentId={rootId}
-              depth={0}
-              expandedIds={expandedIds}
-              onToggleExpand={handleToggleExpand}
-              onContextMenu={handleContextMenu}
-            />
-          </SortableContext>
-        </DndContext>
+        <SortableContext items={flattenedIds} strategy={verticalListSortingStrategy}>
+          <SortableTreeItem
+            componentId={rootId}
+            depth={0}
+            expandedIds={expandedIds}
+            onToggleExpand={handleToggleExpand}
+            onContextMenu={handleContextMenu}
+          />
+        </SortableContext>
       </div>
 
       {contextMenu && (
