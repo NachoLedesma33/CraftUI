@@ -43,38 +43,47 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
     },
   });
 
+  const getCategoryColors = (category: string) => {
+    switch (category) {
+      case "layout":
+        return "from-purple-500/30 to-purple-600/10 border-purple-500/20 text-purple-300 hover:from-purple-500/40 hover:to-purple-600/20";
+      case "media":
+        return "from-emerald-500/30 to-emerald-600/10 border-emerald-500/20 text-emerald-300 hover:from-emerald-500/40 hover:to-emerald-600/20";
+      case "form":
+        return "from-orange-500/30 to-orange-600/10 border-orange-500/20 text-orange-300 hover:from-orange-500/40 hover:to-orange-600/20";
+      default:
+        return "from-blue-500/30 to-blue-600/10 border-blue-500/20 text-blue-300 hover:from-blue-500/40 hover:to-blue-600/20";
+    }
+  };
+
   return (
     <div
       ref={setNodeRef}
       {...listeners}
       {...attributes}
       className={`
-        flex items-center gap-2 p-2 rounded-lg cursor-grab active:cursor-grabbing
-        bg-slate-700/50 hover:bg-slate-700 border border-slate-600
-        transition-all duration-150 min-w-0
-        ${isDragging ? "opacity-50 scale-95" : ""}
+        flex items-center gap-3 p-3 rounded-xl cursor-grab active:cursor-grabbing
+        bg-gradient-to-br ${getCategoryColors(blueprint.category)}
+        border transition-all duration-200 min-w-0 group
+        shadow-sm hover:shadow-md
+        ${isDragging ? "opacity-50 z-50" : ""}
       `}
       title={blueprint.description}
     >
       <div
         className={`
-        w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
-        ${
-          blueprint.category === "layout"
-            ? "bg-purple-500/20 text-purple-400"
-            : blueprint.category === "media"
-              ? "bg-green-500/20 text-green-400"
-              : "bg-blue-500/20 text-blue-400"
-        }
+        w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0
+        bg-white/10 group-hover:bg-white/20
+        transition-all duration-200
       `}
       >
-        {componentIcons[blueprint.type]}
+        <div className="text-lg">{componentIcons[blueprint.type]}</div>
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-xs font-medium text-white truncate">
+        <div className="text-sm font-semibold text-white truncate group-hover:text-blue-100 transition-colors">
           {blueprint.label}
         </div>
-        <div className="text-xs text-slate-400 truncate hidden sm:block">
+        <div className="text-xs text-slate-300 truncate hidden sm:block group-hover:text-slate-200 transition-colors">
           {blueprint.description}
         </div>
       </div>
@@ -95,24 +104,60 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   isExpanded,
   onToggle,
 }) => {
+  const getCategoryBgColor = (id: string) => {
+    switch (id) {
+      case "layout":
+        return "bg-purple-500/10 hover:bg-purple-500/15 border-purple-500/20";
+      case "media":
+        return "bg-emerald-500/10 hover:bg-emerald-500/15 border-emerald-500/20";
+      case "form":
+        return "bg-orange-500/10 hover:bg-orange-500/15 border-orange-500/20";
+      default:
+        return "bg-blue-500/10 hover:bg-blue-500/15 border-blue-500/20";
+    }
+  };
+
+  const getCategoryTextColor = (id: string) => {
+    switch (id) {
+      case "layout":
+        return "text-purple-300";
+      case "media":
+        return "text-emerald-300";
+      case "form":
+        return "text-orange-300";
+      default:
+        return "text-blue-300";
+    }
+  };
+
   return (
-    <div className="mb-4">
+    <div className="mb-5">
       <button
         onClick={onToggle}
-        className="flex items-center gap-2 w-full px-2 py-2 text-xs font-medium text-slate-400 hover:text-white min-w-0"
+        className={`
+          flex items-center gap-3 w-full px-3 py-2.5 rounded-lg
+          font-semibold text-sm transition-all duration-200
+          ${getCategoryBgColor(category.id)} border
+          ${getCategoryTextColor(category.id)} hover:text-white
+          group
+        `}
       >
-        <span className="flex-shrink-0">
-          {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        <span className="flex-shrink-0 transition-transform duration-300">
+          {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
         </span>
-        <span className="flex-shrink-0">{category.icon}</span>
-        <span className="flex-1 min-w-0 truncate">{category.label}</span>
-        <span className="ml-auto flex-shrink-0 text-slate-500">
-          ({blueprints.length})
+        <span className="flex-shrink-0 text-lg opacity-75 group-hover:opacity-100">
+          {category.icon}
+        </span>
+        <span className="flex-1 min-w-0 truncate text-left">
+          {category.label}
+        </span>
+        <span className="ml-auto flex-shrink-0 text-xs font-medium opacity-70">
+          {blueprints.length}
         </span>
       </button>
 
       {isExpanded && (
-        <div className="mt-2 space-y-2">
+        <div className="mt-3 space-y-2 pl-2 border-l-2 border-slate-700 pl-4">
           {blueprints.map((bp) => (
             <DraggableItem key={bp.type} blueprint={bp} />
           ))}
@@ -124,15 +169,22 @@ const CategorySection: React.FC<CategorySectionProps> = ({
 
 const TemplatesSection: React.FC = () => {
   return (
-    <div className="mt-6 pt-4 border-t border-slate-700">
-      <div className="px-2 py-2 text-xs font-medium text-slate-400">
+    <div className="mt-8 pt-6 border-t border-slate-700">
+      <div className="px-3 py-2 text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
         My Components
       </div>
-      <div className="mt-2 p-4 border border-dashed border-slate-600 rounded-lg text-center">
-        <Box size={24} className="mx-auto text-slate-500 mb-2" />
-        <p className="text-xs text-slate-500">Coming Soon</p>
-        <p className="text-xs text-slate-600 mt-1">
-          Save your own component templates
+      <div className="p-5 border-2 border-dashed border-slate-600 rounded-xl text-center group hover:border-slate-500 hover:bg-slate-700/30 transition-all duration-200">
+        <div className="flex justify-center mb-3">
+          <div className="p-3 rounded-lg bg-slate-700/50 group-hover:bg-slate-600/50">
+            <Box
+              size={32}
+              className="text-slate-400 group-hover:text-slate-300"
+            />
+          </div>
+        </div>
+        <p className="text-sm font-semibold text-slate-300 mb-1">Coming Soon</p>
+        <p className="text-xs text-slate-500">
+          Save and reuse your custom components
         </p>
       </div>
     </div>
@@ -195,30 +247,35 @@ export const ComponentLibrary: React.FC = () => {
 
   return (
     <div className="flex flex-col bg-slate-800 h-full w-full">
-      <div className="p-3 border-b border-slate-700">
-        <h3 className="text-sm font-medium text-white mb-3">Components</h3>
-        <div className="relative">
+      <div className="p-4 border-b border-slate-700/50 bg-gradient-to-b from-slate-800 to-slate-800/50">
+        <h3 className="text-base font-bold text-white mb-4 tracking-tight">
+          Components Library
+        </h3>
+        <div className="relative group">
           <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+            size={16}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-400 transition-colors pointer-events-none"
           />
           <input
             type="text"
             placeholder="Search components..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-xs bg-slate-700 border border-slate-600 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
+            className="w-full pl-12 pr-4 py-2.5 text-sm bg-slate-700/60 border border-slate-600 rounded-lg text-white placeholder:text-slate-500 focus:border-blue-500/50 focus:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all"
           />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3">
+      <div className="flex-1 overflow-y-auto p-4">
         {search ? (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {filteredBlueprints.length === 0 ? (
-              <p className="text-xs text-slate-500 text-center py-4">
-                No components found
-              </p>
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="text-4xl mb-3 opacity-30">🔍</div>
+                <p className="text-sm text-slate-400 text-center">
+                  No components found for "{search}"
+                </p>
+              </div>
             ) : (
               filteredBlueprints.map((bp) => (
                 <DraggableItem key={bp.type} blueprint={bp} />
@@ -241,9 +298,9 @@ export const ComponentLibrary: React.FC = () => {
         )}
       </div>
 
-      <div className="p-3 border-t border-slate-700">
-        <p className="text-xs text-slate-500 text-center">
-          Drag components to canvas
+      <div className="p-4 border-t border-slate-700/50 bg-gradient-to-t from-slate-800/50 to-slate-800">
+        <p className="text-xs text-slate-500 text-center font-medium">
+          💡 Drag components to add them to your canvas
         </p>
       </div>
     </div>
