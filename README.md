@@ -1,46 +1,46 @@
 # Visual UI Editor (CraftUI)
 
-A powerful low-code visual builder for creating user interfaces with drag-and-drop, real-time preview, and code export capabilities.
+Un potente constructor visual de interfaces de usuario low-code con capacidad de arrastrar y soltar, previsualización en tiempo real y exportación de código.
 
-## Features
+## Características
 
-### Core Functionality
-- **Drag & Drop Canvas**: Intuitive visual editor with @dnd-kit for smooth interactions
-- **Component Library**: Pre-built UI components (Box, Text, Button, Image, Container, Flex, Grid)
-- **Properties Panel**: Real-time styling with breakpoint-aware controls (base, tablet, desktop)
-- **Layers Panel**: Tree-view hierarchy management with drag-and-drop reordering
-- **Responsive Preview**: Device simulator (Mobile 375×667, Tablet 768×1024, Desktop 1200px)
+### Funcionalidad Principal
+- **Canvas Arrastrar y Soltar**: Editor visual intuitivo con @dnd-kit para interacciones fluidas
+- **Biblioteca de Componentes**: Componentes UI preconstruidos (Box, Text, Button, Image, Container, Flex, Grid)
+- **Panel de Propiedades**: Estilizado en tiempo real con controles sensibles a breakpoints (base, tablet, desktop)
+- **Panel de Capas**: Jerarquía en vista de árbol con reordenamiento arrastrable
+- **Vista Previa Responsiva**: Simulador de dispositivos (Mobile 375×667, Tablet 768×1024, Desktop 1200px)
 
-### Advanced Features
-- **History System**: Undo/Redo with 50-state snapshot limit and keyboard shortcuts (Ctrl+Z/Y)
-- **Animation Panel**: CSS animations with presets, keyframes, and real-time preview
-- **Export Engine**: Generate React (TSX), HTML5, Tailwind CSS, CSS Modules, Styled Components
+### Funciones Avanzadas
+- **Sistema de Historial**: Deshacer/Rehacer con límite de 50 estados y atajos de teclado (Ctrl+Z/Y)
+- **Panel de Animaciones**: CSS animations con presets, keyframes y previsualización en tiempo real
+- **Motor de Exportación**: Generar React (TSX), HTML5, Tailwind CSS, CSS Modules, Styled Components
 
-### UI/UX
-- **Dark Theme**: Professional dark interface optimized for long editing sessions
-- **Toolbar**: Quick access to undo/redo, zoom controls, breadcrumbs, panel toggles
-- **Toast Notifications**: System feedback for user actions
-- **Keyboard Shortcuts**: Global hotkeys for power users
+### Interfaz de Usuario
+- **Tema Oscuro**: Interfaz profesional oscura optimizada para sesiones largas de edición
+- **Barra de Herramientas**: Acceso rápido a deshacer/rehacer, controles de zoom, breadcrumbs, paneles
+- **Notificaciones Toast**: Retroalimentación del sistema para acciones del usuario
+- **Atajos de Teclado**: Teclas globales para usuarios avanzados
 
-## Tech Stack
+## Stack Tecnológico
 
 - **Framework**: React 19 + TypeScript 6
-- **Build Tool**: Vite 8
-- **State Management**: Zustand 5 (with Immer middleware)
-- **Drag & Drop**: @dnd-kit (core, sortable, modifier)
-- **Styling**: Tailwind CSS 4
-- **Icons**: Lucide React
-- **Utilities**: UUID, React Syntax Highlighter
+- **Herramienta de Build**: Vite 8
+- **Gestión de Estado**: Zustand 5 (con middleware Immer)
+- **Arrastrar y Soltar**: @dnd-kit (core, sortable, modifier)
+- **Estilizado**: Tailwind CSS 4
+- **Iconos**: Lucide React
+- **Utilidades**: UUID, React Syntax Highlighter
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
 src/
 ├── components/
 │   ├── canvas/          # Canvas, Renderer, ResizeHandles, ResponsivePreview
 │   ├── layout/         # Toolbar
-│   ├── panels/         # PropertiesPanel, AnimationPanel, LayersPanel, ComponentLibrary
-│   ├── ui/             # StyleInput, reusable UI components
+│   panels/             # PropertiesPanel, AnimationPanel, LayersPanel, ComponentLibrary
+│   ├── ui/             # StyleInput, componentes UI reutilizables
 │   ├── modals/         # ExportModal
 │   └── EditorLayout.tsx
 ├── hooks/              # useDragDrop, useHistory
@@ -52,30 +52,27 @@ src/
 └── App.tsx
 ```
 
-## Getting Started
+## Primeros Pasos
 
 ```bash
-# Install dependencies
+# Instalar dependencias
 npm install
 
-# Start development server
-npm run dev
-
-# Build for production
+# Iniciar servidor de desarrollo
 npm run build
 
-# Preview production build
+# Previsualizar build de producción
 npm run preview
 ```
 
-## Architecture
+## Arquitectura
 
-### State Management
-- **editorStore**: Components tree, selection, history (undo/redo), CRUD operations
-- **uiStore**: View preferences, panels visibility, toast notifications, preview mode
+### Gestión de Estado
+- **editorStore**: Árbol de componentes, selección, historial (undo/redo), operaciones CRUD
+- **uiStore**: Preferencias de vista, visibilidad de paneles, notificaciones, modo previsualización
 
-### Animation System
-The Styles interface includes CSS animation properties:
+### Sistema de Animaciones
+La interfaz Styles incluye propiedades de animación CSS:
 ```typescript
 animationName?: ResponsiveValue<string>;
 animationDuration?: ResponsiveValue<string>;
@@ -85,37 +82,37 @@ animationTimingFunction?: ResponsiveValue<string>;
 animationFillMode?: ResponsiveValue<'none' | 'forwards' | 'backwards' | 'both'>;
 ```
 
-### Export Formats
-1. **React + TypeScript**: High-fidelity React component with inline styles
-2. **HTML5**: Standalone HTML with embedded CSS
-3. **Tailwind CSS**: Utility-first classes
-4. **CSS Modules**: Scoped CSS
-5. **Styled Components**: CSS-in-JS format
+### Formatos de Exportación
+1. **React + TypeScript**: Componente React de alta fidelidad con estilos inline
+2. **HTML5**: HTML autónomo con CSS incrustado
+3. **Tailwind CSS**: Clases Utility-first
+4. **CSS Modules**: CSS con alcance local
+5. **Styled Components**: Formato CSS-in-JS
 
-## Keyboard Shortcuts
+## Atajos de Teclado
 
-| Shortcut | Action |
+| Atajo | Acción |
 |----------|--------|
-| Ctrl + Z | Undo |
-| Ctrl + Y / Ctrl + Shift + Z | Redo |
-| Ctrl + C | Copy |
-| Ctrl + V | Paste |
-| Ctrl + D | Duplicate |
-| Delete | Delete selected |
-| Escape | Deselect |
+| Ctrl + Z | Deshacer |
+| Ctrl + Y / Ctrl + Shift + Z | Rehacer |
+| Ctrl + C | Copiar |
+| Ctrl + V | Pegar |
+| Ctrl + D | Duplicar |
+| Delete | Eliminar seleccionado |
+| Escape | Deseleccionar |
 
-## Configuration
+## Configuración
 
 ### Breakpoints
-- Base: default styles
+- Base: estilos por defecto
 - Tablet: ≥768px
 - Desktop: ≥1024px
 
-### Device Presets
+### Presets de Dispositivos
 - Mobile: 375 × 667px
 - Tablet: 768 × 1024px
-- Desktop: 1200 × 900px (fluid)
+- Desktop: 1200 × 900px (fluido)
 
-## License
+## Licencia
 
 MIT
