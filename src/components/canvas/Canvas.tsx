@@ -1,16 +1,19 @@
-import React, { useCallback, useMemo } from 'react';
-import { useDroppable } from '@dnd-kit/core';
-import { useEditorStore } from '@/store';
-import { useUIStore } from '@/store';
-import { Renderer } from './Renderer';
+import React, { useCallback, useMemo } from "react";
+import { useDroppable } from "@dnd-kit/core";
+import { useEditorStore } from "@/store";
+import { useUIStore } from "@/store";
+import { Renderer } from "./Renderer";
 
 const GRID_DOT_SVG = `data:image/svg+xml,%3Csvg width='1' height='1' viewBox='0 0 1 1' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='0.5' cy='0.5' r='0.5' fill='%2394a3b8' fill-opacity='0.3'/%3E%3C/svg%3E`;
 
-const getDeviceWidth = (device: 'mobile' | 'tablet' | 'desktop'): number => {
+const getDeviceWidth = (device: "mobile" | "tablet" | "desktop"): number => {
   switch (device) {
-    case 'mobile': return 375;
-    case 'tablet': return 768;
-    case 'desktop': return 1200;
+    case "mobile":
+      return 375;
+    case "tablet":
+      return 768;
+    case "desktop":
+      return 1200;
   }
 };
 
@@ -28,25 +31,31 @@ export const Canvas: React.FC = () => {
   const view = useUIStore((s) => s.view);
   const clearSelection = useEditorStore((s) => s.clearSelection);
   const canvasConfig = useEditorStore((s) => s.canvasConfig);
-  
+
   const { setNodeRef, isOver } = useDroppable({
-    id: 'canvas-drop-zone',
+    id: "canvas-drop-zone",
   });
 
   const deviceWidth = useMemo(
     () => getDeviceWidth(view.activeDevice),
-    [view.activeDevice]
+    [view.activeDevice],
   );
 
-  const handleCanvasClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget || (e.target as HTMLElement).id === 'canvas-viewport') {
-      clearSelection();
-    }
-  }, [clearSelection]);
+  const handleCanvasClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (
+        e.target === e.currentTarget ||
+        (e.target as HTMLElement).id === "canvas-viewport"
+      ) {
+        clearSelection();
+      }
+    },
+    [clearSelection],
+  );
 
   const gridStyle = useMemo(() => {
     if (!view.showGrid) return {};
-    
+
     return {
       backgroundImage: `url("${GRID_DOT_SVG}")`,
       backgroundSize: `${view.gridSize}px ${view.gridSize}px`,
@@ -58,22 +67,22 @@ export const Canvas: React.FC = () => {
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 ${isOver ? 'ring-2 ring-blue-400 ring-inset' : ''}`}
+      className={`relative flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 p-6 ${isOver ? "ring-2 ring-blue-400 ring-inset" : ""}`}
       onClick={handleCanvasClick}
     >
       <div
         id="canvas-viewport"
         className="relative"
         style={{
-          minWidth: '100%',
-          minHeight: '100%',
+          minWidth: "100%",
+          minHeight: "100%",
           transform: `scale(${view.zoom})`,
-          transformOrigin: 'top center',
-          transition: 'transform 0.15s ease-out',
+          transformOrigin: "top center",
+          transition: "transform 0.15s ease-out",
         }}
       >
         <div
-          className="mx-auto mt-8 shadow-2xl bg-white dark:bg-slate-800"
+          className="mx-auto shadow-2xl bg-white dark:bg-slate-800"
           style={{
             width: `${deviceWidth}px`,
             minHeight: `${canvasConfig.height}px`,

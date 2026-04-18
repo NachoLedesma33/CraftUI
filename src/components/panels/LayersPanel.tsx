@@ -77,7 +77,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-    paddingLeft: `${depth * 16 + 8}px`,
+    paddingLeft: `clamp(8px, ${depth * 12}px, ${depth * 16 + 8}px)`,
   };
 
   const handleClick = useCallback(
@@ -150,7 +150,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         ref={setNodeRef}
         style={style}
         className={`
-          flex items-center gap-1 py-1 px-2 cursor-pointer select-none
+          flex items-center gap-1 py-1 px-2 cursor-pointer select-none min-w-0
           ${isSelected ? "bg-blue-600 text-white" : "text-slate-300 hover:bg-slate-700"}
           ${!component.metadata.isVisible ? "opacity-50" : ""}
         `}
@@ -180,24 +180,24 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
           {componentIcons[component.type] || <Box size={14} />}
         </span>
 
-        <span className="flex-1 text-xs truncate">
+        <span className="flex-1 min-w-0 text-xs truncate">
           {component.metadata.name}
         </span>
 
         {hasChildren && (
           <span
-            className={`text-xs px-1 rounded ${isSelected ? "bg-blue-500" : "bg-slate-600"}`}
+            className={`hidden sm:inline text-xs px-1 rounded flex-shrink-0 ${isSelected ? "bg-blue-500" : "bg-slate-600"}`}
           >
             {component.children.length}
           </span>
         )}
 
         <div
-          className={`flex items-center gap-0.5 ${isHovered ? "opacity-100" : "opacity-0"}`}
+          className={`flex items-center gap-0.5 flex-shrink-0 ${isHovered ? "opacity-100" : "opacity-0"}`}
         >
           <button
             onClick={handleToggleVisibility}
-            className="p-1 hover:bg-slate-600 rounded"
+            className="p-1 hover:bg-slate-600 rounded flex-shrink-0"
             title={component.metadata.isVisible ? "Hide" : "Show"}
           >
             {component.metadata.isVisible ? (
@@ -208,7 +208,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
           </button>
           <button
             onClick={handleToggleLock}
-            className="p-1 hover:bg-slate-600 rounded"
+            className="p-1 hover:bg-slate-600 rounded flex-shrink-0"
             title={component.metadata.isLocked ? "Unlock" : "Lock"}
           >
             {component.metadata.isLocked ? (
@@ -219,14 +219,14 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
           </button>
           <button
             onClick={handleDuplicate}
-            className="p-1 hover:bg-slate-600 rounded"
+            className="p-1 hover:bg-slate-600 rounded flex-shrink-0"
             title="Duplicate"
           >
             <Copy size={12} />
           </button>
           <button
             onClick={handleDelete}
-            className="p-1 hover:bg-red-600 rounded"
+            className="p-1 hover:bg-red-600 rounded flex-shrink-0"
             title="Delete"
           >
             <Trash2 size={12} />

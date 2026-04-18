@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { useDraggable } from '@dnd-kit/core';
+import React, { useState, useCallback, useMemo } from "react";
+import { useDraggable } from "@dnd-kit/core";
 import {
   Search,
   Square,
@@ -12,9 +12,12 @@ import {
   ChevronDown,
   ChevronRight,
   Box,
-} from 'lucide-react';
-import { componentBlueprints, type ComponentBlueprint } from '@/constants/componentBlueprints';
-import type { ComponentType } from '@/types/canvas';
+} from "lucide-react";
+import {
+  componentBlueprints,
+  type ComponentBlueprint,
+} from "@/constants/componentBlueprints";
+import type { ComponentType } from "@/types/canvas";
 
 const componentIcons: Record<ComponentType, React.ReactNode> = {
   box: <Square size={16} />,
@@ -34,7 +37,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `library-${blueprint.type}`,
     data: {
-      type: 'new',
+      type: "new",
       componentType: blueprint.type,
       blueprint,
     },
@@ -46,26 +49,32 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
       {...listeners}
       {...attributes}
       className={`
-        flex items-center gap-3 p-3 rounded-lg cursor-grab active:cursor-grabbing
+        flex items-center gap-2 p-2 rounded-lg cursor-grab active:cursor-grabbing
         bg-slate-700/50 hover:bg-slate-700 border border-slate-600
-        transition-all duration-150
-        ${isDragging ? 'opacity-50 scale-95' : ''}
+        transition-all duration-150 min-w-0
+        ${isDragging ? "opacity-50 scale-95" : ""}
       `}
       title={blueprint.description}
     >
-      <div className={`
-        w-10 h-10 rounded-lg flex items-center justify-center
-        ${blueprint.category === 'layout' ? 'bg-purple-500/20 text-purple-400' :
-          blueprint.category === 'media' ? 'bg-green-500/20 text-green-400' :
-          'bg-blue-500/20 text-blue-400'}
-      `}>
+      <div
+        className={`
+        w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+        ${
+          blueprint.category === "layout"
+            ? "bg-purple-500/20 text-purple-400"
+            : blueprint.category === "media"
+              ? "bg-green-500/20 text-green-400"
+              : "bg-blue-500/20 text-blue-400"
+        }
+      `}
+      >
         {componentIcons[blueprint.type]}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-white truncate">
+        <div className="text-xs font-medium text-white truncate">
           {blueprint.label}
         </div>
-        <div className="text-xs text-slate-400 truncate">
+        <div className="text-xs text-slate-400 truncate hidden sm:block">
           {blueprint.description}
         </div>
       </div>
@@ -90,14 +99,18 @@ const CategorySection: React.FC<CategorySectionProps> = ({
     <div className="mb-4">
       <button
         onClick={onToggle}
-        className="flex items-center gap-2 w-full px-2 py-2 text-xs font-medium text-slate-400 hover:text-white"
+        className="flex items-center gap-2 w-full px-2 py-2 text-xs font-medium text-slate-400 hover:text-white min-w-0"
       >
-        {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-        <span>{category.icon}</span>
-        <span>{category.label}</span>
-        <span className="ml-auto text-slate-500">({blueprints.length})</span>
+        <span className="flex-shrink-0">
+          {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        </span>
+        <span className="flex-shrink-0">{category.icon}</span>
+        <span className="flex-1 min-w-0 truncate">{category.label}</span>
+        <span className="ml-auto flex-shrink-0 text-slate-500">
+          ({blueprints.length})
+        </span>
       </button>
-      
+
       {isExpanded && (
         <div className="mt-2 space-y-2">
           {blueprints.map((bp) => (
@@ -127,20 +140,20 @@ const TemplatesSection: React.FC = () => {
 };
 
 export const ComponentLibrary: React.FC = () => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set(['layout', 'basic', 'media'])
+    new Set(["layout", "basic", "media"]),
   );
 
   const filteredBlueprints = useMemo(() => {
     if (!search.trim()) return componentBlueprints;
-    
+
     const query = search.toLowerCase();
     return componentBlueprints.filter(
       (bp) =>
         bp.label.toLowerCase().includes(query) ||
         bp.description.toLowerCase().includes(query) ||
-        bp.category.toLowerCase().includes(query)
+        bp.category.toLowerCase().includes(query),
     );
   }, [search]);
 
@@ -151,13 +164,13 @@ export const ComponentLibrary: React.FC = () => {
       media: [],
       form: [],
     };
-    
+
     filteredBlueprints.forEach((bp) => {
       if (grouped[bp.category]) {
         grouped[bp.category].push(bp);
       }
     });
-    
+
     return grouped;
   }, [filteredBlueprints]);
 
@@ -174,10 +187,10 @@ export const ComponentLibrary: React.FC = () => {
   }, []);
 
   const categories = [
-    { id: 'layout', label: 'Layout', icon: '▦' },
-    { id: 'basic', label: 'Basic', icon: '□' },
-    { id: 'media', label: 'Media', icon: '◎' },
-    { id: 'form', label: 'Form', icon: '▢' },
+    { id: "layout", label: "Layout", icon: "▦" },
+    { id: "basic", label: "Basic", icon: "□" },
+    { id: "media", label: "Media", icon: "◎" },
+    { id: "form", label: "Form", icon: "▢" },
   ];
 
   return (
@@ -185,7 +198,10 @@ export const ComponentLibrary: React.FC = () => {
       <div className="p-3 border-b border-slate-700">
         <h3 className="text-sm font-medium text-white mb-3">Components</h3>
         <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+          />
           <input
             type="text"
             placeholder="Search components..."

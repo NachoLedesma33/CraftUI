@@ -95,7 +95,7 @@ function App() {
                 {/* Left Panel - Component Library */}
                 <Panel
                   defaultSize={18}
-                  minSize={10}
+                  minSize={16}
                   maxSize={35}
                   className="z-10 bg-slate-800 border-r border-slate-700 overflow-hidden"
                   style={{
@@ -116,7 +116,7 @@ function App() {
                 {/* Center Panel - Canvas */}
                 <Panel
                   defaultSize={50}
-                  minSize={25}
+                  minSize={20}
                   maxSize={75}
                   className="relative z-0 overflow-hidden flex flex-col"
                 >
@@ -140,7 +140,7 @@ function App() {
                 {/* Right Panel - Properties/Layers Tabs */}
                 <Panel
                   defaultSize={18}
-                  minSize={10}
+                  minSize={16}
                   maxSize={35}
                   className="z-10 bg-slate-800 flex flex-col overflow-hidden"
                   style={{

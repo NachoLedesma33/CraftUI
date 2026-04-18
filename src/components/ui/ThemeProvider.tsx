@@ -23,6 +23,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
     if (isDark) {
       root.classList.add("dark");
+      root.classList.remove("light");
       root.style.setProperty("--bg-primary", "#0f172a"); // slate-900
       root.style.setProperty("--bg-secondary", "#1e293b"); // slate-800
       root.style.setProperty("--bg-tertiary", "#334155"); // slate-700
@@ -37,18 +38,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       root.style.setProperty("--warning-color", "#f59e0b"); // amber-500
     } else {
       root.classList.remove("dark");
+      root.classList.add("light");
       root.style.setProperty("--bg-primary", "#ffffff"); // white
-      root.style.setProperty("--bg-secondary", "#f8fafc"); // slate-50
-      root.style.setProperty("--bg-tertiary", "#f1f5f9"); // slate-100
-      root.style.setProperty("--text-primary", "#0f172a"); // slate-900
-      root.style.setProperty("--text-secondary", "#475569"); // slate-600
-      root.style.setProperty("--text-muted", "#64748b"); // slate-500
-      root.style.setProperty("--border-color", "#e2e8f0"); // slate-200
-      root.style.setProperty("--accent-color", "#3b82f6"); // blue-500
-      root.style.setProperty("--accent-hover", "#2563eb"); // blue-600
-      root.style.setProperty("--success-color", "#10b981"); // emerald-500
-      root.style.setProperty("--error-color", "#ef4444"); // red-500
-      root.style.setProperty("--warning-color", "#f59e0b"); // amber-500
+      root.style.setProperty("--bg-secondary", "#f9fafb"); // gray-50
+      root.style.setProperty("--bg-tertiary", "#f3f4f6"); // gray-100
+      root.style.setProperty("--text-primary", "#111827"); // gray-900
+      root.style.setProperty("--text-secondary", "#374151"); // gray-700
+      root.style.setProperty("--text-muted", "#6b7280"); // gray-500
+      root.style.setProperty("--border-color", "#d1d5db"); // gray-300
+      root.style.setProperty("--accent-color", "#2563eb"); // blue-600 (más saturado en light)
+      root.style.setProperty("--accent-hover", "#1d4ed8"); // blue-700
+      root.style.setProperty("--success-color", "#059669"); // emerald-600
+      root.style.setProperty("--error-color", "#dc2626"); // red-600
+      root.style.setProperty("--warning-color", "#d97706"); // amber-600
     }
 
     localStorage.setItem("editor-theme", isDark ? "dark" : "light");

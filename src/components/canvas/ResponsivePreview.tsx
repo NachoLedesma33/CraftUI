@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from "react";
 import {
   Smartphone,
   Tablet,
@@ -6,13 +6,13 @@ import {
   RotateCw,
   X,
   ExternalLink,
-} from 'lucide-react';
-import { useEditorStore } from '@/store';
-import { useUIStore } from '@/store';
-import { exportToHTML } from '@/utils/export/HTMLExporter';
+} from "lucide-react";
+import { useEditorStore } from "@/store";
+import { useUIStore } from "@/store";
+import { exportToHTML } from "@/utils/export/HTMLExporter";
 
-type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'custom';
-type ZoomLevel = '50' | '75' | '100' | 'fit';
+type DeviceType = "mobile" | "tablet" | "desktop" | "custom";
+type ZoomLevel = "50" | "75" | "100" | "fit";
 
 interface DevicePreset {
   id: DeviceType;
@@ -23,16 +23,37 @@ interface DevicePreset {
 }
 
 const DEVICE_PRESETS: DevicePreset[] = [
-  { id: 'mobile', name: 'Mobile', width: 375, height: 667, icon: <Smartphone size={16} /> },
-  { id: 'tablet', name: 'Tablet', width: 768, height: 1024, icon: <Tablet size={16} /> },
-  { id: 'desktop', name: 'Desktop', width: 1200, height: 900, icon: <Monitor size={16} /> },
+  {
+    id: "mobile",
+    name: "Mobile",
+    width: 375,
+    height: 667,
+    icon: <Smartphone size={16} />,
+  },
+  {
+    id: "tablet",
+    name: "Tablet",
+    width: 768,
+    height: 1024,
+    icon: <Tablet size={16} />,
+  },
+  {
+    id: "desktop",
+    name: "Desktop",
+    width: 1200,
+    height: 900,
+    icon: <Monitor size={16} />,
+  },
 ];
 
-const getDeviceDimensions = (device: DeviceType, isLandscape: boolean): { width: number; height: number } => {
+const getDeviceDimensions = (
+  device: DeviceType,
+  isLandscape: boolean,
+): { width: number; height: number } => {
   const preset = DEVICE_PRESETS.find((d) => d.id === device);
   const baseWidth = preset?.width ?? 1200;
   const baseHeight = preset?.height ?? 900;
-  
+
   return isLandscape
     ? { width: baseHeight, height: baseWidth }
     : { width: baseWidth, height: baseHeight };
@@ -68,8 +89,8 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
             onClick={() => onDeviceChange(device.id)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               activeDevice === device.id
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                ? "bg-blue-600 text-white"
+                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
             }`}
           >
             {device.icon}
@@ -82,10 +103,10 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
         <button
           onClick={onRotate}
           className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-lg text-sm transition-colors"
-          title={isLandscape ? 'Portrait' : 'Landscape'}
+          title={isLandscape ? "Portrait" : "Landscape"}
         >
           <RotateCw size={16} />
-          {isLandscape ? 'Portrait' : 'Landscape'}
+          {isLandscape ? "Portrait" : "Landscape"}
         </button>
 
         <select
@@ -126,7 +147,10 @@ interface DimensionOverlayProps {
   height: number;
 }
 
-const DimensionOverlay: React.FC<DimensionOverlayProps> = ({ width, height }) => {
+const DimensionOverlay: React.FC<DimensionOverlayProps> = ({
+  width,
+  height,
+}) => {
   return (
     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-black/80 text-white text-xs font-mono rounded-full backdrop-blur-sm">
       {width} × {height} px
@@ -139,18 +163,18 @@ export const ResponsivePreview: React.FC = () => {
   const rootId = useEditorStore((s) => s.rootId);
   const setPreviewMode = useUIStore((s) => s.setPreviewMode);
 
-  const [device, setDevice] = useState<DeviceType>('desktop');
+  const [device, setDevice] = useState<DeviceType>("desktop");
   const [isLandscape, setIsLandscape] = useState(false);
-  const [zoom, setZoom] = useState<ZoomLevel>('fit');
+  const [zoom, setZoom] = useState<ZoomLevel>("fit");
 
   const dimensions = useMemo(
     () => getDeviceDimensions(device, isLandscape),
-    [device, isLandscape]
+    [device, isLandscape],
   );
 
   const srcDoc = useMemo(() => {
-    if (!rootId || !components[rootId]) return '';
-    
+    if (!rootId || !components[rootId]) return "";
+
     try {
       return exportToHTML(components, rootId, {
         useClasses: false,
@@ -158,11 +182,11 @@ export const ResponsivePreview: React.FC = () => {
         includeReset: true,
         includeGoogleFonts: true,
         addAriaLabels: true,
-        componentName: 'preview',
+        componentName: "preview",
       });
     } catch (error) {
-      console.error('Failed to generate preview HTML:', error);
-      return '<html><body><p>Error generating preview</p></body></html>';
+      console.error("Failed to generate preview HTML:", error);
+      return "<html><body><p>Error generating preview</p></body></html>";
     }
   }, [components, rootId]);
 
@@ -180,15 +204,25 @@ export const ResponsivePreview: React.FC = () => {
   }, [setPreviewMode]);
 
   const handleOpenInNewTab = useCallback(() => {
-    const blob = new Blob([srcDoc], { type: 'text/html' });
+    const blob = new Blob([srcDoc], { type: "text/html" });
     const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   }, [srcDoc]);
 
   const scale = useMemo(() => {
-    if (zoom === 'fit') return undefined;
+    if (zoom === "fit") {
+      // Calculate scale to fit the device in the available space
+      // Accounting for padding (8 * 4 = 32px on each side) and toolbar (56px)
+      const containerWidth = window.innerWidth - 64;
+      const containerHeight = window.innerHeight - 56 - 64;
+
+      const scaleX = containerWidth / dimensions.width;
+      const scaleY = containerHeight / dimensions.height;
+
+      return Math.min(scaleX, scaleY, 1); // Don't scale up, only down
+    }
     return parseInt(zoom) / 100;
-  }, [zoom]);
+  }, [zoom, dimensions.width, dimensions.height]);
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-100 flex flex-col overflow-hidden">
@@ -203,14 +237,14 @@ export const ResponsivePreview: React.FC = () => {
         onOpenInNewTab={handleOpenInNewTab}
       />
 
-      <div className="flex-1 flex items-center justify-center p-8 overflow-auto">
+      <div className="flex-1 flex items-center justify-center p-8 overflow-auto bg-slate-100">
         <div
-          className="relative bg-white shadow-2xl rounded-[2rem] border-[12px] border-slate-900 overflow-hidden transition-all duration-300"
+          className="relative bg-white shadow-2xl rounded-[2rem] border-[12px] border-slate-900 overflow-hidden transition-transform duration-300"
           style={{
             width: dimensions.width,
             height: dimensions.height,
-            transform: scale ? `scale(${scale})` : undefined,
-            transformOrigin: 'center center',
+            transform: `scale(${scale})`,
+            transformOrigin: "center center",
           }}
         >
           <iframe
@@ -219,7 +253,10 @@ export const ResponsivePreview: React.FC = () => {
             srcDoc={srcDoc}
             sandbox="allow-scripts allow-same-origin"
           />
-          <DimensionOverlay width={dimensions.width} height={dimensions.height} />
+          <DimensionOverlay
+            width={dimensions.width}
+            height={dimensions.height}
+          />
         </div>
       </div>
     </div>
