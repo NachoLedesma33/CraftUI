@@ -19,8 +19,11 @@ const getDeviceWidth = (device: "mobile" | "tablet" | "desktop"): number => {
 
 const CanvasHUD: React.FC<{ zoom: number }> = ({ zoom }) => {
   return (
-    <div className="absolute bottom-4 right-4 bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-mono pointer-events-none select-none">
-      Zoom: {Math.round(zoom * 100)}%
+    <div className="absolute bottom-6 right-6 bg-slate-800/90 backdrop-blur-md text-slate-300 text-xs px-3 py-2 rounded-lg font-mono pointer-events-none select-none shadow-lg border border-slate-700/50">
+      <div className="flex items-center gap-2">
+        <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+        <span className="font-semibold">Zoom: {Math.round(zoom * 100)}%</span>
+      </div>
     </div>
   );
 };
@@ -67,7 +70,7 @@ export const Canvas: React.FC = () => {
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 p-6 ${isOver ? "ring-2 ring-blue-400 ring-inset" : ""}`}
+      className={`relative flex-1 overflow-auto bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-8 transition-all duration-300 ${isOver ? "ring-4 ring-blue-400/50 ring-inset bg-blue-50/50 dark:bg-blue-900/20" : ""}`}
       onClick={handleCanvasClick}
     >
       <div
@@ -78,11 +81,11 @@ export const Canvas: React.FC = () => {
           minHeight: "100%",
           transform: `scale(${view.zoom})`,
           transformOrigin: "top center",
-          transition: "transform 0.15s ease-out",
+          transition: "transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         <div
-          className="mx-auto shadow-2xl bg-white dark:bg-slate-800"
+          className="mx-auto shadow-2xl bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm"
           style={{
             width: `${deviceWidth}px`,
             minHeight: `${canvasConfig.height}px`,

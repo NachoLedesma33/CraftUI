@@ -9,9 +9,9 @@ import type {
 import { AnimationPanel } from "./AnimationPanel";
 
 const INPUT_CLASSES =
-  "w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none";
-const LABEL_CLASSES = "text-xs text-slate-400 mb-1 block";
-const SECTION_CLASSES = "mb-3";
+  "w-full px-3 py-2 text-sm bg-slate-700/60 border border-slate-600/60 rounded-lg text-slate-200 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 backdrop-blur-sm";
+const LABEL_CLASSES = "text-xs font-medium text-slate-400 mb-2 block tracking-tight";
+const SECTION_CLASSES = "mb-4";
 
 const debounce = <T extends (...args: Parameters<T>) => void>(
   fn: T,
@@ -674,10 +674,18 @@ export const PropertiesPanel: React.FC = () => {
 
   if (!component) {
     return (
-      <div className="bg-slate-800 flex items-center justify-center p-4 h-full w-full">
-        <p className="text-slate-400 text-sm text-center italic">
-          Select an element to edit its properties
-        </p>
+      <div className="bg-slate-800 flex items-center justify-center p-8 h-full w-full">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl text-slate-500">⚙️</span>
+          </div>
+          <p className="text-slate-400 text-sm text-center font-medium">
+            Select an element to edit its properties
+          </p>
+          <p className="text-slate-500 text-xs text-center mt-1">
+            Click on any component in the canvas to get started
+          </p>
+        </div>
       </div>
     );
   }
@@ -705,29 +713,36 @@ export const PropertiesPanel: React.FC = () => {
 
   return (
     <div className="bg-slate-800 flex flex-col h-full w-full overflow-hidden">
-      <div className="p-3 border-b border-slate-700 flex items-center gap-2 flex-shrink-0">
-        <span className="text-lg">{typeIcon(component.type)}</span>
-        <span className="text-sm font-medium text-white">
-          {component.metadata.name}
-        </span>
-        <span className="text-xs text-slate-500">({component.type})</span>
+      <div className="p-4 border-b border-slate-700/80 flex items-center gap-3 flex-shrink-0 bg-gradient-to-r from-slate-800 to-slate-800/95">
+        <div className="w-10 h-10 bg-gradient-to-br from-slate-700 to-slate-600 rounded-lg flex items-center justify-center shadow-inner">
+          <span className="text-lg">{typeIcon(component.type)}</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <span className="text-sm font-semibold text-white block truncate">
+            {component.metadata.name}
+          </span>
+          <span className="text-xs text-slate-500">({component.type})</span>
+        </div>
       </div>
 
-      <div className="flex border-b border-slate-700 overflow-x-auto flex-shrink-0">
+      <div className="flex border-b border-slate-700/80 overflow-x-auto flex-shrink-0 bg-slate-800/50">
         {(
           ["styles", "content", "layout", "advanced", "animations"] as const
         ).map((tab) => (
           <button
             key={tab}
             type="button"
-            className={`flex-1 py-2 text-xs capitalize transition-colors whitespace-nowrap ${
+            className={`flex-1 py-3 text-xs font-medium capitalize transition-all duration-200 whitespace-nowrap relative ${
               activeTab === tab
-                ? "text-blue-400 border-b-2 border-blue-400"
-                : "text-slate-400 hover:text-white"
+                ? "text-blue-400 bg-slate-700/40"
+                : "text-slate-400 hover:text-white hover:bg-slate-700/20"
             }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab}
+            {activeTab === tab && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-400" />
+            )}
           </button>
         ))}
       </div>

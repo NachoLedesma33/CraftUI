@@ -78,7 +78,7 @@ function App() {
           onDragEnd={handleDragEnd}
         >
           <div
-            className="h-screen w-screen flex flex-col bg-slate-900 overflow-hidden"
+            className="h-screen w-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden"
             style={{ backgroundColor: "var(--bg-primary)" }}
           >
             {/* Toolbar */}
@@ -97,7 +97,7 @@ function App() {
                   defaultSize={18}
                   minSize={16}
                   maxSize={35}
-                  className="z-10 bg-slate-800 border-r border-slate-700 overflow-hidden"
+                  className="z-10 bg-slate-800/95 border-r border-slate-700/80 overflow-hidden backdrop-blur-sm panel-enter-left"
                   style={{
                     backgroundColor: "var(--bg-secondary)",
                     borderRightColor: "var(--border-color)",
@@ -107,10 +107,10 @@ function App() {
                 </Panel>
 
                 <Separator
-                  className="w-1 bg-slate-800 hover:bg-blue-600 transition-colors cursor-col-resize z-20 group"
+                  className="w-1.5 bg-slate-800/60 hover:bg-blue-600/40 transition-all duration-200 cursor-col-resize z-20 group"
                   style={{ borderRight: "1px solid var(--border-color)" }}
                 >
-                  <div className="h-full w-px bg-slate-700 mx-auto group-hover:bg-blue-400" />
+                  <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-blue-400 group-hover:shadow-lg" />
                 </Separator>
 
                 {/* Center Panel - Canvas */}
@@ -121,7 +121,7 @@ function App() {
                   className="relative z-0 overflow-hidden flex flex-col"
                 >
                   <div
-                    className="flex-1 bg-slate-950 relative overflow-hidden"
+                    className="flex-1 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden"
                     style={{ backgroundColor: "var(--bg-primary)" }}
                   >
                     <CanvasOverlays onMouseMove={handleMouseMove}>
@@ -131,10 +131,10 @@ function App() {
                 </Panel>
 
                 <Separator
-                  className="w-1 bg-slate-800 hover:bg-blue-600 transition-colors cursor-col-resize z-20 group"
+                  className="w-1.5 bg-slate-800/60 hover:bg-blue-600/40 transition-all duration-200 cursor-col-resize z-20 group"
                   style={{ borderLeft: "1px solid var(--border-color)" }}
                 >
-                  <div className="h-full w-px bg-slate-700 mx-auto group-hover:bg-blue-400" />
+                  <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-blue-400 group-hover:shadow-lg" />
                 </Separator>
 
                 {/* Right Panel - Properties/Layers Tabs */}
@@ -142,7 +142,7 @@ function App() {
                   defaultSize={18}
                   minSize={16}
                   maxSize={35}
-                  className="z-10 bg-slate-800 flex flex-col overflow-hidden"
+                  className="z-10 bg-slate-800/95 flex flex-col overflow-hidden backdrop-blur-sm panel-enter-right"
                   style={{
                     backgroundColor: "var(--bg-secondary)",
                     borderLeftColor: "var(--border-color)",
@@ -150,20 +150,26 @@ function App() {
                 >
                   {/* Tab Navigation */}
                   <div
-                    className="flex border-b border-slate-700 bg-slate-800/50"
+                    className="flex border-b border-slate-700/80 bg-slate-800/60 backdrop-blur-sm"
                     style={{ borderBottomColor: "var(--border-color)" }}
                   >
                     <button
                       onClick={() => setActiveRightTab("properties")}
-                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all ${activeRightTab === "properties" ? "text-blue-400 bg-slate-700 border-b-2 border-blue-500" : "text-slate-400 hover:text-slate-200"}`}
+                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "properties" ? "text-blue-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
                     >
                       Properties
+                      {activeRightTab === "properties" && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-400" />
+                      )}
                     </button>
                     <button
                       onClick={() => setActiveRightTab("layers")}
-                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all ${activeRightTab === "layers" ? "text-blue-400 bg-slate-700 border-b-2 border-blue-500" : "text-slate-400 hover:text-slate-200"}`}
+                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "layers" ? "text-blue-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
                     >
                       Layers
+                      {activeRightTab === "layers" && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-400" />
+                      )}
                     </button>
                   </div>
 
