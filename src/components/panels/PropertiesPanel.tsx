@@ -193,17 +193,24 @@ const StylesTab: React.FC<{
       </div>
 
       <StyleSection title="Colors">
-        <div className="flex gap-1 flex-wrap mb-2">
-          {colors.map((c) => (
-            <button
-              key={c}
-              type="button"
-              className={`w-6 h-6 rounded border-2 ${getValue("backgroundColor") === c ? "border-blue-500" : "border-slate-600"}`}
-              style={{ backgroundColor: c }}
-              onClick={() => handleStyleChange("backgroundColor", c)}
-            />
-          ))}
-        </div>
+        <div className="flex gap-1 flex-wrap mb-2 w-full">
+  {colors.map((c) => (
+    <button
+      key={c}
+      type="button"
+      className={`flex-1 min-w-6 h-6 rounded border-12 cursor-pointer ${
+        getValue("backgroundColor") === c 
+          ? "border-blue-500" 
+          : "border-slate-600"
+      }`}
+      style={{ 
+        backgroundColor: c,
+        borderColor: c 
+      }}
+      onClick={() => handleStyleChange("backgroundColor", c)}
+    />
+  ))}
+</div>
         <StyleInput
           label="Background"
           value={getValue("backgroundColor")}
