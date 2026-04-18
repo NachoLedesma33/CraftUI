@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import {
   ChevronRight,
   ChevronDown,
@@ -15,16 +15,16 @@ import {
   Image,
   LayoutGrid,
   AlignJustify,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   SortableContext,
   verticalListSortingStrategy,
   useSortable,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { useEditorStore } from '@/store';
-import { useUIStore } from '@/store';
-import type { ComponentType } from '@/types/canvas';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useEditorStore } from "@/store";
+import { useUIStore } from "@/store";
+import type { ComponentType } from "@/types/canvas";
 
 const componentIcons: Record<ComponentType, React.ReactNode> = {
   box: <Square size={14} />,
@@ -80,49 +80,67 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
     paddingLeft: `${depth * 16 + 8}px`,
   };
 
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    selectComponent(componentId, e.shiftKey || e.ctrlKey || e.metaKey);
-  }, [componentId, selectComponent]);
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      selectComponent(componentId, e.shiftKey || e.ctrlKey || e.metaKey);
+    },
+    [componentId, selectComponent],
+  );
 
-  const handleToggleExpand = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    onToggleExpand(componentId);
-  }, [componentId, onToggleExpand]);
+  const handleToggleExpand = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onToggleExpand(componentId);
+    },
+    [componentId, onToggleExpand],
+  );
 
-  const handleToggleVisibility = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (component) {
-      updateComponent(componentId, {
-        metadata: {
-          ...component.metadata,
-          isVisible: !component.metadata.isVisible,
-        },
-      });
-    }
-  }, [componentId, component, updateComponent]);
+  const handleToggleVisibility = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (component) {
+        updateComponent(componentId, {
+          metadata: {
+            ...component.metadata,
+            isVisible: !component.metadata.isVisible,
+          },
+        });
+      }
+    },
+    [componentId, component, updateComponent],
+  );
 
-  const handleToggleLock = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (component) {
-      updateComponent(componentId, {
-        metadata: {
-          ...component.metadata,
-          isLocked: !component.metadata.isLocked,
-        },
-      });
-    }
-  }, [componentId, component, updateComponent]);
+  const handleToggleLock = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (component) {
+        updateComponent(componentId, {
+          metadata: {
+            ...component.metadata,
+            isLocked: !component.metadata.isLocked,
+          },
+        });
+      }
+    },
+    [componentId, component, updateComponent],
+  );
 
-  const handleDelete = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    deleteComponent(componentId);
-  }, [componentId, deleteComponent]);
+  const handleDelete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      deleteComponent(componentId);
+    },
+    [componentId, deleteComponent],
+  );
 
-  const handleDuplicate = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    duplicateComponent(componentId);
-  }, [componentId, duplicateComponent]);
+  const handleDuplicate = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      duplicateComponent(componentId);
+    },
+    [componentId, duplicateComponent],
+  );
 
   if (!component) return null;
 
@@ -133,8 +151,8 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         style={style}
         className={`
           flex items-center gap-1 py-1 px-2 cursor-pointer select-none
-          ${isSelected ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-700'}
-          ${!component.metadata.isVisible ? 'opacity-50' : ''}
+          ${isSelected ? "bg-blue-600 text-white" : "text-slate-300 hover:bg-slate-700"}
+          ${!component.metadata.isVisible ? "opacity-50" : ""}
         `}
         onClick={handleClick}
         onContextMenu={(e) => onContextMenu(e, componentId)}
@@ -148,13 +166,17 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
             onClick={handleToggleExpand}
             className="p-0.5 hover:bg-slate-600 rounded"
           >
-            {isExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+            {isExpanded ? (
+              <ChevronDown size={12} />
+            ) : (
+              <ChevronRight size={12} />
+            )}
           </button>
         ) : (
           <span className="w-5" />
         )}
 
-        <span className={`${isSelected ? 'text-white' : 'text-slate-400'}`}>
+        <span className={`${isSelected ? "text-white" : "text-slate-400"}`}>
           {componentIcons[component.type] || <Box size={14} />}
         </span>
 
@@ -163,25 +185,37 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         </span>
 
         {hasChildren && (
-          <span className={`text-xs px-1 rounded ${isSelected ? 'bg-blue-500' : 'bg-slate-600'}`}>
+          <span
+            className={`text-xs px-1 rounded ${isSelected ? "bg-blue-500" : "bg-slate-600"}`}
+          >
             {component.children.length}
           </span>
         )}
 
-        <div className={`flex items-center gap-0.5 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+        <div
+          className={`flex items-center gap-0.5 ${isHovered ? "opacity-100" : "opacity-0"}`}
+        >
           <button
             onClick={handleToggleVisibility}
             className="p-1 hover:bg-slate-600 rounded"
-            title={component.metadata.isVisible ? 'Hide' : 'Show'}
+            title={component.metadata.isVisible ? "Hide" : "Show"}
           >
-            {component.metadata.isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
+            {component.metadata.isVisible ? (
+              <Eye size={12} />
+            ) : (
+              <EyeOff size={12} />
+            )}
           </button>
           <button
             onClick={handleToggleLock}
             className="p-1 hover:bg-slate-600 rounded"
-            title={component.metadata.isLocked ? 'Unlock' : 'Lock'}
+            title={component.metadata.isLocked ? "Unlock" : "Lock"}
           >
-            {component.metadata.isLocked ? <Lock size={12} /> : <Unlock size={12} />}
+            {component.metadata.isLocked ? (
+              <Lock size={12} />
+            ) : (
+              <Unlock size={12} />
+            )}
           </button>
           <button
             onClick={handleDuplicate}
@@ -225,16 +259,21 @@ interface ContextMenuProps {
   onClose: () => void;
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, componentId, onClose }) => {
+const ContextMenu: React.FC<ContextMenuProps> = ({
+  x,
+  y,
+  componentId,
+  onClose,
+}) => {
   const component = useEditorStore((s) => s.components[componentId]);
   const addComponent = useEditorStore((s) => s.addComponent);
   const deleteComponent = useEditorStore((s) => s.deleteComponent);
   const duplicateComponent = useEditorStore((s) => s.duplicateComponent);
   const updateComponent = useEditorStore((s) => s.updateComponent);
   const copyComponents = useUIStore((s) => s.copyComponents);
-  
+
   const [isRenaming, setIsRenaming] = useState(false);
-  const [newName, setNewName] = useState(component?.metadata.name || '');
+  const [newName, setNewName] = useState(component?.metadata.name || "");
 
   const handleAddChild = (type: ComponentType) => {
     addComponent(componentId, type);
@@ -256,19 +295,23 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, componentId, onClose })
 
   useEffect(() => {
     const handleClickOutside = () => onClose();
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, [onClose]);
 
   if (!component) return null;
 
-  const childTypes: { type: ComponentType; label: string; icon: React.ReactNode }[] = [
-    { type: 'box', label: 'Box', icon: <Square size={14} /> },
-    { type: 'text', label: 'Text', icon: <Type size={14} /> },
-    { type: 'button', label: 'Button', icon: <Box size={14} /> },
-    { type: 'image', label: 'Image', icon: <Image size={14} /> },
-    { type: 'flex', label: 'Flex', icon: <AlignJustify size={14} /> },
-    { type: 'grid', label: 'Grid', icon: <LayoutGrid size={14} /> },
+  const childTypes: {
+    type: ComponentType;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+    { type: "box", label: "Box", icon: <Square size={14} /> },
+    { type: "text", label: "Text", icon: <Type size={14} /> },
+    { type: "button", label: "Button", icon: <Box size={14} /> },
+    { type: "image", label: "Image", icon: <Image size={14} /> },
+    { type: "flex", label: "Flex", icon: <AlignJustify size={14} /> },
+    { type: "grid", label: "Grid", icon: <LayoutGrid size={14} /> },
   ];
 
   return (
@@ -283,7 +326,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, componentId, onClose })
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleRenameSubmit()}
+            onKeyDown={(e) => e.key === "Enter" && handleRenameSubmit()}
             onBlur={handleRenameSubmit}
             autoFocus
             className="w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-white"
@@ -317,20 +360,29 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, componentId, onClose })
               Rename
             </button>
             <button
-              onClick={() => { duplicateComponent(componentId); onClose(); }}
+              onClick={() => {
+                duplicateComponent(componentId);
+                onClose();
+              }}
               className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
             >
               <Copy size={12} />
               Duplicate
             </button>
             <button
-              onClick={() => { copyComponents([component]); onClose(); }}
+              onClick={() => {
+                copyComponents([component]);
+                onClose();
+              }}
               className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
             >
               Copy
             </button>
             <button
-              onClick={() => { deleteComponent(componentId); onClose(); }}
+              onClick={() => {
+                deleteComponent(componentId);
+                onClose();
+              }}
               className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-slate-700"
             >
               <Trash2 size={12} />
@@ -350,8 +402,11 @@ export const LayersPanel: React.FC = () => {
   const selectComponent = useEditorStore((s) => s.selectComponent);
 
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; componentId: string } | null>(null);
-
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    componentId: string;
+  } | null>(null);
 
   const handleToggleExpand = useCallback((id: string) => {
     setExpandedIds((prev) => {
@@ -371,7 +426,7 @@ export const LayersPanel: React.FC = () => {
   }, []);
 
   const handleAddRoot = useCallback(() => {
-    const newId = addComponent(rootId, 'box');
+    const newId = addComponent(rootId, "box");
     selectComponent(newId);
   }, [rootId, addComponent, selectComponent]);
 
@@ -412,8 +467,8 @@ export const LayersPanel: React.FC = () => {
   }
 
   return (
-    <div className="bg-slate-800 flex flex-col h-full w-full">
-      <div className="p-3 border-b border-slate-700 flex items-center justify-between">
+    <div className="bg-slate-800 flex flex-col h-full w-full overflow-hidden">
+      <div className="p-3 border-b border-slate-700 flex items-center justify-between flex-shrink-0">
         <h2 className="text-sm font-medium text-white">Layers</h2>
         <button
           onClick={handleAddRoot}
@@ -424,8 +479,11 @@ export const LayersPanel: React.FC = () => {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto py-1">
-        <SortableContext items={flattenedIds} strategy={verticalListSortingStrategy}>
+      <div className="flex-1 overflow-y-auto min-h-0 py-1">
+        <SortableContext
+          items={flattenedIds}
+          strategy={verticalListSortingStrategy}
+        >
           <SortableTreeItem
             componentId={rootId}
             depth={0}

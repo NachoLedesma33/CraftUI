@@ -704,8 +704,8 @@ export const PropertiesPanel: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-800 flex flex-col h-full w-full">
-      <div className="p-3 border-b border-slate-700 flex items-center gap-2">
+    <div className="bg-slate-800 flex flex-col h-full w-full overflow-hidden">
+      <div className="p-3 border-b border-slate-700 flex items-center gap-2 flex-shrink-0">
         <span className="text-lg">{typeIcon(component.type)}</span>
         <span className="text-sm font-medium text-white">
           {component.metadata.name}
@@ -713,7 +713,7 @@ export const PropertiesPanel: React.FC = () => {
         <span className="text-xs text-slate-500">({component.type})</span>
       </div>
 
-      <div className="flex border-b border-slate-700 overflow-x-auto">
+      <div className="flex border-b border-slate-700 overflow-x-auto flex-shrink-0">
         {(
           ["styles", "content", "layout", "advanced", "animations"] as const
         ).map((tab) => (
@@ -732,7 +732,7 @@ export const PropertiesPanel: React.FC = () => {
         ))}
       </div>
 
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-y-auto min-h-0">
         {activeTab === "styles" && (
           <StylesTab component={component} updateComponent={updateComponent} />
         )}
