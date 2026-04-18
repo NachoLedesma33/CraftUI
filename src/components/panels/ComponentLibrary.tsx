@@ -248,8 +248,8 @@ export const ComponentLibrary: React.FC = () => {
   return (
     <div className="flex flex-col bg-slate-800 h-full w-full">
       <div className="p-5 border-b border-slate-700/60 bg-gradient-to-br from-slate-800 via-slate-800/95 to-slate-900/80 backdrop-blur-sm">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center border border-blue-500/30 flex-shrink-0">
             <Box size={16} className="text-blue-400" />
           </div>
           <h3 className="text-lg font-bold text-white tracking-tight">
