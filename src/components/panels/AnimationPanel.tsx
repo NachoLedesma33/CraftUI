@@ -62,7 +62,7 @@ const PresetSelector: React.FC<PresetSelectorProps> = ({ onSelect }) => {
               <button
                 key={preset.id}
                 onClick={() => onSelect(preset)}
-                className="w-full px-2 py-1.5 text-xs bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] text-[var(--text-secondary)] transition-colors text-left"
+                className="w-full px-2 py-1.5 text-xs bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] text-[var(--text-secondary)] border-2 border-[var(--border)] transition-colors text-left"
               >
                 {preset.name}
               </button>
@@ -96,7 +96,7 @@ const TimeSlider: React.FC<TimeSliderProps> = ({ label, value, onChange, min = 0
       step={50}
       value={value}
       onChange={e => onChange(Number(e.target.value))}
-      className="w-full h-1 bg-[var(--bg-tertiary)] appearance-none cursor-pointer"
+      className="w-full h-1 bg-[var(--bg-tertiary)] border-2 border-[var(--border)] appearance-none cursor-pointer"
     />
   </div>
 );
@@ -112,7 +112,7 @@ const EasingSelector: React.FC<EasingSelectorProps> = ({ value, onChange }) => (
     <select
       value={value}
       onChange={e => onChange(e.target.value)}
-      className="w-full px-2 py-1.5 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)] focus:outline-none"
+      className="w-full px-2 py-1.5 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-primary)] focus:outline-none"
     >
       {EASING_OPTIONS.map(opt => (
         <option key={opt} value={opt}>{opt}</option>
@@ -267,7 +267,7 @@ export const AnimationPanel: React.FC = () => {
           <div className="flex-1 space-y-1">
             <label className="text-xs text-[var(--text-muted)]">Iterations</label>
             {localAnimation.iterations === 'infinite' ? (
-              <div className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--accent)] flex items-center gap-2">
+              <div className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--accent)] flex items-center gap-2">
                 <InfinityIcon size={14} />
                 <span>Infinite</span>
               </div>
@@ -277,7 +277,7 @@ export const AnimationPanel: React.FC = () => {
                 min={1}
                 value={localAnimation.iterations || 1}
                 onChange={e => handleAnimationChange('iterations', Number(e.target.value))}
-                className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)]"
+                className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-primary)]"
               />
             )}
           </div>
@@ -307,9 +307,9 @@ export const AnimationPanel: React.FC = () => {
             <button
               key={opt.value}
               onClick={() => handleAnimationChange('trigger', opt.value as AnimationConfig['trigger'])}
-              className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs transition-colors ${
+              className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs border-2 border-[var(--border)] transition-colors ${
                 localAnimation.trigger === opt.value
-                  ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                  ? 'bg-[var(--accent)] text-black'
                   : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
               }`}
             >
@@ -345,7 +345,7 @@ export const AnimationPanel: React.FC = () => {
       <button
         onClick={saveToComponent}
         disabled={!localAnimation.name}
-        className="w-full py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] text-sm transition-colors disabled:opacity-50"
+              className="w-full py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] text-sm border-2 border-[var(--border)] transition-colors disabled:opacity-50"
       >
         Save Animation
       </button>

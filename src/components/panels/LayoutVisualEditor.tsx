@@ -49,9 +49,9 @@ const FlexPlayground: React.FC<{
             key={opt.value}
             type="button"
             onClick={() => onChange({ flexDirection: { base: opt.value as 'row' | 'column' | 'row-reverse' | 'column-reverse' } })}
-            className={`flex-1 py-1.5 text-sm ${
+            className={`flex-1 py-1.5 text-sm border-2 border-[var(--border)] ${
               direction === opt.value
-                ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                ? 'bg-[var(--accent)] text-black'
                 : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
             }`}
             title={opt.title}
@@ -68,9 +68,9 @@ const FlexPlayground: React.FC<{
             key={opt.value}
             type="button"
             onClick={() => onChange({ justifyContent: { base: opt.value as 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly' } })}
-            className={`flex-1 py-1.5 text-sm ${
+              className={`flex-1 py-1.5 text-sm border-2 border-[var(--border)] ${
               justify === opt.value
-                ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                ? 'bg-[var(--accent)] text-black'
                 : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
             }`}
             title={opt.title}
@@ -87,9 +87,9 @@ const FlexPlayground: React.FC<{
             key={opt.value}
             type="button"
             onClick={() => onChange({ alignItems: { base: opt.value as 'stretch' | 'flex-start' | 'flex-end' | 'center' | 'baseline' } })}
-            className={`flex-1 py-1.5 text-sm ${
+              className={`flex-1 py-1.5 text-sm border-2 border-[var(--border)] ${
               align === opt.value
-                ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                ? 'bg-[var(--accent)] text-black'
                 : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
             }`}
             title={opt.title}
@@ -117,7 +117,7 @@ const FlexPlayground: React.FC<{
         <button
           type="button"
           onClick={() => onChange({ flexWrap: { base: wrap === 'nowrap' ? 'wrap' : 'nowrap' } })}
-          className={`px-3 py-1 text-xs ${wrap === 'wrap' ? 'bg-[var(--accent)] text-[var(--text-primary)]' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`}
+          className={`px-3 py-1 text-xs border-2 border-[var(--border)] ${wrap === 'wrap' ? 'bg-[var(--accent)] text-black' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`}
         >
           {wrap}
         </button>
@@ -146,7 +146,7 @@ const FlexPlayground: React.FC<{
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`px-3 py-2 text-xs text-white font-medium ${
+              className={`px-3 py-2 text-xs text-white font-medium border border-[var(--border)] ${
                 i === 1 ? 'bg-red-500' : i === 2 ? 'bg-green-500' : 'bg-violet-500'
               }`}
             >
@@ -215,7 +215,7 @@ const GridMatrixEditor: React.FC<{
             key={preset.name}
             type="button"
             onClick={() => applyPreset(preset)}
-            className="px-2 py-1 text-xs bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+            className="px-2 py-1 text-xs bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-2 border-[var(--border)]"
           >
             {preset.name}
           </button>
@@ -279,7 +279,7 @@ const GridMatrixEditor: React.FC<{
         {Array(cols * rowsCount).fill(0).map((_, i) => (
           <div
             key={i}
-            className="bg-[var(--bg-tertiary)] flex items-center justify-center text-xs text-[var(--text-muted)]"
+            className="bg-[var(--bg-tertiary)] border border-[var(--border)] flex items-center justify-center text-xs text-[var(--text-muted)]"
           >
             {i + 1}
           </div>
@@ -327,14 +327,14 @@ export const LayoutVisualEditor: React.FC<LayoutEditorProps> = ({ component }) =
           <button
             type="button"
             onClick={() => handleChange({ display: { base: 'flex' } })}
-            className="px-3 py-2 text-sm bg-[var(--accent)] text-[var(--text-primary)]"
+            className="px-3 py-2 text-sm bg-[var(--accent)] text-black border-2 border-[var(--border)]"
           >
             Convert to Flex
           </button>
           <button
             type="button"
             onClick={() => handleChange({ display: { base: 'grid' } })}
-            className="px-3 py-2 text-sm bg-green-500 text-white"
+            className="px-3 py-2 text-sm bg-green-500 text-white border-2 border-[var(--border)]"
           >
             Convert to Grid
           </button>
@@ -370,14 +370,14 @@ export const LayoutVisualEditor: React.FC<LayoutEditorProps> = ({ component }) =
         <button
           type="button"
           onClick={handleApply}
-          className="flex-1 py-2 text-sm bg-[var(--accent)] text-[var(--text-primary)] font-medium"
+          className="flex-1 py-2 text-sm bg-[var(--accent)] text-black font-medium border-2 border-[var(--border)]"
         >
           Apply Changes
         </button>
         <button
           type="button"
           onClick={handleReset}
-          className="px-4 py-2 text-sm bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+          className="px-4 py-2 text-sm bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-2 border-[var(--border)]"
         >
           Reset
         </button>

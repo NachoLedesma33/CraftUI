@@ -19,7 +19,7 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
     <div className="p-2 space-y-2 overflow-auto">
       <div className="flex gap-1 mb-3">
         {(['base', 'tablet', 'desktop'] as const).map((d) => (
-          <button key={d} type="button" className={`flex-1 py-1 text-xs ${device === d ? 'bg-[var(--accent)] text-[var(--text-primary)]' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`} onClick={() => setDevice(d)}>
+          <button key={d} type="button" className={`flex-1 py-1 text-xs border-2 border-[var(--border)] ${device === d ? 'bg-[var(--accent)] text-black' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`} onClick={() => setDevice(d)}>
             {d === 'base' ? '📱' : d === 'tablet' ? '📐' : '💻'}
           </button>
         ))}

@@ -62,13 +62,12 @@ export const PropertiesPanel: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex border-b border-[var(--border)] overflow-x-auto flex-shrink-0">
+      <div className="flex border-b-2 border-[var(--border)] overflow-x-auto flex-shrink-0">
         {(["styles", "content", "layout", "advanced", "animations"] as const).map((tab) => (
           <button key={tab} type="button" role="tab" aria-selected={activeTab === tab}
-            className={`flex-1 py-3 text-xs font-medium capitalize transition-all duration-200 whitespace-nowrap relative ${activeTab === tab ? "text-[var(--accent)] bg-[var(--bg-tertiary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}
+            className={`flex-1 py-3 text-xs font-medium capitalize whitespace-nowrap border-2 border-[var(--border)] -mb-[2px] ${activeTab === tab ? "bg-[var(--accent)] text-black" : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}
             onClick={() => setActiveTab(tab)}>
             {tab}
-            {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent)]" />}
           </button>
         ))}
       </div>

@@ -97,11 +97,11 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
       {...listeners}
       {...attributes}
       onClick={handleClickAdd}
-      className={`
+          className={`
         flex items-center gap-3 p-3 cursor-grab active:cursor-grabbing
-        bg-[var(--bg-secondary)] border-[var(--border)]
+        bg-[var(--bg-secondary)] border-2 border-[var(--border)]
         transition-all duration-200 min-w-0 group
-        hover:shadow-brutal-sm
+        hover:shadow-brutal
         ${isDragging ? "opacity-50 z-50" : ""}
       `}
       title={`${blueprint.description} (click to add, drag to canvas)`}
@@ -150,7 +150,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         className={`
           flex items-center gap-3 w-full px-3 py-2.5
           font-semibold text-sm transition-all duration-200
-          bg-[var(--bg-tertiary)] border border-[var(--border)]
+          bg-[var(--bg-tertiary)] border-2 border-[var(--border)]
           text-[var(--text-secondary)] hover:text-[var(--text-primary)]
           group
         `}
@@ -258,7 +258,7 @@ export const ComponentLibrary: React.FC = () => {
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 border-2 border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               ✕
             </button>

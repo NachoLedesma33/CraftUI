@@ -153,8 +153,8 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         ref={setNodeRef}
         style={style}
         className={`
-          flex items-center gap-1 py-1 px-2 cursor-pointer select-none min-w-0
-          ${isSelected ? "bg-[var(--accent)] text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"}
+          flex items-center gap-1 py-1 px-2 cursor-pointer select-none min-w-0 border-2 border-[var(--border)]
+          ${isSelected ? "bg-[var(--accent)] text-[var(--text-primary)] shadow-brutal-sm" : "text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:shadow-brutal-sm"}
           ${!component.metadata.isVisible ? "opacity-50" : ""}
         `}
         onClick={handleClick}
@@ -167,7 +167,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         {isContainer ? (
           <button
             onClick={handleToggleExpand}
-            className="p-0.5 hover:bg-[var(--bg-tertiary)]"
+            className="p-0.5 border-2 border-[var(--border)] hover:bg-[var(--bg-tertiary)]"
           >
             {isExpanded ? (
               <ChevronDown size={12} />
@@ -200,7 +200,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         >
           <button
             onClick={handleToggleVisibility}
-            className="p-1 hover:bg-[var(--bg-tertiary)] flex-shrink-0"
+            className="p-1 border-2 border-[var(--border)] hover:bg-[var(--bg-tertiary)] flex-shrink-0"
             title={component.metadata.isVisible ? "Hide" : "Show"}
           >
             {component.metadata.isVisible ? (
@@ -211,7 +211,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
           </button>
           <button
             onClick={handleToggleLock}
-            className="p-1 hover:bg-[var(--bg-tertiary)] flex-shrink-0"
+            className="p-1 border-2 border-[var(--border)] hover:bg-[var(--bg-tertiary)] flex-shrink-0"
             title={component.metadata.isLocked ? "Unlock" : "Lock"}
           >
             {component.metadata.isLocked ? (
@@ -222,14 +222,14 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
           </button>
           <button
             onClick={handleDuplicate}
-            className="p-1 hover:bg-[var(--bg-tertiary)] flex-shrink-0"
+            className="p-1 border-2 border-[var(--border)] hover:bg-[var(--bg-tertiary)] flex-shrink-0"
             title="Duplicate"
           >
             <Copy size={12} />
           </button>
           <button
             onClick={handleDelete}
-            className="p-1 hover:bg-red-700 flex-shrink-0"
+            className="p-1 border-2 border-[var(--border)] hover:bg-red-700 flex-shrink-0"
             title="Delete"
           >
             <Trash2 size={12} />
@@ -332,7 +332,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             onKeyDown={(e) => e.key === "Enter" && handleRenameSubmit()}
             onBlur={handleRenameSubmit}
             autoFocus
-            className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)]"
+            className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-primary)]"
           />
         </div>
       ) : (
