@@ -126,81 +126,56 @@ export const useDragDrop = () => {
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
-      const { active, over } = event;
+      const { over } = event;
 
-      if (!over) {
-        if (activeItem?.type === "existing" && activeItem.componentId) {
+      // Clean up drag overlay opacity
+      if (activeItem?.type === "existing" && activeItem.componentId) {
+        const orig = components[activeItem.componentId];
+        if (orig) {
           updateComponent(activeItem.componentId, {
-            styles: {
-              ...components[activeItem.componentId].styles,
-              opacity: { base: 1 },
-            },
+            styles: { ...orig.styles, opacity: { base: 1 } },
           });
         }
-        setActiveItem(null);
-        return;
       }
 
-      const activeId = active.id as string;
-      const overId = over.id as string;
-      const activeComponent = components[activeId];
-      const overComponent = components[overId];
-
-      if (!activeComponent || !overComponent) {
-        setActiveItem(null);
-        return;
-      }
-
-      // Handle reordering within the same parent (LayersPanel drag)
-      if (
-        activeId !== overId &&
-        activeComponent.parent === overComponent.parent
-      ) {
-        const parentId = activeComponent.parent || rootId;
-        const parent = components[parentId];
-
-        if (parent) {
-          const children = [...parent.children];
-          const activeIndex = children.indexOf(activeId);
-          const overIndex = children.indexOf(overId);
-
-          if (activeIndex !== -1 && overIndex !== -1) {
-            children.splice(activeIndex, 1);
-            children.splice(overIndex, 0, activeId);
-            useEditorStore.getState().reorderChildren(parentId, children);
+      // Clear border highlights from all components
+      Object.values(components).forEach((comp) => {
+        if (comp.styles.borderColor) {
+          const newStyles = { ...comp.styles };
+          delete newStyles.borderColor;
+          if (components[comp.id]) {
+            useEditorStore.getState().updateComponent(comp.id, { styles: newStyles });
           }
         }
+      });
+
+      if (!over) {
+        setActiveItem(null);
+        return;
       }
 
-      if (activeItem?.type === "existing" && activeItem.componentId) {
-        const activeId = activeItem.componentId;
-        const activeComponent = components[activeId];
+      const overId = over.id as string;
+      const overComponent = components[overId];
+      const isCanvasDrop = overId === 'canvas-drop-zone' || !overComponent;
 
-        updateComponent(activeId, {
-          styles: {
-            ...activeComponent.styles,
-            opacity: { base: 1 },
-          },
-        });
-
-        if (!canDrop(overId, activeId, components)) {
-          setActiveItem(null);
-          return;
+      // ===== NEW COMPONENT FROM LIBRARY =====
+      if (activeItem?.type === "new" && activeItem.componentType && isCanvasDrop && rootId) {
+        const newId = addComponent(rootId, activeItem.componentType);
+        if (newId) {
+          const rootComponent = components[rootId];
+          if (rootComponent) {
+            useEditorStore.getState().reorderChildren(rootId, [...rootComponent.children, newId]);
+          }
+          const label = activeItem.componentType.charAt(0).toUpperCase() + activeItem.componentType.slice(1);
+          useUIStore.getState().addToast(`${label} added to canvas`, 'success', 2000);
+          useUIStore.getState().setLastAddedId(newId);
+          setTimeout(() => useUIStore.getState().setLastAddedId(null), 800);
         }
+        setActiveItem(null);
+        return;
+      }
 
-        const targetParentId = isContainer(overComponent.type)
-          ? overId
-          : overComponent.parent;
-
-        if (targetParentId) {
-          const targetParent = components[targetParentId];
-          const children = targetParent?.children || [];
-          const overIndex = children.indexOf(overId);
-          const insertIndex = overIndex >= 0 ? overIndex : children.length;
-
-          moveComponent(activeId, targetParentId, insertIndex);
-        }
-      } else if (activeItem?.type === "new" && activeItem.componentType) {
+      if (activeItem?.type === "new" && activeItem.componentType && overComponent) {
         const componentType = activeItem.componentType;
 
         if (!isContainer(overComponent.type) && !overComponent.parent) {
@@ -208,57 +183,75 @@ export const useDragDrop = () => {
           return;
         }
 
-        const targetParentId = isContainer(overComponent.type)
-          ? overId
-          : overComponent.parent;
+        const targetParentId = isContainer(overComponent.type) ? overId : overComponent.parent;
 
-        if (targetParentId) {
+        if (targetParentId && components[targetParentId]) {
           const targetParent = components[targetParentId];
-          const children = targetParent?.children || [];
+          const children = [...(targetParent?.children || [])];
           const overIndex = children.indexOf(overId);
           const insertIndex = overIndex >= 0 ? overIndex : children.length;
 
           const newId = addComponent(targetParentId, componentType);
-
           if (newId) {
-            const parent = components[targetParentId];
-            const newChildren = [...parent.children];
-            newChildren.splice(insertIndex, 0, newId);
-
-            useEditorStore
-              .getState()
-              .reorderChildren(targetParentId, newChildren);
+            children.splice(insertIndex, 0, newId);
+            useEditorStore.getState().reorderChildren(targetParentId, children);
+            const label = componentType.charAt(0).toUpperCase() + componentType.slice(1);
+            useUIStore.getState().addToast(`${label} added to ${overComponent.metadata.name}`, 'success', 2000);
+            useUIStore.getState().setLastAddedId(newId);
+            setTimeout(() => useUIStore.getState().setLastAddedId(null), 800);
           }
         } else if (rootId) {
           const newId = addComponent(rootId, componentType);
-
           if (newId) {
             const rootComponent = components[rootId];
-            useEditorStore
-              .getState()
-              .reorderChildren(rootId, [...rootComponent.children, newId]);
+            if (rootComponent) {
+              useEditorStore.getState().reorderChildren(rootId, [...rootComponent.children, newId]);
+            }
+            const label = componentType.charAt(0).toUpperCase() + componentType.slice(1);
+            useUIStore.getState().addToast(`${label} added to canvas`, 'success', 2000);
+            useUIStore.getState().setLastAddedId(newId);
+            setTimeout(() => useUIStore.getState().setLastAddedId(null), 800);
           }
         }
       }
 
-      Object.values(components).forEach((comp) => {
-        if (comp.styles.borderColor) {
-          const newStyles = { ...comp.styles };
-          delete newStyles.borderColor;
-          updateComponent(comp.id, { styles: newStyles });
+      // ===== EXISTING COMPONENT MOVE/REORDER =====
+      if (activeItem?.type === "existing" && activeItem.componentId) {
+        const activeId = activeItem.componentId;
+
+        if (overComponent && canDrop(overId, activeId, components)) {
+          const targetParentId = isContainer(overComponent.type) ? overId : overComponent.parent;
+
+          if (targetParentId && components[targetParentId]) {
+            const targetParent = components[targetParentId];
+            const children = [...(targetParent?.children || [])];
+            const overIndex = children.indexOf(overId);
+            const insertIndex = overIndex >= 0 ? overIndex : children.length;
+
+            const currentParentId = components[activeId]?.parent;
+            if (targetParentId !== currentParentId) {
+              moveComponent(activeId, targetParentId, insertIndex);
+            } else if (overIndex >= 0) {
+              const currentIndex = children.indexOf(activeId);
+              if (currentIndex !== -1) {
+                children.splice(currentIndex, 1);
+                const newIndex = children.indexOf(overId);
+                children.splice(newIndex >= 0 ? newIndex : insertIndex, 0, activeId);
+                useEditorStore.getState().reorderChildren(targetParentId, children);
+              }
+            }
+          }
+        } else if (isCanvasDrop && rootId) {
+          const currentParentId = components[activeId]?.parent;
+          if (currentParentId !== rootId) {
+            moveComponent(activeId, rootId, (components[rootId]?.children || []).length);
+          }
         }
-      });
+      }
 
       setActiveItem(null);
     },
-    [
-      activeItem,
-      components,
-      rootId,
-      moveComponent,
-      addComponent,
-      updateComponent,
-    ],
+    [activeItem, components, rootId, moveComponent, addComponent, updateComponent],
   );
 
   return {

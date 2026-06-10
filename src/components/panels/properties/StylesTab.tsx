@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import type { Styles, UIComponent } from '@/types/canvas';
 import { debounce, getValue, handleStyleChange } from './shared.utils';
 import { StyleInput, StyleSection } from './shared';
+import { SpacingDiagram } from './SpacingDiagram';
 
 const colors = ['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#8b5cf6', '#8b5cf6', '#ec4899'];
 
@@ -42,8 +43,12 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
       </StyleSection>
 
       <StyleSection title="Spacing">
-        <StyleInput label="Padding" value={val('padding')} onChange={(v) => onStyleChange('padding', v)} placeholder="8px" />
-        <StyleInput label="Margin" value={val('margin')} onChange={(v) => onStyleChange('margin', v)} placeholder="8px" />
+        <SpacingDiagram
+          padding={val('padding')}
+          margin={val('margin')}
+          onPaddingChange={(v) => onStyleChange('padding', v)}
+          onMarginChange={(v) => onStyleChange('margin', v)}
+        />
         <StyleInput label="Gap" value={val('gap')} onChange={(v) => onStyleChange('gap', v)} placeholder="8px" />
       </StyleSection>
 

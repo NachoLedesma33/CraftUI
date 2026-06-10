@@ -369,118 +369,121 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   }, [isDark, toggleTheme, addToast]);
 
   return (
-    <header className="h-14 border-b border-slate-700/80 flex items-center justify-between px-6 bg-gradient-to-r from-slate-800/95 to-slate-900/95 backdrop-blur-md sticky top-0 z-50 shadow-lg">
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-3 group">
-          <div className="w-8 h-8 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-orange-500 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-            <span className="text-white text-sm font-bold tracking-tight">V</span>
+    <>
+      <header className="mx-auto mt-3 w-full max-w-[calc(100%-32px)] xl:max-w-[1400px]">
+        <div className="relative h-12 flex items-center justify-between px-4 bg-slate-800/70 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl shadow-black/20">
+          {/* Top glow */}
+          <div className="absolute -top-px left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent pointer-events-none" />
+
+          {/* Left section */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 group">
+              <div className="w-7 h-7 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-orange-500 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                <span className="text-white text-xs font-bold tracking-tight">V</span>
+              </div>
+              <span className="text-sm font-semibold text-white hidden sm:block tracking-tight">
+                Visual UI
+              </span>
+            </div>
+
+            <div className="h-6 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent" />
+
+            <HistoryControls
+              canUndo={canUndo}
+              canRedo={canRedo}
+              onUndo={undo}
+              onRedo={redo}
+            />
+
+            <div className="hidden md:flex items-center">
+              <div className="h-6 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent mr-3" />
+              <Breadcrumbs />
+            </div>
           </div>
-          <span className="text-base font-semibold text-white hidden sm:block tracking-tight">
-            Visual UI
-          </span>
-        </div>
 
-        <div className="h-8 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent" />
+          {/* Center section */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 bg-slate-900/60 backdrop-blur-sm rounded-lg p-1.5 border border-slate-700/50">
+              <ZoomControls
+                zoom={view.zoom}
+                onZoomIn={zoomIn}
+                onZoomOut={zoomOut}
+                onZoomChange={setZoom}
+              />
+            </div>
 
-        <HistoryControls
-          canUndo={canUndo}
-          canRedo={canRedo}
-          onUndo={undo}
-          onRedo={redo}
-        />
+            <SelectionIndicator />
 
-        <div className="h-8 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent" />
+            <PanelToggles />
 
-        <Breadcrumbs />
-      </div>
+            <ViewModeToggle />
+          </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-sm rounded-xl p-2 border border-slate-700/50 shadow-inner">
-          <ZoomControls
-            zoom={view.zoom}
-            onZoomIn={zoomIn}
-            onZoomOut={zoomOut}
-            onZoomChange={setZoom}
-          />
-        </div>
-
-        <div className="h-8 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent" />
-
-        <SelectionIndicator />
-      </div>
-
-      <div className="flex items-center gap-3">
-        <PanelToggles />
-
-        <ViewModeToggle />
-
-        <div className="h-8 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent" />
-
-        {autoSaveStatus && (
-          <AutoSaveIndicator
-            lastSaved={autoSaveStatus.lastSaved}
-            isEnabled={autoSaveStatus.isEnabled}
-            hasChanges={autoSaveStatus.hasChanges}
-          />
-        )}
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => onAutoSave?.()}
-            className="p-2.5 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200 hover:scale-105"
-            title="Auto-Save Versions"
-          >
-            <HardDrive size={16} />
-          </button>
-
-          <button
-            onClick={() => onTemplates?.()}
-            className="p-2.5 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200 hover:scale-105"
-            title="Templates & Projects"
-          >
-            <FileText size={16} />
-          </button>
-
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="p-2.5 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 disabled:hover:scale-100"
-            title="Save Project"
-          >
-            {isSaving ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <Cloud size={16} />
+          {/* Right section */}
+          <div className="flex items-center gap-2">
+            {autoSaveStatus && (
+              <AutoSaveIndicator
+                lastSaved={autoSaveStatus.lastSaved}
+                isEnabled={autoSaveStatus.isEnabled}
+                hasChanges={autoSaveStatus.hasChanges}
+              />
             )}
-          </button>
 
-          <button
-            onClick={handleExport}
-            className="p-2.5 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200 hover:scale-105"
-            title="Export Code"
-          >
-            <Download size={16} />
-          </button>
+            <div className="h-6 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent" />
 
-          <button
-            onClick={() => setShowClearDialog(true)}
-            className="p-2.5 rounded-lg text-slate-300 hover:bg-red-600/20 hover:text-red-400 transition-all duration-200 hover:scale-105"
-            title="Clear Canvas"
-          >
-            <Trash2 size={16} />
-          </button>
+            <button
+              onClick={() => onAutoSave?.()}
+              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200"
+              title="Auto-Save Versions"
+            >
+              <HardDrive size={15} />
+            </button>
 
-          <button
-            onClick={toggleThemeHandler}
-            className="p-2.5 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200 hover:scale-105"
-            title="Toggle Theme"
-          >
-            {isDark ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
+            <button
+              onClick={() => onTemplates?.()}
+              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200"
+              title="Templates & Projects"
+            >
+              <FileText size={15} />
+            </button>
 
-          <ShortcutsPopover />
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              title="Save Project"
+            >
+              {isSaving ? <Loader2 size={15} className="animate-spin" /> : <Cloud size={15} />}
+            </button>
+
+            <button
+              onClick={handleExport}
+              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200"
+              title="Export Code"
+            >
+              <Download size={15} />
+            </button>
+
+            <button
+              onClick={() => setShowClearDialog(true)}
+              className="p-2 rounded-lg text-slate-300 hover:bg-red-600/20 hover:text-red-400 transition-all duration-200"
+              title="Clear Canvas"
+            >
+              <Trash2 size={15} />
+            </button>
+
+            <button
+              onClick={toggleThemeHandler}
+              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200"
+              title="Toggle Theme"
+            >
+              {isDark ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
+
+            <ShortcutsPopover />
+          </div>
         </div>
-      </div>
+      </header>
 
       <ConfirmDialog
         isOpen={showClearDialog}
@@ -489,6 +492,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         onConfirm={handleClear}
         onCancel={() => setShowClearDialog(false)}
       />
-    </header>
+    </>
   );
 };

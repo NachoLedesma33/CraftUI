@@ -54,11 +54,13 @@ export const Canvas: React.FC = () => {
   }, [view.showGrid, view.gridSize]);
 
   const rootComponent = rootId ? components[rootId] : null;
+  const hasChildren = rootComponent ? rootComponent.children.length > 0 : false;
 
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 ${isOver ? 'ring-2 ring-violet-400 ring-inset' : ''}`}
+      className={`relative flex-1 overflow-auto ${isOver ? 'ring-2 ring-violet-400 ring-inset' : ''}`}
+      style={{ backgroundColor: 'var(--bg-primary)' }}
       onClick={handleCanvasClick}
     >
       <div
@@ -73,10 +75,11 @@ export const Canvas: React.FC = () => {
         }}
       >
         <div
-          className="mx-auto mt-8 shadow-2xl bg-white dark:bg-slate-800"
+          className="mx-auto mt-8 shadow-2xl"
           style={{
             width: `${deviceWidth}px`,
             minHeight: `${canvasConfig.height}px`,
+            backgroundColor: 'var(--bg-secondary)',
             ...gridStyle,
           }}
         >
@@ -86,6 +89,20 @@ export const Canvas: React.FC = () => {
               isPreview={view.previewMode}
               isRoot={true}
             />
+          )}
+
+          {(!rootComponent || !hasChildren) && (
+            <div className="flex flex-col items-center justify-center py-24 px-8 select-none">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500/20 via-fuchsia-500/20 to-orange-500/20 flex items-center justify-center mb-5 border border-violet-500/10">
+                <span className="text-2xl opacity-60">+</span>
+              </div>
+              <p className="text-base font-semibold text-slate-400 mb-2">Canvas vacío</p>
+              <p className="text-sm text-slate-500 text-center max-w-xs leading-relaxed">
+                Arrastrá componentes desde el panel izquierdo o presioná{" "}
+                <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-400 font-mono">Ctrl+K</kbd>{" "}
+                para empezar
+              </p>
+            </div>
           )}
         </div>
       </div>

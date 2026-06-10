@@ -59,6 +59,7 @@ const isTextEditingShortcut = (e: KeyboardEvent): boolean => {
  */
 export const useKeyboardShortcuts = () => {
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
 
   // Editor actions
@@ -310,6 +311,13 @@ export const useKeyboardShortcuts = () => {
         return;
       }
 
+      // ===== COMMAND PALETTE =====
+      if (isMod && key === "k") {
+        e.preventDefault();
+        setShowCommandPalette((prev) => !prev);
+        return;
+      }
+
       // ===== HELP/SHORTCUTS =====
       if (key === "?" || (isMod && key === "/")) {
         e.preventDefault();
@@ -352,6 +360,8 @@ export const useKeyboardShortcuts = () => {
   return {
     showShortcutsModal,
     setShowShortcutsModal,
+    showCommandPalette,
+    setShowCommandPalette,
     isRenaming,
     setIsRenaming,
   };

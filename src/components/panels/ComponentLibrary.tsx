@@ -29,6 +29,35 @@ const componentIcons: Record<ComponentType, React.ReactNode> = {
   grid: <LayoutGrid size={16} />,
 };
 
+const componentPreviews: Record<ComponentType, React.ReactNode> = {
+  box: <div className="w-full h-full bg-gradient-to-br from-violet-400/50 to-violet-600/30 rounded" />,
+  text: (
+    <div className="w-full space-y-1 p-1">
+      <div className="h-1.5 bg-slate-400/40 rounded w-full" />
+      <div className="h-1.5 bg-slate-400/30 rounded w-3/4" />
+      <div className="h-1.5 bg-slate-400/20 rounded w-1/2" />
+    </div>
+  ),
+  button: <div className="w-full h-full bg-violet-500 rounded-sm flex items-center justify-center text-[6px] text-white font-medium">Btn</div>,
+  image: <div className="w-full h-full bg-gradient-to-br from-emerald-400/40 to-emerald-600/30 rounded flex items-center justify-center text-slate-400"><Image size={12} /></div>,
+  container: <div className="w-full h-full border border-slate-400/30 rounded bg-slate-400/5" />,
+  flex: (
+    <div className="w-full h-full flex gap-0.5 p-1">
+      <div className="flex-1 bg-violet-400/30 rounded-sm" />
+      <div className="flex-1 bg-violet-400/40 rounded-sm" />
+      <div className="flex-1 bg-violet-400/30 rounded-sm" />
+    </div>
+  ),
+  grid: (
+    <div className="w-full h-full grid grid-cols-2 gap-0.5 p-0.5">
+      <div className="bg-fuchsia-400/30 rounded-sm" />
+      <div className="bg-fuchsia-400/30 rounded-sm" />
+      <div className="bg-fuchsia-400/30 rounded-sm" />
+      <div className="bg-fuchsia-400/30 rounded-sm" />
+    </div>
+  ),
+};
+
 interface DraggableItemProps {
   blueprint: ComponentBlueprint;
 }
@@ -86,6 +115,9 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
         <div className="text-xs text-slate-300 truncate hidden sm:block group-hover:text-slate-200 transition-colors">
           {blueprint.description}
         </div>
+      </div>
+      <div className="w-10 h-10 flex-shrink-0 rounded-lg overflow-hidden bg-slate-900/40 ring-1 ring-white/5 group-hover:ring-white/10 transition-all">
+        {componentPreviews[blueprint.type]}
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from "react";
+import { useDraggable } from "@dnd-kit/core";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
+import { ResizeHandles } from "./ResizeHandles";
 import type {
   UIComponent,
   ComponentType,
@@ -260,6 +262,14 @@ const EditWrapper = React.memo<EditWrapperProps>(({
   component,
 }) => {
   const deleteComponent = useEditorStore((s) => s.deleteComponent);
+  const lastAddedId = useUIStore((s) => s.lastAddedId);
+  const isNew = component.id === lastAddedId;
+
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: component.id,
+    data: { type: "existing", componentId: component.id, component },
+    disabled: isRoot,
+  });
 
   const handleDelete = useCallback(
     (e: React.MouseEvent) => {
@@ -269,43 +279,60 @@ const EditWrapper = React.memo<EditWrapperProps>(({
     [component.id, deleteComponent],
   );
 
+  const dragStyle: React.CSSProperties = useMemo(() => {
+    if (!transform || isDragging) return {};
+    return {
+      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    };
+  }, [transform, isDragging]);
+
   return (
     <div
-      className="relative group"
+      ref={setNodeRef}
+      className={`relative group ${isSelected ? "" : ""}`}
       onClick={onClick}
-      style={{ outline: "none" }}
+      style={{ outline: "none", ...dragStyle }}
+      {...(isSelected && !isRoot ? listeners : {})}
+      {...(isSelected && !isRoot ? attributes : {})}
     >
       {children}
 
+      {/* Editor outline (subtle) + selection border + entrance animation */}
       <div
-        className="absolute inset-0 pointer-events-none transition-opacity duration-150"
+        className={`absolute inset-0 pointer-events-none transition-all duration-150 ${isNew ? 'animate-pulse-once' : ''}`}
         style={{
-          border: isSelected ? "2px dashed #8b5cf6" : "1px solid transparent",
-          opacity: isSelected ? 1 : 0,
+          border: isSelected ? "2px dashed #8b5cf6" : "1px solid rgba(148, 163, 184, 0.15)",
+          opacity: isSelected ? 1 : (isRoot ? 0 : 0.4),
+          borderRadius: '4px',
+          transition: 'border-color 0.15s, opacity 0.15s',
+        }}
+      />
+      <div
+        className={`absolute inset-0 pointer-events-none rounded transition-opacity duration-150 ${isNew ? 'animate-pulse-once' : ''}`}
+        style={{
+          boxShadow: isNew ? 'inset 0 0 0 2px rgba(139, 92, 246, 0.5)' : 'none',
         }}
       />
 
       {isSelected && (
-        <>
-          <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 rounded flex items-center gap-1">
-            <span>{component.metadata.name}</span>
-          </div>
-
-          {!isRoot && (
-            <button
-              onClick={handleDelete}
-              className="absolute -top-6 right-0 bg-red-500 text-white w-5 h-5 rounded flex items-center justify-center text-xs hover:bg-red-600 pointer-events-auto"
-            >
-              ×
-            </button>
-          )}
-
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm cursor-nwse-resize pointer-events-auto" />
-          <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm cursor-nesw-resize pointer-events-auto" />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm cursor-nesw-resize pointer-events-auto" />
-          <div className="absolute bottom-0 right-1/2 translate-x-1/2 translate-y-1/2 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm cursor-nwse-resize pointer-events-auto" />
-        </>
+        <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 rounded-t-md rounded-r-md flex items-center gap-1.5 shadow-sm pointer-events-none">
+          <span className="cursor-grab active:cursor-grabbing" {...(!isRoot ? listeners : {})}>⠿</span>
+          <span>{component.metadata.name}</span>
+        </div>
       )}
+
+      {/* Delete button */}
+      {isSelected && !isRoot && (
+        <button
+          onClick={handleDelete}
+          className="absolute -top-6 right-0 bg-red-500 text-white w-5 h-5 rounded-t-md rounded-l-md flex items-center justify-center text-xs hover:bg-red-600 pointer-events-auto shadow-sm transition-colors"
+        >
+          ×
+        </button>
+      )}
+
+      {/* Functional resize handles */}
+      <ResizeHandles componentId={component.id} isSelected={isSelected && !isRoot} />
     </div>
   );
 });

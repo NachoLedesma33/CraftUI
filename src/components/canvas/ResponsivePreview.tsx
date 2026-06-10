@@ -10,6 +10,7 @@ import {
 import { useEditorStore } from '@/store';
 import { useUIStore } from '@/store';
 import { exportToHTML } from '@/utils/export/HTMLExporter';
+import { DeviceFrame } from './DeviceFrame';
 
 type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'custom';
 type ZoomLevel = '50' | '75' | '100' | 'fit';
@@ -121,19 +122,6 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
   );
 };
 
-interface DimensionOverlayProps {
-  width: number;
-  height: number;
-}
-
-const DimensionOverlay: React.FC<DimensionOverlayProps> = ({ width, height }) => {
-  return (
-    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-black/80 text-white text-xs font-mono rounded-full backdrop-blur-sm">
-      {width} × {height} px
-    </div>
-  );
-};
-
 export const ResponsivePreview: React.FC = () => {
   const components = useEditorStore((s) => s.components);
   const rootId = useEditorStore((s) => s.rootId);
@@ -204,14 +192,11 @@ export const ResponsivePreview: React.FC = () => {
       />
 
       <div className="flex-1 flex items-center justify-center p-8 overflow-auto">
-        <div
-          className="relative bg-white shadow-2xl rounded-[2rem] border-[12px] border-slate-900 overflow-hidden transition-all duration-300"
-          style={{
-            width: dimensions.width,
-            height: dimensions.height,
-            transform: scale ? `scale(${scale})` : undefined,
-            transformOrigin: 'center center',
-          }}
+        <DeviceFrame
+          device={device}
+          width={dimensions.width}
+          height={dimensions.height}
+          scale={scale}
         >
           <iframe
             title="Preview"
@@ -219,8 +204,7 @@ export const ResponsivePreview: React.FC = () => {
             srcDoc={srcDoc}
             sandbox="allow-scripts allow-same-origin"
           />
-          <DimensionOverlay width={dimensions.width} height={dimensions.height} />
-        </div>
+        </DeviceFrame>
       </div>
     </div>
   );

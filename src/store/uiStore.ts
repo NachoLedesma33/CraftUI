@@ -73,6 +73,8 @@ export interface UIActions {
   restoreAutoSaveVersion: (versionId: string) => AutoSaveVersion | null;
   clearAutoSaveVersions: () => void;
   clearToasts: () => void;
+  lastAddedId: string | null;
+  setLastAddedId: (id: string | null) => void;
 }
 
 type UIStore = UIState & UIActions;
@@ -111,6 +113,7 @@ export const useUIStore = create<UIStore>()(
         panels: initialPanels,
         clipboard: null,
         toasts: [],
+        lastAddedId: null,
         autoSave: initialAutoSave,
 
         setZoom: (zoom: number) => {
@@ -253,6 +256,10 @@ export const useUIStore = create<UIStore>()(
         },
         clearToasts: () => {
           set({ toasts: [] });
+        },
+
+        setLastAddedId: (id: string | null) => {
+          set({ lastAddedId: id });
         },
       }),
       {

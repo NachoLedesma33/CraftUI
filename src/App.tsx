@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from "react";
 import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
 import { Panel, Group, Separator } from "react-resizable-panels";
-import { Toolbar } from "@/components/layout";
+import { Toolbar, CommandPalette } from "@/components/layout";
 import { Canvas, CanvasOverlays, ResponsivePreview } from "@/components/canvas";
 import { PropertiesPanel } from "@/components/panels/PropertiesPanel";
 import { ComponentLibrary } from "@/components/panels/ComponentLibrary";
@@ -12,7 +12,7 @@ const ExportModal = lazy(() => import("@/components/modals/ExportModal").then(m 
 const TemplateModal = lazy(() => import("@/components/modals/TemplateModal").then(m => ({ default: m.default })));
 const ShortcutsModal = lazy(() => import("@/components/modals/ShortcutsModal").then(m => ({ default: m.ShortcutsModal })));
 const AutoSaveModal = lazy(() => import("@/components/modals/AutoSaveModal").then(m => ({ default: m.AutoSaveModal })));
-import { useUIStore } from "@/store";
+import { useUIStore, useEditorStore } from "@/store";
 import { useKeyboardShortcuts } from "@/hooks";
 import { useAutoSave } from "@/hooks";
 import { useDragDrop, getDragOverlayContent } from "@/hooks";
@@ -30,7 +30,7 @@ function App() {
   );
 
   // Initialize hooks
-  const { showShortcutsModal, setShowShortcutsModal } = useKeyboardShortcuts();
+  const { showShortcutsModal, setShowShortcutsModal, showCommandPalette, setShowCommandPalette } = useKeyboardShortcuts();
   const { lastSaved, isEnabled, hasChanges } = useAutoSave();
   const {
     activeItem,
@@ -49,6 +49,24 @@ function App() {
     return () =>
       window.removeEventListener("openExportModal", handleOpenExportModal);
   }, []);
+
+  const commands = useMemo(() => [
+    { id: "save", label: "Save Project", description: "Save current project state", shortcut: "⌘S", icon: "💾", category: "Project", action: () => setIsExportOpen(false) },
+    { id: "export", label: "Export Code", description: "Export project to HTML/CSS", shortcut: "⌘E", icon: "📦", category: "Project", action: () => setIsExportOpen(true) },
+    { id: "templates", label: "Templates", description: "Open template gallery", icon: "📄", category: "Project", action: () => setIsTemplateModalOpen(true) },
+    { id: "autosave", label: "Auto-Save Versions", description: "View and restore auto-saved versions", icon: "💿", category: "Project", action: () => setIsAutoSaveModalOpen(true) },
+    { id: "preview", label: "Toggle Preview", description: "Switch between editor and preview mode", shortcut: "⌘P", icon: "👁", category: "Canvas", action: () => useUIStore.getState().setPreviewMode(!useUIStore.getState().view.previewMode) },
+    { id: "grid", label: "Toggle Grid", description: "Show or hide the canvas grid", shortcut: "⌘G", icon: "⊞", category: "Canvas", action: () => useUIStore.getState().toggleGrid() },
+    { id: "zoomin", label: "Zoom In", description: "Zoom into the canvas", shortcut: "+", icon: "🔍", category: "Canvas", action: () => useUIStore.getState().zoomIn() },
+    { id: "zoomout", label: "Zoom Out", description: "Zoom out of the canvas", shortcut: "-", icon: "🔍", category: "Canvas", action: () => useUIStore.getState().zoomOut() },
+    { id: "resetzoom", label: "Reset Zoom", description: "Reset zoom to 100%", shortcut: "0", icon: "🔍", category: "Canvas", action: () => useUIStore.getState().resetZoom() },
+    { id: "undo", label: "Undo", description: "Undo last action", shortcut: "⌘Z", icon: "↩", category: "Editing", action: () => useEditorStore.getState().undo() },
+    { id: "redo", label: "Redo", description: "Redo last undone action", shortcut: "⌘Y", icon: "↪", category: "Editing", action: () => useEditorStore.getState().redo() },
+    { id: "duplicate", label: "Duplicate", description: "Duplicate selected component", shortcut: "⌘D", icon: "📋", category: "Editing", action: () => { const id = useEditorStore.getState().selectedIds[0]; if (id) useEditorStore.getState().duplicateComponent(id); } },
+    { id: "delete", label: "Delete Selected", description: "Remove selected component(s)", shortcut: "⌫", icon: "🗑", category: "Editing", action: () => useEditorStore.getState().deleteSelected() },
+    { id: "deselect", label: "Deselect All", description: "Clear current selection", shortcut: "Esc", icon: "✕", category: "Editing", action: () => useEditorStore.getState().clearSelection() },
+    { id: "shortcuts", label: "Keyboard Shortcuts", description: "Show all keyboard shortcuts", shortcut: "?", icon: "⌨", category: "Help", action: () => setShowShortcutsModal(true) },
+  ], [setShowShortcutsModal, setIsExportOpen, setIsTemplateModalOpen, setIsAutoSaveModalOpen]);
 
   const handleMouseMove = useCallback((position: { x: number; y: number }) => {
     setMousePosition(prev => {
@@ -197,6 +215,13 @@ function App() {
 
           {/* Drag Overlay */}
           <DragOverlay>{dragOverlayContent}</DragOverlay>
+
+          {/* Command Palette */}
+          <CommandPalette
+            isOpen={showCommandPalette}
+            onClose={() => setShowCommandPalette(false)}
+            commands={commands}
+          />
 
           {/* Modals */}
           <Suspense fallback={null}>
