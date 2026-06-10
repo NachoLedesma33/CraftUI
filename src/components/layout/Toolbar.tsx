@@ -408,12 +408,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         <div className="brutal-card flex h-12 items-center justify-between px-4 shadow-brutal rounded-none">
           {/* Left section */}
           <div className="flex items-center gap-4" style={{ paddingLeft: 20 }}>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-5">
               <div className="w-10 h-10 flex items-center justify-center border-2 border-black shadow-brutal-sm" style={{ backgroundColor: "var(--accent)" }}>
                 <Box size={20} className="text-black" />
               </div>
               <span className="text-sm font-extrabold uppercase tracking-[0.1em]" style={{ color: "var(--text)" }}>
-                Craft
+                Craft UI
               </span>
             </div>
 
