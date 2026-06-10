@@ -184,12 +184,14 @@ export const AnimationPanel: React.FC = () => {
     const totalDuration = (animationConfig.duration! + (animationConfig.delay || 0)) * (animationConfig.iterations === 'infinite' ? 1 : animationConfig.iterations!);
     setTimeout(() => {
       setIsPlaying(false);
-      updateComponent(selectedId, {
-        styles: {
-          ...selectedComponent.styles,
-          animationName: selectedComponent.styles.animationName,
-        } as typeof selectedComponent.styles,
-      });
+      const restored = { ...selectedComponent.styles };
+      delete restored.animationName;
+      delete restored.animationDuration;
+      delete restored.animationDelay;
+      delete restored.animationIterationCount;
+      delete restored.animationTimingFunction;
+      delete restored.animationFillMode;
+      updateComponent(selectedId, { styles: restored as typeof selectedComponent.styles });
     }, totalDuration);
   }, [selectedComponent, selectedId, localAnimation, updateComponent]);
 

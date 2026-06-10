@@ -136,6 +136,7 @@ export const ResponsivePreview: React.FC = () => {
     [device, isLandscape]
   );
 
+  const serialized = JSON.stringify(components);
   const srcDoc = useMemo(() => {
     if (!rootId || !components[rootId]) return '';
     
@@ -152,7 +153,8 @@ export const ResponsivePreview: React.FC = () => {
       console.error('Failed to generate preview HTML:', error);
       return '<html><body><p>Error generating preview</p></body></html>';
     }
-  }, [components, rootId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rootId, serialized]);
 
   const handleRotate = useCallback(() => {
     setIsLandscape((prev) => !prev);
@@ -202,7 +204,7 @@ export const ResponsivePreview: React.FC = () => {
             title="Preview"
             className="w-full h-full border-none"
             srcDoc={srcDoc}
-            sandbox="allow-scripts allow-same-origin"
+            sandbox="allow-scripts"
           />
         </DeviceFrame>
       </div>

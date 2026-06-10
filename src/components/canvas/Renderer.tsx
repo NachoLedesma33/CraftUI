@@ -262,6 +262,8 @@ const EditWrapper = React.memo<EditWrapperProps>(({
   component,
 }) => {
   const deleteComponent = useEditorStore((s) => s.deleteComponent);
+  const endRenaming = useEditorStore((s) => s.endRenaming);
+  const cancelRenaming = useEditorStore((s) => s.cancelRenaming);
   const lastAddedId = useUIStore((s) => s.lastAddedId);
   const isNew = component.id === lastAddedId;
 
@@ -278,6 +280,21 @@ const EditWrapper = React.memo<EditWrapperProps>(({
     },
     [component.id, deleteComponent],
   );
+
+  const handleRenameSubmit = useCallback((input: HTMLInputElement | null) => {
+    if (input) {
+      input.focus();
+      input.select();
+      const finish = () => endRenaming(component.id, input.value);
+      const cancel = () => cancelRenaming(component.id);
+      input.onkeydown = (e: KeyboardEvent) => {
+        e.stopPropagation();
+        if (e.key === 'Enter') finish();
+        else if (e.key === 'Escape') cancel();
+      };
+      input.onblur = finish;
+    }
+  }, [component.id, endRenaming, cancelRenaming]);
 
   const dragStyle: React.CSSProperties = useMemo(() => {
     if (!transform || isDragging) return {};
@@ -317,7 +334,15 @@ const EditWrapper = React.memo<EditWrapperProps>(({
       {isSelected && (
         <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 rounded-t-md rounded-r-md flex items-center gap-1.5 shadow-sm pointer-events-none">
           <span className="cursor-grab active:cursor-grabbing" {...(!isRoot ? listeners : {})}>⠿</span>
-          <span>{component.metadata.name}</span>
+          {component.metadata.isRenaming ? (
+            <input
+              ref={handleRenameSubmit}
+              defaultValue={component.metadata.name}
+              className="w-24 bg-slate-700 text-white text-xs px-1 py-0 rounded border border-violet-300 outline-none"
+            />
+          ) : (
+            <span>{component.metadata.name}</span>
+          )}
         </div>
       )}
 

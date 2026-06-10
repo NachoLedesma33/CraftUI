@@ -144,25 +144,20 @@ export const useEditorStore = create<EditorWithImmer>()(
         },
 
         deleteComponent: (id: string) => {
-          const component = get().components[id];
-          if (!component) return;
-
-          const deleteRecursive = (componentId: string) => {
-            const comp = get().components[componentId];
-            if (!comp) return;
-            
-            comp.children.forEach((childId: string) => deleteRecursive(childId));
-            set((s: EditorWithImmer) => { delete s.components[componentId]; });
-          };
-
-          set((s: EditorWithImmer) => {
-            if (component.parent && s.components[component.parent]) {
-              const parent = s.components[component.parent];
-              parent.children = parent.children.filter((childId: string) => childId !== id);
-            }
+          set((state: EditorWithImmer) => {
+            const del = (compId: string) => {
+              const comp = state.components[compId];
+              if (!comp) return;
+              comp.children.forEach((childId: string) => del(childId));
+              if (comp.parent && state.components[comp.parent]) {
+                state.components[comp.parent].children = state.components[comp.parent].children.filter(
+                  (cid: string) => cid !== compId,
+                );
+              }
+              delete state.components[compId];
+            };
+            del(id);
           });
-
-          deleteRecursive(id);
           get().saveToHistory();
         },
 
@@ -170,41 +165,33 @@ export const useEditorStore = create<EditorWithImmer>()(
           const original = get().components[id];
           if (!original) return null;
 
-          const cloneRecursive = (comp: UIComponent, newParentId: string | null): string => {
-            const newId = uuidv4();
-            const newComponent: UIComponent = {
-              ...JSON.parse(JSON.stringify(comp)),
-              id: newId,
-              parent: newParentId,
-              children: [],
-              metadata: { ...comp.metadata, name: `${comp.metadata.name} (Copy)` },
+          let newId = '';
+
+          set((state: EditorWithImmer) => {
+            const cloneRecursive = (comp: UIComponent, newParentId: string | null): string => {
+              const cid = uuidv4();
+              const cloned: UIComponent = {
+                ...JSON.parse(JSON.stringify(comp)),
+                id: cid,
+                parent: newParentId,
+                children: [],
+                metadata: { ...comp.metadata, name: `${comp.metadata.name} (Copy)` },
+              };
+              cloned.children = comp.children.map((childId: string) => {
+                const child = state.components[childId];
+                return child ? cloneRecursive(child, cid) : '';
+              }).filter(Boolean);
+              state.components[cid] = cloned;
+              return cid;
             };
 
-            const newChildren: string[] = [];
+            newId = cloneRecursive(original, original.parent);
 
-            comp.children.forEach((childId: string) => {
-              const child = get().components[childId];
-              if (child) {
-                const newChildId = cloneRecursive(child, newId);
-                newChildren.push(newChildId);
-              }
-            });
-
-            newComponent.children = newChildren;
-
-            set((s: EditorWithImmer) => { s.components[newId] = newComponent; });
-
-            return newId;
-          };
-
-          const newId = cloneRecursive(original, original.parent);
-          
-          if (original.parent && get().components[original.parent]) {
-            const parentIndex = get().components[original.parent].children.indexOf(id);
-            set((s: EditorWithImmer) => {
-              s.components[original.parent!].children.splice(parentIndex + 1, 0, newId);
-            });
-          }
+            if (original.parent && state.components[original.parent]) {
+              const parentIndex = state.components[original.parent].children.indexOf(id);
+              state.components[original.parent].children.splice(parentIndex + 1, 0, newId);
+            }
+          });
 
           get().saveToHistory();
           return newId;
@@ -360,13 +347,24 @@ export const useEditorStore = create<EditorWithImmer>()(
         },
 
         deleteSelected: () => {
-          const state = get();
-          const selectedIds = [...state.selectedIds];
-          selectedIds.forEach((id) => {
-            if (state.components[id]) {
-              get().deleteComponent(id);
-            }
+          const ids = [...get().selectedIds];
+          set((state: EditorWithImmer) => {
+            const del = (compId: string) => {
+              const comp = state.components[compId];
+              if (!comp) return;
+              comp.children.forEach((childId: string) => del(childId));
+              if (comp.parent && state.components[comp.parent]) {
+                state.components[comp.parent].children = state.components[comp.parent].children.filter(
+                  (cid: string) => cid !== compId,
+                );
+              }
+              delete state.components[compId];
+            };
+            ids.forEach((id) => {
+              if (state.components[id]) del(id);
+            });
           });
+          get().saveToHistory();
           get().clearSelection();
         },
 

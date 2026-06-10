@@ -55,6 +55,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
   const selectedIds = useEditorStore((s) => s.selectedIds);
   const selectComponent = useEditorStore((s) => s.selectComponent);
   const updateComponent = useEditorStore((s) => s.updateComponent);
+  const saveToHistory = useEditorStore((s) => s.saveToHistory);
   const deleteComponent = useEditorStore((s) => s.deleteComponent);
   const duplicateComponent = useEditorStore((s) => s.duplicateComponent);
 
@@ -106,9 +107,10 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
             isVisible: !component.metadata.isVisible,
           },
         });
+        saveToHistory();
       }
     },
-    [componentId, component, updateComponent],
+    [componentId, component, updateComponent, saveToHistory],
   );
 
   const handleToggleLock = useCallback(
@@ -121,9 +123,10 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
             isLocked: !component.metadata.isLocked,
           },
         });
+        saveToHistory();
       }
     },
-    [componentId, component, updateComponent],
+    [componentId, component, updateComponent, saveToHistory],
   );
 
   const handleDelete = useCallback(

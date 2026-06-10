@@ -70,8 +70,8 @@ export const Canvas: React.FC = () => {
           minWidth: '100%',
           minHeight: '100%',
           transform: `scale(${view.zoom})`,
-          transformOrigin: 'top center',
-          transition: 'transform 0.15s ease-out',
+          transformOrigin: 'center top',
+          transition: 'transform 0.1s ease-out',
         }}
       >
         <div

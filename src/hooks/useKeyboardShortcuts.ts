@@ -227,7 +227,7 @@ export const useKeyboardShortcuts = () => {
         e.preventDefault();
         if (selectedIds.length > 0) {
           deleteSelected();
-          addToast("Component(s) deleted", "success", 2000);
+          addToast("Component(s) deleted — undo with Ctrl+Z", "info", 3000);
         }
         return;
       }

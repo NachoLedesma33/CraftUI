@@ -327,6 +327,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   const canUndo = useEditorStore((s) => s.history.past.length > 0);
   const canRedo = useEditorStore((s) => s.history.future.length > 0);
   const loadState = useEditorStore((s) => s.loadState);
+  const saveToHistory = useEditorStore((s) => s.saveToHistory);
   const components = useEditorStore((s) => s.components);
 
   const view = useUIStore((s) => s.view);
@@ -354,14 +355,15 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   const handleClear = useCallback(() => {
     const rootId = Object.values(components).find((c) => c.parent === null)?.id;
     if (rootId) {
-      const rootComponent = components[rootId];
+      saveToHistory();
+      const rootComponent = { ...components[rootId], children: [] };
       loadState({
         [rootId]: rootComponent,
       });
       addToast("Canvas cleared!", "info");
     }
     setShowClearDialog(false);
-  }, [components, loadState, addToast]);
+  }, [components, loadState, saveToHistory, addToast]);
 
   const toggleThemeHandler = useCallback(() => {
     toggleTheme();

@@ -26,6 +26,7 @@ interface ResizeState {
   startHeight: number;
   currentWidth: number;
   currentHeight: number;
+  startRect: { left: number; top: number } | null;
 }
 
 const MIN_SIZE = 20;
@@ -59,6 +60,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
     startHeight: 0,
     currentWidth: 0,
     currentHeight: 0,
+    startRect: null,
   });
   
   const [isResizing, setIsResizing] = useState(false);
@@ -100,6 +102,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
     e.preventDefault();
     
     const { width, height } = getCurrentSize();
+    const rect = componentRef.current?.getBoundingClientRect() || null;
     
     setResizeState({
       active: true,
@@ -110,6 +113,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
       startHeight: height,
       currentWidth: width,
       currentHeight: height,
+      startRect: rect ? { left: rect.left, top: rect.top } : null,
     });
     
     setIsResizing(true);
@@ -119,8 +123,14 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!resizeState.active || !resizeState.handle || !component) return;
     
-    const deltaX = (e.clientX - resizeState.startX) / zoom;
-    const deltaY = (e.clientY - resizeState.startY) / zoom;
+    const rect = componentRef.current?.getBoundingClientRect();
+    const origin = resizeState.startRect || { left: e.clientX, top: e.clientY };
+    const deltaX = rect
+      ? ((e.clientX - origin.left) - (resizeState.startX - origin.left)) / zoom
+      : (e.clientX - resizeState.startX) / zoom;
+    const deltaY = rect
+      ? ((e.clientY - origin.top) - (resizeState.startY - origin.top)) / zoom
+      : (e.clientY - resizeState.startY) / zoom;
     
     let newWidth = resizeState.startWidth;
     let newHeight = resizeState.startHeight;
@@ -178,6 +188,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
         startHeight: 0,
         currentWidth: 0,
         currentHeight: 0,
+        startRect: null,
       });
       setIsResizing(false);
       setShowTooltip(false);
