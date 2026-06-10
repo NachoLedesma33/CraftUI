@@ -3,9 +3,9 @@ import { useUIStore, useToasts } from "@/store/uiStore";
 import { X } from "lucide-react";
 
 const typeStyles: Record<string, string> = {
-  success: "bg-emerald-700 border-emerald-500 text-white",
-  error: "bg-red-700 border-red-500 text-white",
-  info: "bg-violet-700 border-violet-500 text-white",
+  success: "bg-emerald-700 border-2 border-black text-white",
+  error: "bg-red-700 border-2 border-black text-white",
+  info: "bg-violet-700 border-2 border-black text-white",
 };
 
 export const ToastContainer: React.FC = () => {

@@ -4,11 +4,11 @@ import type { Template, TemplateCategory } from "@/types/template";
 import { Download, Upload, Trash2, Search } from "lucide-react";
 
 const BUTTON_CLASS =
-  "px-3 py-2 text-xs bg-[var(--accent)] hover:bg-violet-700 text-white transition-colors disabled:bg-[var(--bg-tertiary)]";
+  "px-3 py-2 text-xs bg-[var(--accent)] hover:bg-violet-700 text-black font-bold border-2 border-[var(--border)] transition-colors disabled:bg-[var(--bg-tertiary)]";
 const BUTTON_OUTLINE =
-  "px-3 py-2 text-xs border border-[var(--border)] hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition-colors";
+  "px-3 py-2 text-xs border-2 border-[var(--border)] hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition-colors";
 const INPUT_CLASS =
-  "w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)] focus:border-violet-500 focus:outline-none";
+  "w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-primary)] focus:outline-none";
 
 interface TemplateModalProps {
   isOpen: boolean;
@@ -30,7 +30,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
   onExport,
 }) => {
   return (
-    <div className="flex flex-col border border-[var(--border)] bg-[var(--bg-secondary)] overflow-hidden hover:border-[var(--accent)] transition-colors">
+    <div className="flex flex-col border-2 border-[var(--border)] bg-[var(--bg-secondary)] overflow-hidden hover:border-[var(--accent)] transition-colors">
       {/* Thumbnail */}
       <div className="w-full h-32 bg-[var(--bg-tertiary)] flex items-center justify-center overflow-hidden">
         {template.thumbnail ? (
@@ -61,7 +61,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
             {template.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag}
-                className="text-xs px-2 py-0.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+                className="text-xs px-2 py-0.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-2 border-[var(--border)]"
               >
                 {tag}
               </span>
@@ -235,11 +235,11 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-label="Templates">
-      <div className="bg-[var(--bg-secondary)] border-[var(--border)] w-full max-w-6xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-label="Templates">
+      <div className="bg-[var(--bg-secondary)] border-2 border-[var(--border)] shadow-brutal w-full max-w-6xl max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="border-b border-[var(--border)] p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Templates</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Templates</h2>
           <button
             onClick={onClose}
             className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xl"
@@ -273,7 +273,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
           </button>
           {selectedTab === "user" && (
             <div className="ml-auto flex items-center gap-2">
-              <label className={`${BUTTON_OUTLINE} cursor-pointer`}>
+              <label className={`${BUTTON_OUTLINE} cursor-pointer border-2`}>
                 <Upload size={14} />
                 <input
                   type="file"
@@ -302,10 +302,10 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
           <div className="flex items-center gap-2 overflow-x-auto">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`px-3 py-1 text-xs whitespace-nowrap transition-colors ${
-                activeCategory === "all"
-                  ? "bg-[var(--accent)] text-[var(--text-primary)]"
-                  : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+              className={`px-3 py-1 text-xs whitespace-nowrap border-2 border-[var(--border)] transition-colors ${
+                  activeCategory === "all"
+                    ? "bg-[var(--accent)] text-black font-bold"
+                    : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
               }`}
             >
               All
@@ -314,9 +314,9 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-3 py-1 text-xs whitespace-nowrap capitalize transition-colors ${
+                className={`px-3 py-1 text-xs whitespace-nowrap capitalize border-2 border-[var(--border)] transition-colors ${
                   activeCategory === cat
-                    ? "bg-[var(--accent)] text-[var(--text-primary)]"
+                    ? "bg-[var(--accent)] text-black font-bold"
                     : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                 }`}
               >

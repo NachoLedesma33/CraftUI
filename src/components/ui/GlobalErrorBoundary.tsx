@@ -114,9 +114,9 @@ export class GlobalErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-4">
-          <div className="bg-[var(--bg-secondary)] border-2 border-[var(--border)] shadow-brutal-lg p-8 max-w-2xl w-full text-center">
+          <div className="bg-red-900 border-2 border-black shadow-brutal-lg p-8 max-w-2xl w-full text-center">
             <div className="text-red-400 text-6xl mb-6">⚠️</div>
-            <h1 className="text-white text-2xl font-bold mb-4">
+            <h1 className="text-[var(--text-primary)] text-2xl font-bold mb-4">
               Something went wrong
             </h1>
             <p className="text-[var(--text-secondary)] text-lg mb-6">
@@ -127,26 +127,26 @@ export class GlobalErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <button
                 onClick={this.handleDownloadBackup}
-                className="bg-[var(--accent)] hover:bg-violet-700 text-white px-6 py-3 font-medium transition-colors"
+                className="bg-[var(--accent)] hover:bg-violet-700 text-black font-bold px-6 py-3 border-2 border-black transition-colors"
               >
                 📥 Download Backup
               </button>
               <button
                 onClick={this.handleResetEditor}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 font-medium transition-colors"
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 font-bold border-2 border-black transition-colors"
               >
                 🔄 Reset Editor
               </button>
               <button
                 onClick={this.handleReload}
-                className="bg-[var(--bg-tertiary)] hover:bg-slate-700 text-white px-6 py-3 font-medium transition-colors"
+                className="bg-[var(--bg-tertiary)] hover:bg-slate-700 text-white px-6 py-3 font-bold border-2 border-black transition-colors"
               >
                 ↻ Reload Page
               </button>
             </div>
 
             {process.env.NODE_ENV === "development" && this.state.error && (
-              <details className="text-left bg-[var(--bg-primary)] border-[var(--border)]">
+              <details className="text-left bg-[var(--bg-primary)] border-2 border-black">
                 <summary className="text-[var(--text-secondary)] cursor-pointer font-medium mb-2">
                   Error Details (Development Mode)
                 </summary>

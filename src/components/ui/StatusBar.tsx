@@ -48,7 +48,7 @@ export const StatusBar = React.memo<StatusBarProps>(({ mousePosition }) => {
   }, [mousePosition]);
 
   return (
-    <footer className="h-6 border-t border-[var(--border)] flex items-center justify-between px-3 text-xs text-[var(--text-muted)] select-none" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-muted)' }}>
+    <footer className="h-6 border-t-2 border-black flex items-center justify-between px-3 text-xs text-[var(--text-muted)] select-none bg-[var(--bg-primary)]">
       <div className="flex items-center gap-4">
         <span>Components: {metrics.totalComponents}</span>
         <span>Layers: {metrics.layersCount}</span>

@@ -181,13 +181,13 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="Export project">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/80" onClick={onClose} />
       
-      <div className="relative bg-[var(--bg-secondary)] shadow-brutal-lg w-[95vw] h-[85vh] max-w-7xl flex flex-col overflow-hidden border border-[var(--border)]">
+      <div className="relative bg-[var(--bg-secondary)] shadow-brutal-lg w-[95vw] h-[85vh] max-w-7xl flex flex-col overflow-hidden border-2 border-[var(--border)]">
         <header className="flex items-center justify-between p-4 border-b border-[var(--border)] bg-[var(--bg-tertiary)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[var(--accent)] flex items-center justify-center">
-              <FileCode size={20} className="text-white" />
+            <div className="w-10 h-10 bg-[var(--accent)] flex items-center justify-center border-2 border-[var(--border)]">
+              <FileCode size={20} className="text-black" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-[var(--text-primary)]">Export Project</h2>
@@ -198,14 +198,14 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownloadAll}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium border-2 border-[var(--border)] transition-colors"
             >
               <Package size={16} />
               Export All
             </button>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition-colors"
+              className="p-2 border-2 border-[var(--border)] hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition-colors"
               aria-label="Close dialog"
             >
               <X size={20} />
@@ -222,9 +222,9 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                   <button
                     key={opt.value}
                     onClick={() => updateOption('framework', opt.value)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm border-2 border-[var(--border)] transition-colors ${
                       options.framework === opt.value
-                        ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                        ? 'bg-[var(--accent)] text-black font-bold'
                         : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
                     }`}
                   >
@@ -240,7 +240,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
               <select
                 value={options.styling}
                 onChange={(e) => updateOption('styling', e.target.value as StylingStrategy)}
-                className="w-full px-3 py-2 bg-[var(--bg-tertiary)] border-[var(--border)] text-sm text-[var(--text-primary)] focus:border-violet-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-sm text-[var(--text-primary)] focus:outline-none"
               >
                 {stylingOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -266,7 +266,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                     type="checkbox"
                     checked={options.includeReset}
                     onChange={(e) => updateOption('includeReset', e.target.checked)}
-                    className="border-[var(--border)]"
+                    className="border-2 border-[var(--border)]"
                   />
                   Include CSS Reset
                 </label>
@@ -275,7 +275,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                     type="checkbox"
                     checked={options.includeResponsive}
                     onChange={(e) => updateOption('includeResponsive', e.target.checked)}
-                    className="border-[var(--border)]"
+                    className="border-2 border-[var(--border)]"
                   />
                   Responsive Media Queries
                 </label>
@@ -284,7 +284,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                     type="checkbox"
                     checked={options.typescript}
                     onChange={(e) => updateOption('typescript', e.target.checked)}
-                    className="border-[var(--border)]"
+                    className="border-2 border-[var(--border)]"
                   />
                   TypeScript
                 </label>
@@ -293,7 +293,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                     type="checkbox"
                     checked={options.prettify}
                     onChange={(e) => updateOption('prettify', e.target.checked)}
-                    className="border-[var(--border)]"
+                    className="border-2 border-[var(--border)]"
                   />
                   Prettify Code
                 </label>
@@ -302,7 +302,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                     type="checkbox"
                     checked={options.minify}
                     onChange={(e) => updateOption('minify', e.target.checked)}
-                    className="border-[var(--border)]"
+                    className="border-2 border-[var(--border)]"
                   />
                   Minify Output
                 </label>
@@ -331,7 +331,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopy}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border-2 border-[var(--border)] transition-colors ${
                     copied
                       ? 'bg-green-600 text-white'
                       : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
@@ -342,7 +342,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-tertiary)] text-xs font-medium text-[var(--text-secondary)] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-tertiary)] text-xs font-medium text-[var(--text-secondary)] border-2 border-[var(--border)] transition-colors"
                 >
                   <Download size={14} />
                   Download

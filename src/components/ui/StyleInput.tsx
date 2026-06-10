@@ -89,7 +89,7 @@ const UnitSelector: React.FC<{
     <select
       value={currentUnit}
       onChange={(e) => handleChange(e.target.value)}
-      className="px-1 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-secondary)] focus:border-violet-500 focus:outline-none"
+      className="px-1 py-1 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-secondary)] focus:outline-none"
     >
       {units.map((unit) => (
         <option key={unit} value={unit}>{unit}</option>
@@ -114,7 +114,7 @@ const ColorPicker: React.FC<{
         title="Click to pick color"
       />
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 p-2 bg-[var(--bg-secondary)] border-[var(--border)] shadow-brutal z-50">
+        <div className="absolute top-full left-0 mt-1 p-2 bg-[var(--bg-secondary)] border-2 border-[var(--border)] shadow-brutal z-50">
           <input
             type="color"
             value={value || '#000000'}
@@ -126,7 +126,7 @@ const ColorPicker: React.FC<{
               <button
                 key={c}
                 type="button"
-                className="w-5 h-5 border border-[var(--border)] cursor-pointer"
+                className="w-5 h-5 border-2 border-[var(--border)] cursor-pointer"
                 style={{ backgroundColor: c }}
                 onClick={() => { onChange(c); setIsOpen(false); }}
               />
@@ -138,12 +138,12 @@ const ColorPicker: React.FC<{
               value={value || ''}
               onChange={(e) => onChange(e.target.value)}
               placeholder="#000000"
-              className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)]"
+              className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
           <button
             type="button"
-            className="mt-2 w-full py-1 text-xs bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+            className="mt-2 w-full py-1 text-xs bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-2 border-[var(--border)]"
             onClick={() => setIsOpen(false)}
           >
             Done
@@ -262,7 +262,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
           value={currentValue}
           onChange={(e) => handleChange(e.target.value)}
           disabled={disabled}
-          className="flex-1 px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)] focus:border-violet-500 focus:outline-none"
+          className="flex-1 px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-primary)] focus:outline-none"
         >
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -300,7 +300,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
           max={max}
           step={step}
           disabled={disabled}
-          className="flex-1 px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)] focus:border-violet-500 focus:outline-none placeholder:text-[var(--text-muted)]"
+          className="flex-1 px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-primary)] focus:outline-none placeholder:text-[var(--text-muted)]"
         />
         {units && units.length > 0 && (
           <UnitSelector units={units} value={currentValue} onChange={handleChange} />
@@ -313,7 +313,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center">
         <label 
-          className="text-xs font-medium text-[var(--text-secondary)]"
+          className="text-xs font-bold text-[var(--text-secondary)]"
           title={description}
         >
           {label}
@@ -347,7 +347,7 @@ interface StyleInputGroupProps {
 
 export const StyleInputGroup: React.FC<StyleInputGroupProps> = ({ label, children }) => (
   <div className="flex flex-col gap-1">
-    <label className="text-xs font-medium text-[var(--text-muted)]">{label}</label>
+    <label className="text-xs font-bold text-[var(--text-muted)]">{label}</label>
     {children}
   </div>
 );
