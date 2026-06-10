@@ -167,29 +167,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   );
 };
 
-const TemplatesSection: React.FC = () => {
-  return (
-    <div className="mt-8 pt-6 border-t border-slate-700">
-      <div className="px-3 py-2 text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
-        My Components
-      </div>
-      <div className="p-5 border-2 border-dashed border-slate-600 rounded-xl text-center group hover:border-slate-500 hover:bg-slate-700/30 transition-all duration-200">
-        <div className="flex justify-center mb-3">
-          <div className="p-3 rounded-lg bg-slate-700/50 group-hover:bg-slate-600/50">
-            <Box
-              size={32}
-              className="text-slate-400 group-hover:text-slate-300"
-            />
-          </div>
-        </div>
-        <p className="text-sm font-semibold text-slate-300 mb-1">Coming Soon</p>
-        <p className="text-xs text-slate-500">
-          Save and reuse your custom components
-        </p>
-      </div>
-    </div>
-  );
-};
+
 
 export const ComponentLibrary: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -299,7 +277,6 @@ export const ComponentLibrary: React.FC = () => {
                 onToggle={() => toggleCategory(category.id)}
               />
             ))}
-            <TemplatesSection />
           </>
         )}
       </div>

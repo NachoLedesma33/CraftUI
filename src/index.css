@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Panel slide-in animations */
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.panel-enter-left { animation: slideInLeft 0.3s ease-out; }
+.panel-enter-right { animation: slideInRight 0.3s ease-out; }
+
 :root {
   --text: #e2e8f0;
   --text-secondary: #94a3b8;
@@ -95,160 +109,7 @@ body {
   margin: 0;
 }
 
-/* Utility classes for theme-aware colors */
-@layer components {
-  .text-primary {
-    color: var(--text);
-  }
-
-  .text-secondary {
-    color: var(--text-secondary);
-  }
-
-  .text-muted {
-    color: var(--text-muted);
-  }
-
-  .bg-primary {
-    background-color: var(--bg-primary);
-  }
-
-  .bg-secondary {
-    background-color: var(--bg-secondary);
-  }
-
-  .bg-tertiary {
-    background-color: var(--bg-tertiary);
-  }
-
-  .border-primary {
-    border-color: var(--border-color);
-  }
-}
-
-/* Light mode specific tweaks */
-:root.light button {
-  font-weight: 600;
-}
-
-:root.light input,
-:root.light textarea,
-:root.light select {
-  font-weight: 500;
-}
-
-:root.light .text-slate-white {
-  color: var(--text);
-}
-
-:root.light .text-slate-300 {
-  color: var(--text-secondary);
-}
-
-:root.light .text-slate-400 {
-  color: var(--text-muted);
-}
-
-:root.light .text-slate-500 {
-  color: var(--text-muted);
-}
-
-:root.light .bg-slate-800 {
-  background-color: var(--bg-secondary);
-}
-
-:root.light .bg-slate-700 {
-  background-color: var(--bg-tertiary);
-}
-
-:root.light .border-slate-700 {
-  border-color: var(--border-color);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.4;
-}
-
-h1 {
-  font-size: 2rem;
-  letter-spacing: -0.02em;
-  margin: 32px 0;
-}
-
-h2 {
-  font-size: 1.5rem;
-  letter-spacing: -0.01em;
-  margin: 0 0 16px;
-}
-
-h3 {
-  font-size: 1.25rem;
-  margin: 0 0 12px;
-}
-
-p {
-  margin: 0;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-small {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text);
-  font-weight: 500;
-}
-
-code {
-  font-size: 0.875rem;
-  line-height: 1.5;
-  padding: 4px 8px;
-  background: var(--bg-tertiary);
-}
-
-button {
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-:root.light button {
-  font-weight: 700;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--bg-tertiary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--border-color);
-}
-
-/* Form elements */
+/* Theme-aware form elements */
 input[type="text"],
 input[type="number"],
 input[type="email"],
@@ -274,118 +135,40 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-:root.light input[type="text"],
-:root.light input[type="number"],
-:root.light input[type="email"],
-:root.light input[type="password"],
-:root.light textarea,
-:root.light select {
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
-  font-weight: 600;
-}
-
-:root.light input[type="text"]:focus,
-:root.light input[type="number"]:focus,
-:root.light input[type="email"]:focus,
-:root.light input[type="password"]:focus,
-:root.light textarea:focus,
-:root.light select:focus {
-  background-color: #ffffff;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-/* Selection */
 ::selection {
   background-color: var(--selection);
   color: var(--text);
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-color); }
+
 /* ========== LIGHT MODE OVERRIDES ========== */
-/* These rules override Tailwind's static classes for light mode */
+:root.light button { font-weight: 700; }
 
-:root.light .text-white {
-  color: #111827;
-}
+:root.light .text-white { color: #111827; }
+:root.light .text-slate-200 { color: #374151; }
+:root.light .text-slate-300 { color: #374151; }
+:root.light .text-slate-400 { color: #4b5563; }
+:root.light .text-slate-500 { color: #6b7280; }
+:root.light .text-slate-600 { color: #374151; }
+:root.light .bg-slate-700 { background-color: #f3f4f6; }
+:root.light .bg-slate-800 { background-color: #f9fafb; }
+:root.light .bg-slate-900 { background-color: #ffffff; }
+:root.light .bg-slate-950 { background-color: #ffffff; }
+:root.light .border-slate-600 { border-color: #d1d5db; }
+:root.light .border-slate-700 { border-color: #d1d5db; }
+:root.light .border-gray-700 { border-color: #d1d5db; }
+:root.light .hover\:bg-slate-600:hover { background-color: #e5e7eb; }
+:root.light .hover\:bg-slate-700:hover { background-color: #e5e7eb; }
+:root.light .hover\:bg-slate-800:hover { background-color: #f3f4f6; }
+:root.light .hover\:text-slate-200:hover { color: #374151; }
+:root.light .hover\:text-white:hover { color: #111827; }
+:root.light .placeholder-slate-500::placeholder { color: #6b7280; }
 
-:root.light .text-slate-50 {
-  color: #111827;
-}
-
-:root.light .text-slate-200 {
-  color: #374151;
-}
-
-:root.light .text-slate-300 {
-  color: #374151;
-}
-
-:root.light .text-slate-400 {
-  color: #4b5563;
-}
-
-:root.light .text-slate-500 {
-  color: #6b7280;
-}
-
-:root.light .text-slate-600 {
-  color: #374151;
-}
-
-:root.light .bg-slate-700 {
-  background-color: #f3f4f6;
-}
-
-:root.light .bg-slate-800 {
-  background-color: #f9fafb;
-}
-
-:root.light .bg-slate-900 {
-  background-color: #ffffff;
-}
-
-:root.light .bg-slate-950 {
-  background-color: #ffffff;
-}
-
-:root.light .border-slate-600 {
-  border-color: #d1d5db;
-}
-
-:root.light .border-slate-700 {
-  border-color: #d1d5db;
-}
-
-:root.light .border-gray-700 {
-  border-color: #d1d5db;
-}
-
-:root.light .hover\:bg-slate-600:hover {
-  background-color: #e5e7eb;
-}
-
-:root.light .hover\:bg-slate-700:hover {
-  background-color: #e5e7eb;
-}
-
-:root.light .hover\:bg-slate-800:hover {
-  background-color: #f3f4f6;
-}
-
-:root.light .hover\:text-slate-200:hover {
-  color: #374151;
-}
-
-:root.light .hover\:text-white:hover {
-  color: #111827;
-}
-
-:root.light .placeholder-slate-500::placeholder {
-  color: #6b7280;
-}
-
-/* Specific component fixes for light mode */
 :root.light input[type="text"],
 :root.light input[type="number"],
 :root.light textarea,
@@ -395,20 +178,5 @@ select:focus {
   color: #111827;
 }
 
-:root.light
-  button:not(.bg-blue-600):not(.bg-green-600):not(.bg-red-600):not(
-    .bg-emerald-600
-  ) {
-  color: #111827;
-}
-
-:root.light
-  button:not(.bg-blue-600):not(.bg-green-600):not(.bg-red-600):not(
-    .bg-emerald-600
-  ):hover {
-  background-color: #e5e7eb;
-}
-
-:root.light .opacity-50 {
-  opacity: 0.6;
-}
+:root.light button:not(.bg-blue-600):not(.bg-green-600):not(.bg-red-600):not(.bg-emerald-600) { color: #111827; }
+:root.light button:not(.bg-blue-600):not(.bg-green-600):not(.bg-red-600):not(.bg-emerald-600):hover { background-color: #e5e7eb; }

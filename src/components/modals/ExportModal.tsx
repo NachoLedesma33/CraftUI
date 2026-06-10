@@ -9,8 +9,16 @@ import {
   Code2,
   Package,
 } from 'lucide-react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import atomDark from 'react-syntax-highlighter/dist/esm/styles/prism/atom-dark.js';
+import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx.js';
+import markup from 'react-syntax-highlighter/dist/esm/languages/prism/markup.js';
+import css from 'react-syntax-highlighter/dist/esm/languages/prism/css.js';
+
+SyntaxHighlighter.registerLanguage('tsx', tsx);
+SyntaxHighlighter.registerLanguage('typescript', tsx);
+SyntaxHighlighter.registerLanguage('html', markup);
+SyntaxHighlighter.registerLanguage('css', css);
 import { useEditorStore } from '@/store';
 import { useUIStore } from '@/store';
 import { exportToReact } from '@/utils/export/ReactExporter';

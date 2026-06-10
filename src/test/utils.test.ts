@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateStateHash, shouldUseIndexedDB } from '@/hooks/useAutoSave';
+import { generateStateHash } from '@/hooks/useAutoSave';
 import type { UIComponent } from '@/types';
 
 describe('useAutoSave utilities', () => {
@@ -33,12 +33,5 @@ describe('useAutoSave utilities', () => {
     expect(hash1).not.toBe(hash2);
   });
 
-  it('shouldUseIndexedDB returns true for data > 1MB', () => {
-    expect(shouldUseIndexedDB(1024 * 1024 + 1)).toBe(true);
-  });
 
-  it('shouldUseIndexedDB returns false for data <= 1MB', () => {
-    expect(shouldUseIndexedDB(1024 * 1024)).toBe(false);
-    expect(shouldUseIndexedDB(0)).toBe(false);
-  });
 });

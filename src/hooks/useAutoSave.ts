@@ -21,54 +21,14 @@ export const generateStateHash = (components: Record<string, UIComponent>): stri
   return btoa(simplified).slice(0, 32); // Base64 encode and truncate for lightweight comparison
 };
 
-/**
- * Determine if data should be stored in IndexedDB (for large projects)
- */
-export const shouldUseIndexedDB = (dataSize: number): boolean => {
-  return dataSize > 1024 * 1024; // > 1MB
-};
-
-/**
- * Save auto-save data to appropriate storage
- */
 const saveToStorage = async (payload: AutoSavePayload): Promise<void> => {
-  const dataString = JSON.stringify(payload);
-  const dataSize = new Blob([dataString]).size;
-
-  try {
-    if (shouldUseIndexedDB(dataSize)) {
-      // Use IndexedDB for large projects
-      await idbSet('craftui-autosave', payload);
-    } else {
-      // Use localStorage for smaller projects
-      localStorage.setItem('craftui-autosave', dataString);
-    }
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'QuotaExceededError') {
-      // Handle quota exceeded error
-      console.warn('Storage quota exceeded. Auto-save disabled.');
-      throw new Error('Storage quota exceeded. Please save your project manually.');
-    }
-    throw error;
-  }
+  await idbSet('craftui-autosave', payload);
 };
 
-/**
- * Load auto-save data from storage
- */
 const loadFromStorage = async (): Promise<AutoSavePayload | null> => {
   try {
-    // Try IndexedDB first
-    const idbData = await idbGet('craftui-autosave');
-    if (idbData) return idbData;
-
-    // Fallback to localStorage
-    const lsData = localStorage.getItem('craftui-autosave');
-    if (lsData) return JSON.parse(lsData);
-
-    return null;
-  } catch (error) {
-    console.error('Failed to load auto-save data:', error);
+    return await idbGet('craftui-autosave') ?? null;
+  } catch {
     return null;
   }
 };
