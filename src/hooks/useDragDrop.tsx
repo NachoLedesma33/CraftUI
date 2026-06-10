@@ -298,7 +298,7 @@ export const getDragOverlayContent = (item: DragItem | null): React.ReactNode =>
   if (!item) return null;
   if (item.type === "new") {
     return (
-      <div className="px-3 py-2 bg-violet-500 text-white rounded shadow-lg text-sm">
+      <div className="px-3 py-2 bg-violet-500 text-white rounded shadow-brutal text-sm">
         {item.componentType?.charAt(0).toUpperCase()}
         {item.componentType?.slice(1)}
       </div>
@@ -307,7 +307,7 @@ export const getDragOverlayContent = (item: DragItem | null): React.ReactNode =>
 
   if (item.data) {
     return (
-      <div className="px-3 py-2 bg-white border border-violet-500 rounded shadow-lg text-sm">
+      <div className="px-3 py-2 bg-white border-2 border-violet-500 rounded shadow-brutal text-sm">
         {item.data.metadata.name}
       </div>
     );

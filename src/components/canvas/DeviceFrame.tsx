@@ -54,7 +54,7 @@ const Notch: React.FC = () => (
     <div className="h-[28px] w-[110px] bg-black rounded-[18px] flex items-center justify-center gap-4 shadow-inner shadow-slate-900/50">
       <div className="w-2 h-2 rounded-full bg-slate-800 border border-slate-700/30" />
       <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center overflow-hidden border border-slate-800/50">
-        <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-violet-500/30 to-orange-500/20" />
+        <div className="w-3.5 h-3.5 rounded-full bg-violet-500/20" />
       </div>
     </div>
   </div>

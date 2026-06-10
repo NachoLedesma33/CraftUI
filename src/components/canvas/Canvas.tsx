@@ -85,13 +85,13 @@ export const Canvas: React.FC = () => {
 
           {(!rootComponent || !hasChildren) && (
             <div className="flex flex-col items-center justify-center py-24 px-8 select-none">
-              <div className="w-16 h-16 bg-[var(--bg-tertiary)] flex items-center justify-center mb-5 border border-[var(--border)]">
+              <div className="w-16 h-16 bg-[var(--bg-tertiary)] flex items-center justify-center mb-5 border-2 border-black">
                 <span className="text-2xl opacity-60">+</span>
               </div>
 <p className="text-base font-semibold text-[var(--text-secondary)] mb-2">Canvas vacío</p>
                <p className="text-sm text-[var(--text-muted)] text-center max-w-xs leading-relaxed">
                 Arrastrá componentes desde el panel izquierdo o presioná{" "}
-                <kbd className="px-1.5 py-0.5 bg-[var(--bg-tertiary)] border border-[var(--border)] text-xs text-[var(--text-secondary)] font-mono">Ctrl+K</kbd>{" "}
+                <kbd className="px-1.5 py-0.5 bg-[var(--bg-tertiary)] border-2 border-black text-xs text-[var(--text-secondary)] font-mono">Ctrl+K</kbd>{" "}
                 para abrir la paleta de comandos
               </p>
             </div>

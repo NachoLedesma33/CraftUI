@@ -55,13 +55,13 @@ export const SpacingDiagram: React.FC<SpacingDiagramProps> = ({ padding, margin,
         <div className="flex-1">
           <label className="block text-[10px] text-amber-300 mb-0.5 font-medium">Margin</label>
           <input type="text" value={margin} onChange={(e) => onMarginChange(e.target.value)}
-            className="w-full bg-[var(--bg-tertiary)] text-[11px] text-[var(--text-primary)] px-2 py-1 border border-[var(--border)] focus:outline-none"
+            className="w-full bg-[var(--bg-tertiary)] text-[11px] text-[var(--text-primary)] px-2 py-1 border-2 border-black focus:outline-none"
             placeholder="0" onFocus={() => setActive('margin')} onBlur={() => setActive(null)} />
         </div>
         <div className="flex-1">
           <label className="block text-[10px] text-emerald-300 mb-0.5 font-medium">Padding</label>
           <input type="text" value={padding} onChange={(e) => onPaddingChange(e.target.value)}
-            className="w-full bg-[var(--bg-tertiary)] text-[11px] text-[var(--text-primary)] px-2 py-1 border border-[var(--border)] focus:outline-none"
+            className="w-full bg-[var(--bg-tertiary)] text-[11px] text-[var(--text-primary)] px-2 py-1 border-2 border-black focus:outline-none"
             placeholder="0" onFocus={() => setActive('padding')} onBlur={() => setActive(null)} />
         </div>
       </div>

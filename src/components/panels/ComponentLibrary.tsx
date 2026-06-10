@@ -32,7 +32,7 @@ const componentIcons: Record<ComponentType, React.ReactNode> = {
 };
 
 const componentPreviews: Record<ComponentType, React.ReactNode> = {
-  box: <div className="w-full h-full bg-gradient-to-br from-violet-400/50 to-violet-600/30" />,
+  box: <div className="w-full h-full bg-violet-500/30" />,
   text: (
     <div className="w-full space-y-1 p-1">
       <div className="h-1.5 bg-slate-400/40 w-full" />
@@ -41,7 +41,7 @@ const componentPreviews: Record<ComponentType, React.ReactNode> = {
     </div>
   ),
   button: <div className="w-full h-full bg-violet-500 flex items-center justify-center text-[6px] text-white font-medium">Btn</div>,
-  image: <div className="w-full h-full bg-gradient-to-br from-emerald-400/40 to-emerald-600/30 flex items-center justify-center text-[var(--text-muted)]"><Image size={12} /></div>,
+  image: <div className="w-full h-full bg-emerald-500/30 flex items-center justify-center text-[var(--text-muted)]"><Image size={12} /></div>,
   container: <div className="w-full h-full border border-slate-400/30 bg-slate-400/5" />,
   flex: (
     <div className="w-full h-full flex gap-0.5 p-1">

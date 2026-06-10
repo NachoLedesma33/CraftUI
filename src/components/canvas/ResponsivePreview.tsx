@@ -92,7 +92,7 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
         <select
           value={zoom}
           onChange={(e) => onZoomChange(e.target.value as ZoomLevel)}
-          className="px-3 py-1.5 bg-[var(--bg-tertiary)] border border-[var(--border)] text-sm text-white focus:border-violet-500 focus:outline-none"
+          className="px-3 py-1.5 bg-[var(--bg-tertiary)] border-2 border-black text-sm text-white focus:outline-none"
         >
           <option value="50">50%</option>
           <option value="75">75%</option>

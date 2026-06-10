@@ -146,7 +146,7 @@ const FlexPlayground: React.FC<{
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`px-3 py-2 text-xs text-white font-medium border border-[var(--border)] ${
+              className={`px-3 py-2 text-xs text-white font-medium border-2 border-black ${
                 i === 1 ? 'bg-red-500' : i === 2 ? 'bg-green-500' : 'bg-violet-500'
               }`}
             >
@@ -279,7 +279,7 @@ const GridMatrixEditor: React.FC<{
         {Array(cols * rowsCount).fill(0).map((_, i) => (
           <div
             key={i}
-            className="bg-[var(--bg-tertiary)] border border-[var(--border)] flex items-center justify-center text-xs text-[var(--text-muted)]"
+            className="bg-[var(--bg-tertiary)] border-2 border-black flex items-center justify-center text-xs text-[var(--text-muted)]"
           >
             {i + 1}
           </div>

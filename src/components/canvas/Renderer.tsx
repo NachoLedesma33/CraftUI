@@ -268,7 +268,7 @@ const ContextMenu: React.FC<{
 
   return (
     <div
-      className="fixed bg-slate-800 brutal-card border border-[var(--border)] py-1 z-50 min-w-[150px]"
+      className="fixed bg-slate-800 brutal-card border-2 border-black py-1 z-50 min-w-[150px]"
       style={{ left: x, top: y }}
       onClick={(e) => e.stopPropagation()}
     >
