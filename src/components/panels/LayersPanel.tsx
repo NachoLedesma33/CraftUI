@@ -436,7 +436,7 @@ export const LayersPanel: React.FC = () => {
     const toExpand: string[] = [];
     let current: UIComponent | undefined = comp;
     while (current?.parent) {
-      const parent = components[current.parent];
+      const parent: UIComponent | undefined = components[current.parent];
       if (parent) {
         toExpand.push(parent.id);
         current = parent;

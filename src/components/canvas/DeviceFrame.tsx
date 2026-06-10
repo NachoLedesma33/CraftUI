@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-type DeviceType = 'mobile' | 'tablet' | 'desktop';
+type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'custom';
 
 interface DeviceFrameProps {
   device: DeviceType;
@@ -33,6 +33,15 @@ const FRAME_CONFIG = {
     bezelRadius: 8,
     screenRadius: 4,
     bezelWidth: 8,
+    showNotch: false,
+    showButtons: false,
+    showHomeIndicator: false,
+    showCamera: false,
+  },
+  custom: {
+    bezelRadius: 0,
+    screenRadius: 0,
+    bezelWidth: 0,
     showNotch: false,
     showButtons: false,
     showHomeIndicator: false,

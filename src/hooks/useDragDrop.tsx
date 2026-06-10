@@ -154,7 +154,7 @@ export const useDragDrop = () => {
   );
 
   const addNewComponent = useCallback((parentId: string, componentType: string, message: string) => {
-    const newId = addComponent(parentId, componentType);
+    const newId = addComponent(parentId, componentType as import('@/types/canvas').ComponentType);
     if (newId) {
       const label = componentType.charAt(0).toUpperCase() + componentType.slice(1);
       useUIStore.getState().addToast(`${label} added to ${message}`, 'success', 2000);
@@ -270,7 +270,7 @@ export const useDragDrop = () => {
             }
           }
         } else if (overComponent && !canDrop(overId, activeId, components)) {
-          useUIStore.getState().addToast("Cannot drop a parent into its own child", "warning", 3000);
+          useUIStore.getState().addToast("Cannot drop a parent into its own child", "error", 3000);
         } else if (isCanvasDrop && rootId) {
           const currentParentId = components[activeId]?.parent;
           if (currentParentId !== rootId) {

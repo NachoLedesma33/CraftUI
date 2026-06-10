@@ -149,8 +149,8 @@ export const AnimationPanel: React.FC = () => {
       delay: 0,
       easing: preset.easing,
       iterations: 1,
-      fillMode: 'both',
-      trigger: 'onLoad',
+      fillMode: 'both' as const,
+      trigger: 'onLoad' as const,
       keyframes: preset.keyframes,
     };
     setLocalAnimation(newAnimation);

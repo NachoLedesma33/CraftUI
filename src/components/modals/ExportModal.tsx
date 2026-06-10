@@ -10,9 +10,13 @@ import {
   Package,
 } from 'lucide-react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+// @ts-expect-error - no types for react-syntax-highlighter subpath exports
 import atomDark from 'react-syntax-highlighter/dist/esm/styles/prism/atom-dark.js';
+// @ts-expect-error - no types for react-syntax-highlighter subpath exports
 import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx.js';
+// @ts-expect-error - no types for react-syntax-highlighter subpath exports
 import markup from 'react-syntax-highlighter/dist/esm/languages/prism/markup.js';
+// @ts-expect-error - no types for react-syntax-highlighter subpath exports
 import css from 'react-syntax-highlighter/dist/esm/languages/prism/css.js';
 
 SyntaxHighlighter.registerLanguage('tsx', tsx);

@@ -304,7 +304,7 @@ interface EditWrapperProps {
   component: UIComponent;
 }
 
-const areEditWrapperPropsEqual: React.Comparator<EditWrapperProps> = (prev, next) => {
+const areEditWrapperPropsEqual = (prev: Readonly<EditWrapperProps>, next: Readonly<EditWrapperProps>) => {
   if (prev.isSelected !== next.isSelected) return false;
   if (prev.isRoot !== next.isRoot) return false;
   if (prev.children !== next.children) return false;
