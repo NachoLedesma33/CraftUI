@@ -78,22 +78,22 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 z-40 bg-black/50"
         onClick={onClose}
       />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Auto-save versions">
-        <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+        <div className="bg-[var(--bg-secondary)] border-[var(--border)] shadow-brutal-lg max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-slate-700 bg-slate-900/50">
+          <div className="flex items-center justify-between p-6 border-b border-[var(--border)] bg-[var(--bg-tertiary)]">
             <div className="flex items-center gap-3">
-              <HardDrive size={20} className="text-violet-400" />
-              <h2 className="text-lg font-semibold text-white">Auto-Save Versions</h2>
+              <HardDrive size={20} className="text-[var(--accent)]" />
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Auto-Save Versions</h2>
             </div>
             <button
               onClick={onClose}
-              className="p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition-colors"
+              className="p-1 hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition-colors"
               aria-label="Close"
             >
               <X size={20} />
@@ -105,20 +105,20 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
             {versions.length === 0 ? (
               <div className="text-center py-12">
                 <Clock size={48} className="mx-auto text-slate-600 mb-4" />
-                <h3 className="text-lg font-medium text-slate-400 mb-2">No Auto-Save Versions</h3>
-                <p className="text-sm text-slate-500">
+                <h3 className="text-lg font-medium text-[var(--text-muted)] mb-2">No Auto-Save Versions</h3>
+                <p className="text-sm text-[var(--text-muted)]">
                   Auto-save versions will appear here as you work on your project.
                 </p>
               </div>
             ) : (
               <div className="space-y-3">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-sm text-slate-400">
+                  <p className="text-sm text-[var(--text-secondary)]">
                     {versions.length} version{versions.length !== 1 ? 's' : ''} available
                   </p>
                   <button
                     onClick={() => setShowConfirmDialog('clear')}
-                    className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded hover:bg-red-900/20"
+                    className="text-xs text-red-400 hover:text-red-300 px-2 py-1 hover:bg-red-900/30"
                   >
                     Clear All
                   </button>
@@ -127,19 +127,19 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
                 {versions.map((version: AutoSaveVersion, index: number) => (
                   <div
                     key={version.id}
-                    className="flex items-center justify-between p-4 rounded-lg bg-slate-900/50 border border-slate-700 hover:border-slate-600 transition-colors"
+                    className="flex items-center justify-between p-4 bg-[var(--bg-primary)] border-[var(--border)] transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-violet-600/20 flex items-center justify-center">
-                        <span className="text-xs font-medium text-violet-400">
+                      <div className="w-8 h-8 bg-[var(--accent)] flex items-center justify-center">
+                        <span className="text-xs font-medium text-[var(--text-primary)]">
                           {versions.length - index}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-[var(--text-primary)]">
                           Version {versions.length - index}
                         </p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-xs text-[var(--text-secondary)]">
                           {formatTimestamp(version.timestamp)} • {version.componentCount} components
                         </p>
                       </div>
@@ -148,7 +148,7 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
                     <button
                       onClick={() => setShowConfirmDialog(version.id)}
                       disabled={restoringVersion === version.id}
-                      className="flex items-center gap-2 px-3 py-1.5 text-xs bg-violet-600 hover:bg-violet-700 disabled:bg-slate-600 text-white rounded transition-colors"
+                      className="flex items-center gap-2 px-3 py-1.5 text-xs bg-[var(--accent)] hover:bg-violet-700 disabled:bg-[var(--bg-tertiary)] text-white transition-colors"
                     >
                       {restoringVersion === version.id ? (
                         <>
@@ -169,10 +169,10 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-2 p-4 border-t border-slate-700 bg-slate-900/50">
+          <div className="flex justify-end gap-2 p-4 border-t border-[var(--border)] bg-[var(--bg-tertiary)]">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white transition-colors"
+              className="px-4 py-2 text-sm bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition-colors"
             >
               Close
             </button>
@@ -184,13 +184,13 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
       {showConfirmDialog && (
         <div className="fixed inset-0 z-60 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/70" onClick={() => setShowConfirmDialog(null)} />
-          <div className="relative bg-slate-800 border border-slate-700 rounded-lg p-6 max-w-sm shadow-xl">
+          <div className="relative bg-[var(--bg-secondary)] border-[var(--border)] p-6 max-w-sm shadow-brutal">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle size={20} className="text-yellow-400" />
-              <h3 className="text-lg font-medium text-white">Confirm Action</h3>
+              <h3 className="text-lg font-medium text-[var(--text-primary)]">Confirm Action</h3>
             </div>
 
-            <p className="text-sm text-slate-400 mb-6">
+            <p className="text-sm text-[var(--text-secondary)] mb-6">
               {showConfirmDialog === 'clear'
                 ? 'Are you sure you want to clear all auto-save versions? This action cannot be undone.'
                 : 'Are you sure you want to restore this version? Your current work will be replaced.'
@@ -200,7 +200,7 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowConfirmDialog(null)}
-                className="px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 rounded transition-colors"
+                className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] transition-colors"
               >
                 Cancel
               </button>
@@ -212,7 +212,7 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
                     handleRestore(showConfirmDialog);
                   }
                 }}
-                className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                className="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white transition-colors"
               >
                 {showConfirmDialog === 'clear' ? 'Clear All' : 'Restore'}
               </button>

@@ -68,8 +68,8 @@ export const ContentTab: React.FC<{ component: UIComponent; updateComponent: (id
         <label className={LABEL_CLASSES}>Disabled</label>
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={component.props.disabled || false}
-            onChange={(e) => updateComponent(component.id, { props: { ...component.props, disabled: e.target.checked } })} className="rounded" />
-          <span className="text-xs text-slate-400">Disabled</span>
+            onChange={(e) => updateComponent(component.id, { props: { ...component.props, disabled: e.target.checked } })} />
+          <span className="text-xs text-[var(--text-muted)]">Disabled</span>
         </label>
       </div>
     </div>

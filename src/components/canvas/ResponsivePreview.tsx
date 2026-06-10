@@ -61,16 +61,16 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
   onOpenInNewTab,
 }) => {
   return (
-    <div className="h-14 bg-slate-900 border-b border-slate-700 flex items-center justify-between px-4 shrink-0">
+    <div className="h-14 bg-[var(--bg-primary)] border-b border-[var(--border)] flex items-center justify-between px-4 shrink-0">
       <div className="flex items-center gap-2">
         {DEVICE_PRESETS.map((device) => (
           <button
             key={device.id}
             onClick={() => onDeviceChange(device.id)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-colors ${
               activeDevice === device.id
-                ? 'bg-violet-600 text-white'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-slate-700'
             }`}
           >
             {device.icon}
@@ -82,7 +82,7 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
       <div className="flex items-center gap-3">
         <button
           onClick={onRotate}
-          className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-lg text-sm transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-slate-700 text-sm transition-colors"
           title={isLandscape ? 'Portrait' : 'Landscape'}
         >
           <RotateCw size={16} />
@@ -92,7 +92,7 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
         <select
           value={zoom}
           onChange={(e) => onZoomChange(e.target.value as ZoomLevel)}
-          className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:border-violet-500 focus:outline-none"
+          className="px-3 py-1.5 bg-[var(--bg-tertiary)] border border-[var(--border)] text-sm text-white focus:border-violet-500 focus:outline-none"
         >
           <option value="50">50%</option>
           <option value="75">75%</option>
@@ -104,7 +104,7 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
 
         <button
           onClick={onOpenInNewTab}
-          className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-lg text-sm transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-slate-700 text-sm transition-colors"
         >
           <ExternalLink size={16} />
           Open in New Tab
@@ -112,7 +112,7 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
 
         <button
           onClick={onExit}
-          className="flex items-center gap-2 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-sm font-medium transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 bg-[var(--accent)] hover:bg-violet-700 text-white text-sm font-medium transition-colors"
         >
           <X size={16} />
           Exit Preview
@@ -206,7 +206,7 @@ export const ResponsivePreview: React.FC = () => {
   }, [zoom, containerSize, dimensions]);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-100 flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[100] bg-[var(--bg-primary)] flex flex-col overflow-hidden">
       <PreviewToolbar
         activeDevice={device}
         onDeviceChange={handleDeviceChange}

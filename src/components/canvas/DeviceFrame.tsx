@@ -42,10 +42,10 @@ const FRAME_CONFIG = {
 
 const SideButtons: React.FC = () => (
   <>
-    <div className="absolute -left-[3px] top-32 w-[3px] h-10 bg-gradient-to-r from-slate-600 to-slate-700 rounded-r-sm opacity-80 shadow-lg z-30" />
-    <div className="absolute -left-[3px] top-44 w-[3px] h-14 bg-gradient-to-r from-slate-600 to-slate-700 rounded-r-sm opacity-80 shadow-lg z-30" />
-    <div className="absolute -left-[3px] top-60 w-[3px] h-8 bg-gradient-to-r from-slate-600 to-slate-700 rounded-r-sm opacity-80 shadow-lg z-30" />
-    <div className="absolute -right-[3px] top-36 w-[3px] h-12 bg-gradient-to-l from-slate-600 to-slate-700 rounded-l-sm opacity-80 shadow-lg z-30" />
+    <div className="absolute -left-[3px] top-32 w-[3px] h-10 bg-[var(--bg-tertiary)] opacity-80 z-30" />
+    <div className="absolute -left-[3px] top-44 w-[3px] h-14 bg-[var(--bg-tertiary)] opacity-80 z-30" />
+    <div className="absolute -left-[3px] top-60 w-[3px] h-8 bg-[var(--bg-tertiary)] opacity-80 z-30" />
+    <div className="absolute -right-[3px] top-36 w-[3px] h-12 bg-[var(--bg-tertiary)] opacity-80 z-30" />
   </>
 );
 
@@ -79,18 +79,6 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({ device, width, height,
   const outerWidth = width + config.bezelWidth * 2;
   const outerHeight = height + config.bezelWidth * 2;
 
-  const defaultShadow = (() => {
-    const baseIntensity = device === 'mobile' ? '0.6' : device === 'tablet' ? '0.5' : '0.6';
-    const glowIntensity = device === 'mobile' ? '0.08' : device === 'tablet' ? '0.06' : '0.05';
-    return `0 30px 60px -15px rgba(0,0,0,${baseIntensity}), 0 0 40px rgba(139,92,246,${glowIntensity})`;
-  })();
-
-  const hoverShadow = (() => {
-    const baseIntensity = device === 'mobile' ? '0.7' : device === 'tablet' ? '0.6' : '0.7';
-    const glowIntensity = device === 'mobile' ? '0.12' : device === 'tablet' ? '0.1' : '0.08';
-    return `0 50px 100px -20px rgba(0,0,0,${baseIntensity}), 0 0 60px rgba(139,92,246,${glowIntensity})`;
-  })();
-
   return (
     <div className="flex flex-col items-center gap-6">
       <div
@@ -102,9 +90,9 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({ device, width, height,
         {/* Desktop stand */}
         {device === 'desktop' && (
           <div className="absolute -bottom-[72px] left-1/2 -translate-x-1/2 flex flex-col items-center z-0">
-            <div className="w-[55%] h-[14px] bg-gradient-to-b from-slate-700 to-slate-800 rounded-b-lg shadow-lg" />
-            <div className="w-[65%] h-[30px] bg-gradient-to-b from-slate-800 to-slate-900 rounded-b-xl shadow-xl" />
-            <div className="w-[85%] h-[10px] bg-gradient-to-b from-slate-900 to-black rounded-b-2xl shadow-inner shadow-black/50" />
+            <div className="w-[55%] h-[14px] bg-[var(--bg-tertiary)]" />
+            <div className="w-[65%] h-[30px] bg-[var(--bg-tertiary)]" />
+            <div className="w-[85%] h-[10px] bg-[var(--bg-tertiary)]" />
           </div>
         )}
 
@@ -116,16 +104,6 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({ device, width, height,
             transformStyle: 'preserve-3d',
           }}
         >
-          {/* Ambient glow behind device */}
-          {isHovered && (
-            <div
-              className="absolute -inset-6 rounded-[56px] opacity-40 blur-2xl transition-all duration-500 pointer-events-none"
-              style={{
-                background: 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(217,70,239,0.12), rgba(249,115,22,0.05))',
-              }}
-            />
-          )}
-
           {/* Bezel body */}
           <div
             className="relative transition-all duration-500 ease-out"
@@ -134,15 +112,13 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({ device, width, height,
               height: outerHeight,
               borderRadius: config.bezelRadius,
               padding: config.bezelWidth,
-              boxShadow: isHovered ? hoverShadow : defaultShadow,
-              background: 'linear-gradient(145deg, #1e293b 0%, #0f172a 50%, #1e293b 100%)',
+              background: 'var(--bg-secondary)',
             }}
           >
             {/* Bezel edge highlight */}
             <div
-              className="absolute inset-0 rounded-[inherit] pointer-events-none z-10"
+              className="absolute inset-0 pointer-events-none z-10"
               style={{
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.4)',
                 borderRadius: config.bezelRadius,
               }}
             />
@@ -184,7 +160,7 @@ export const DeviceFrame: React.FC<DeviceFrameProps> = ({ device, width, height,
         className="transition-all duration-300"
         style={{ opacity: isHovered ? 1 : 0.4 }}
       >
-        <span className="text-xs text-slate-500 font-mono tracking-wide">
+        <span className="text-xs text-[var(--text-muted)] font-mono tracking-wide">
           {width} &times; {height} px
         </span>
       </div>

@@ -154,7 +154,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         style={style}
         className={`
           flex items-center gap-1 py-1 px-2 cursor-pointer select-none min-w-0
-          ${isSelected ? "bg-violet-600 text-white" : "text-slate-300 hover:bg-slate-700"}
+          ${isSelected ? "bg-[var(--accent)] text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"}
           ${!component.metadata.isVisible ? "opacity-50" : ""}
         `}
         onClick={handleClick}
@@ -167,7 +167,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         {isContainer ? (
           <button
             onClick={handleToggleExpand}
-            className="p-0.5 hover:bg-slate-600 rounded"
+            className="p-0.5 hover:bg-[var(--bg-tertiary)]"
           >
             {isExpanded ? (
               <ChevronDown size={12} />
@@ -179,7 +179,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
           <span className="w-5" />
         )}
 
-        <span className={`${isSelected ? "text-white" : "text-slate-400"}`}>
+        <span className={`${isSelected ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}`}>
           {componentIcons[component.type] || <Box size={14} />}
         </span>
 
@@ -189,7 +189,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
 
         {hasChildren && (
           <span
-            className={`hidden sm:inline text-xs px-1 rounded flex-shrink-0 ${isSelected ? "bg-violet-500" : "bg-slate-600"}`}
+            className={`hidden sm:inline text-xs px-1 flex-shrink-0 ${isSelected ? "bg-[var(--accent)]" : "bg-[var(--bg-tertiary)]"}`}
           >
             {component.children.length}
           </span>
@@ -200,7 +200,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         >
           <button
             onClick={handleToggleVisibility}
-            className="p-1 hover:bg-slate-600 rounded flex-shrink-0"
+            className="p-1 hover:bg-[var(--bg-tertiary)] flex-shrink-0"
             title={component.metadata.isVisible ? "Hide" : "Show"}
           >
             {component.metadata.isVisible ? (
@@ -211,7 +211,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
           </button>
           <button
             onClick={handleToggleLock}
-            className="p-1 hover:bg-slate-600 rounded flex-shrink-0"
+            className="p-1 hover:bg-[var(--bg-tertiary)] flex-shrink-0"
             title={component.metadata.isLocked ? "Unlock" : "Lock"}
           >
             {component.metadata.isLocked ? (
@@ -222,14 +222,14 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
           </button>
           <button
             onClick={handleDuplicate}
-            className="p-1 hover:bg-slate-600 rounded flex-shrink-0"
+            className="p-1 hover:bg-[var(--bg-tertiary)] flex-shrink-0"
             title="Duplicate"
           >
             <Copy size={12} />
           </button>
           <button
             onClick={handleDelete}
-            className="p-1 hover:bg-red-600 rounded flex-shrink-0"
+            className="p-1 hover:bg-red-700 flex-shrink-0"
             title="Delete"
           >
             <Trash2 size={12} />
@@ -319,7 +319,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
   return (
     <div
-      className="fixed bg-slate-800 border border-slate-700 rounded shadow-lg py-1 z-50 min-w-[160px]"
+      className="fixed bg-[var(--bg-secondary)] border-[var(--border)] shadow-brutal py-1 z-50 min-w-[160px]"
       style={{ left: x, top: y }}
       onClick={(e) => e.stopPropagation()}
     >
@@ -332,22 +332,22 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             onKeyDown={(e) => e.key === "Enter" && handleRenameSubmit()}
             onBlur={handleRenameSubmit}
             autoFocus
-            className="w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-white"
+            className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)]"
           />
         </div>
       ) : (
         <>
-          <div className="px-2 py-1 text-xs text-slate-400 border-b border-slate-700">
+          <div className="px-2 py-1 text-xs text-[var(--text-secondary)] border-b border-[var(--border)]">
             {component.metadata.name}
           </div>
 
           <div className="py-1">
-            <div className="px-2 py-1 text-xs text-slate-400">Add Child</div>
+            <div className="px-2 py-1 text-xs text-[var(--text-secondary)]">Add Child</div>
             {childTypes.map((item) => (
               <button
                 key={item.type}
                 onClick={() => handleAddChild(item.type)}
-                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+                className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
               >
                 {item.icon}
                 {item.label}
@@ -355,10 +355,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             ))}
           </div>
 
-          <div className="border-t border-slate-700 py-1">
+          <div className="border-t border-[var(--border)] py-1">
             <button
               onClick={handleRename}
-              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
             >
               Rename
             </button>
@@ -367,7 +367,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                 duplicateComponent(componentId);
                 onClose();
               }}
-              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
             >
               <Copy size={12} />
               Duplicate
@@ -377,7 +377,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                 copyComponents([component]);
                 onClose();
               }}
-              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
             >
               Copy
             </button>
@@ -386,7 +386,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                 deleteComponent(componentId);
                 onClose();
               }}
-              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-slate-700"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-[var(--bg-tertiary)]"
             >
               <Trash2 size={12} />
               Delete
@@ -476,24 +476,24 @@ export const LayersPanel: React.FC = () => {
 
   if (!rootId || !components[rootId]) {
     return (
-      <div className="bg-slate-800 flex flex-col h-full w-full">
-        <div className="p-3 border-b border-slate-700 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-white">Layers</h2>
+      <div className="bg-[var(--bg-secondary)] flex flex-col h-full w-full">
+        <div className="p-3 border-b border-[var(--border)] flex items-center justify-between">
+          <h2 className="text-sm font-medium text-[var(--text-primary)]">Layers</h2>
         </div>
         <div className="flex-1 flex items-center justify-center p-4">
-          <p className="text-xs text-slate-400">No canvas initialized</p>
+          <p className="text-xs text-[var(--text-muted)]">No canvas initialized</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-slate-800 flex flex-col h-full w-full overflow-hidden">
-      <div className="p-3 border-b border-slate-700 flex items-center justify-between flex-shrink-0">
-        <h2 className="text-sm font-medium text-white">Layers</h2>
+    <div className="bg-[var(--bg-secondary)] flex flex-col h-full w-full overflow-hidden">
+      <div className="p-3 border-b border-[var(--border)] flex items-center justify-between flex-shrink-0">
+        <h2 className="text-sm font-medium text-[var(--text-primary)]">Layers</h2>
         <button
           onClick={handleAddRoot}
-          className="p-1.5 hover:bg-slate-700 rounded text-slate-400 hover:text-white"
+          className="p-1.5 hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           title="Add component to root"
         >
           <Plus size={16} />

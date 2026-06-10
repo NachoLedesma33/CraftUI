@@ -183,29 +183,29 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
     <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="Export project">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       
-      <div className="relative bg-slate-900 rounded-xl shadow-2xl w-[95vw] h-[85vh] max-w-7xl flex flex-col overflow-hidden border border-slate-700">
-        <header className="flex items-center justify-between p-4 border-b border-slate-700 bg-slate-800">
+      <div className="relative bg-[var(--bg-secondary)] shadow-brutal-lg w-[95vw] h-[85vh] max-w-7xl flex flex-col overflow-hidden border border-[var(--border)]">
+        <header className="flex items-center justify-between p-4 border-b border-[var(--border)] bg-[var(--bg-tertiary)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-orange-500 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-[var(--accent)] flex items-center justify-center">
               <FileCode size={20} className="text-white" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Export Project</h2>
-              <p className="text-xs text-slate-400">Generate production-ready code</p>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Export Project</h2>
+              <p className="text-xs text-[var(--text-muted)]">Generate production-ready code</p>
             </div>
           </div>
           
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownloadAll}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors"
             >
               <Package size={16} />
               Export All
             </button>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition-colors"
+              className="p-2 hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition-colors"
               aria-label="Close dialog"
             >
               <X size={20} />
@@ -214,18 +214,18 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
         </header>
 
         <div className="flex flex-1 overflow-hidden">
-          <aside className="w-80 border-r border-slate-700 bg-slate-800/50 overflow-y-auto p-4 space-y-6">
+          <aside className="w-80 border-r border-[var(--border)] bg-[var(--bg-secondary)] overflow-y-auto p-4 space-y-6">
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-2">Framework</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Framework</label>
               <div className="space-y-1">
                 {frameworkOptions.map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => updateOption('framework', opt.value)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
                       options.framework === opt.value
-                        ? 'bg-violet-600 text-white'
-                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                        ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                        : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
                     }`}
                   >
                     {opt.icon}
@@ -236,11 +236,11 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-2">Styling Strategy</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Styling Strategy</label>
               <select
                 value={options.styling}
                 onChange={(e) => updateOption('styling', e.target.value as StylingStrategy)}
-                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white focus:border-violet-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-[var(--bg-tertiary)] border-[var(--border)] text-sm text-[var(--text-primary)] focus:border-violet-500 focus:outline-none"
               >
                 {stylingOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -249,60 +249,60 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-2">Component Name</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Component Name</label>
               <input
                 type="text"
                 value={options.componentName}
                 onChange={(e) => updateOption('componentName', e.target.value)}
-                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white focus:border-violet-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-[var(--bg-tertiary)] border-[var(--border)] text-sm text-[var(--text-primary)] focus:border-violet-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-2">Options</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">Options</label>
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={options.includeReset}
                     onChange={(e) => updateOption('includeReset', e.target.checked)}
-                    className="rounded border-slate-500"
+                    className="border-[var(--border)]"
                   />
                   Include CSS Reset
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={options.includeResponsive}
                     onChange={(e) => updateOption('includeResponsive', e.target.checked)}
-                    className="rounded border-slate-500"
+                    className="border-[var(--border)]"
                   />
                   Responsive Media Queries
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={options.typescript}
                     onChange={(e) => updateOption('typescript', e.target.checked)}
-                    className="rounded border-slate-500"
+                    className="border-[var(--border)]"
                   />
                   TypeScript
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={options.prettify}
                     onChange={(e) => updateOption('prettify', e.target.checked)}
-                    className="rounded border-slate-500"
+                    className="border-[var(--border)]"
                   />
                   Prettify Code
                 </label>
-                <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={options.minify}
                     onChange={(e) => updateOption('minify', e.target.checked)}
-                    className="rounded border-slate-500"
+                    className="border-[var(--border)]"
                   />
                   Minify Output
                 </label>
@@ -317,10 +317,10 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab as typeof activeTab)}
-                    className={`px-4 py-1.5 text-xs font-medium rounded-t-lg transition-colors ${
+                    className={`px-4 py-1.5 text-xs font-medium transition-colors ${
                       activeTab === tab
                         ? 'bg-[#282c34] text-white'
-                        : 'bg-transparent text-slate-400 hover:text-white'
+                        : 'bg-transparent text-[var(--text-secondary)] hover:text-white'
                     }`}
                   >
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -331,10 +331,10 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopy}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors ${
                     copied
                       ? 'bg-green-600 text-white'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
                   }`}
                 >
                   {copied ? <Check size={14} /> : <Copy size={14} />}
@@ -342,7 +342,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs font-medium text-slate-300 transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--bg-tertiary)] text-xs font-medium text-[var(--text-secondary)] transition-colors"
                 >
                   <Download size={14} />
                   Download

@@ -24,33 +24,31 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     if (isDark) {
       root.classList.add("dark");
       root.classList.remove("light");
-      root.style.setProperty("--bg-primary", "#0f172a"); // slate-900
-      root.style.setProperty("--bg-secondary", "#1e293b"); // slate-800
-      root.style.setProperty("--bg-tertiary", "#334155"); // slate-700
-      root.style.setProperty("--text-primary", "#f8fafc"); // slate-50
-      root.style.setProperty("--text-secondary", "#cbd5e1"); // slate-300
-      root.style.setProperty("--text-muted", "#94a3b8"); // slate-400
-      root.style.setProperty("--border-color", "#475569"); // slate-600
-      root.style.setProperty("--accent-color", "#8b5cf6"); // violet-500
-      root.style.setProperty("--accent-hover", "#7c3aed"); // violet-600
-      root.style.setProperty("--success-color", "#10b981"); // emerald-500
-      root.style.setProperty("--error-color", "#ef4444"); // red-500
-      root.style.setProperty("--warning-color", "#f59e0b"); // amber-500
+      root.style.setProperty("--bg-primary", "#1a1a1a");
+      root.style.setProperty("--bg-secondary", "#252525");
+      root.style.setProperty("--bg-tertiary", "#2e2e2e");
+      root.style.setProperty("--surface", "#222222");
+      root.style.setProperty("--text", "#f0ece4");
+      root.style.setProperty("--text-secondary", "#a09a8f");
+      root.style.setProperty("--text-muted", "#7a756a");
+      root.style.setProperty("--border", "#000000");
+      root.style.setProperty("--accent", "#fbbf24");
+      root.style.setProperty("--accent-alt", "#22d3ee");
+      root.style.setProperty("--selection", "rgba(251, 191, 36, 0.3)");
     } else {
       root.classList.remove("dark");
       root.classList.add("light");
-      root.style.setProperty("--bg-primary", "#ffffff"); // white
-      root.style.setProperty("--bg-secondary", "#f9fafb"); // gray-50
-      root.style.setProperty("--bg-tertiary", "#f3f4f6"); // gray-100
-      root.style.setProperty("--text-primary", "#111827"); // gray-900
-      root.style.setProperty("--text-secondary", "#374151"); // gray-700
-      root.style.setProperty("--text-muted", "#6b7280"); // gray-500
-      root.style.setProperty("--border-color", "#d1d5db"); // gray-300
-      root.style.setProperty("--accent-color", "#7c3aed"); // violet-600 (más saturado en light)
-      root.style.setProperty("--accent-hover", "#6d28d9"); // violet-700
-      root.style.setProperty("--success-color", "#059669"); // emerald-600
-      root.style.setProperty("--error-color", "#dc2626"); // red-600
-      root.style.setProperty("--warning-color", "#d97706"); // amber-600
+      root.style.setProperty("--bg-primary", "#f5f0eb");
+      root.style.setProperty("--bg-secondary", "#fffef5");
+      root.style.setProperty("--bg-tertiary", "#e8e2d8");
+      root.style.setProperty("--surface", "#ffffff");
+      root.style.setProperty("--text", "#1a1a1a");
+      root.style.setProperty("--text-secondary", "#6b6560");
+      root.style.setProperty("--text-muted", "#8a847a");
+      root.style.setProperty("--border", "#000000");
+      root.style.setProperty("--accent", "#ef4444");
+      root.style.setProperty("--accent-alt", "#3b82f6");
+      root.style.setProperty("--selection", "rgba(239, 68, 68, 0.2)");
     }
 
     localStorage.setItem("editor-theme", isDark ? "dark" : "light");

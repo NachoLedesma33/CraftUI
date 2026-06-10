@@ -19,7 +19,7 @@ export const ToastContainer: React.FC = () => {
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`px-4 py-2.5 rounded-lg border shadow-lg text-sm font-medium flex items-center gap-3 animate-toast-in ${typeStyles[toast.type] || typeStyles.info}`}
+          className={`px-4 py-2.5 border shadow-brutal text-sm font-medium flex items-center gap-3 animate-toast-in ${typeStyles[toast.type] || typeStyles.info}`}
         >
           <span className="flex-1">{toast.message}</span>
           <button

@@ -19,7 +19,7 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
     <div className="p-2 space-y-2 overflow-auto">
       <div className="flex gap-1 mb-3">
         {(['base', 'tablet', 'desktop'] as const).map((d) => (
-          <button key={d} type="button" className={`flex-1 py-1 text-xs rounded ${device === d ? 'bg-violet-500 text-white' : 'bg-slate-700 text-slate-300'}`} onClick={() => setDevice(d)}>
+          <button key={d} type="button" className={`flex-1 py-1 text-xs ${device === d ? 'bg-[var(--accent)] text-[var(--text-primary)]' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`} onClick={() => setDevice(d)}>
             {d === 'base' ? '📱' : d === 'tablet' ? '📐' : '💻'}
           </button>
         ))}
@@ -28,7 +28,7 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
       <StyleSection title="Colors">
         <div className="flex gap-1 flex-wrap mb-2 w-full">
           {colors.map((c) => (
-            <button key={c} type="button" className={`flex-1 min-w-6 h-6 rounded border-12 cursor-pointer ${val('backgroundColor') === c ? 'border-violet-500' : 'border-slate-600'}`}
+            <button key={c} type="button" className={`flex-1 min-w-6 h-6 border-12 cursor-pointer ${val('backgroundColor') === c ? 'border-[var(--border)]' : 'border-[var(--border)]'}`}
               style={{ backgroundColor: c, borderColor: c }} onClick={() => onStyleChange('backgroundColor', c)} />
           ))}
         </div>

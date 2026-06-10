@@ -8,13 +8,13 @@ export const AdvancedTab: React.FC<{ component: UIComponent; updateComponent: (i
     <StyleSection title="Visibility">
       <label className="flex items-center gap-2">
         <input type="checkbox" checked={component.metadata.isVisible}
-          onChange={(e) => updateComponent(component.id, { metadata: { ...component.metadata, isVisible: e.target.checked } })} className="rounded" />
-        <span className="text-xs text-slate-400">Visible</span>
+          onChange={(e) => updateComponent(component.id, { metadata: { ...component.metadata, isVisible: e.target.checked } })} />
+        <span className="text-xs text-[var(--text-muted)]">Visible</span>
       </label>
       <label className="flex items-center gap-2 mt-2">
         <input type="checkbox" checked={component.metadata.isLocked}
-          onChange={(e) => updateComponent(component.id, { metadata: { ...component.metadata, isLocked: e.target.checked } })} className="rounded" />
-        <span className="text-xs text-slate-400">Locked</span>
+          onChange={(e) => updateComponent(component.id, { metadata: { ...component.metadata, isLocked: e.target.checked } })} />
+        <span className="text-xs text-[var(--text-muted)]">Locked</span>
       </label>
     </StyleSection>
 

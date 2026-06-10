@@ -56,13 +56,13 @@ const PresetSelector: React.FC<PresetSelectorProps> = ({ onSelect }) => {
     <div className="grid grid-cols-3 gap-2">
       {categories.map(cat => (
         <div key={cat.key} className="space-y-1">
-          <div className="text-[10px] text-slate-500 uppercase tracking-wider">{cat.label}</div>
+          <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">{cat.label}</div>
           <div className="space-y-1">
             {cat.presets.map(preset => (
               <button
                 key={preset.id}
                 onClick={() => onSelect(preset)}
-                className="w-full px-2 py-1.5 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition-colors text-left"
+                className="w-full px-2 py-1.5 text-xs bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] text-[var(--text-secondary)] transition-colors text-left"
               >
                 {preset.name}
               </button>
@@ -86,8 +86,8 @@ interface TimeSliderProps {
 const TimeSlider: React.FC<TimeSliderProps> = ({ label, value, onChange, min = 0, max = 5000, unit = 'ms' }) => (
   <div className="space-y-1">
     <div className="flex justify-between text-xs">
-      <span className="text-slate-400">{label}</span>
-      <span className="text-slate-300">{value}{unit}</span>
+      <span className="text-[var(--text-muted)]">{label}</span>
+      <span className="text-[var(--text-secondary)]">{value}{unit}</span>
     </div>
     <input
       type="range"
@@ -96,7 +96,7 @@ const TimeSlider: React.FC<TimeSliderProps> = ({ label, value, onChange, min = 0
       step={50}
       value={value}
       onChange={e => onChange(Number(e.target.value))}
-      className="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500"
+      className="w-full h-1 bg-[var(--bg-tertiary)] appearance-none cursor-pointer"
     />
   </div>
 );
@@ -108,11 +108,11 @@ interface EasingSelectorProps {
 
 const EasingSelector: React.FC<EasingSelectorProps> = ({ value, onChange }) => (
   <div className="space-y-1">
-    <label className="text-xs text-slate-400 block">Easing</label>
+    <label className="text-xs text-[var(--text-muted)] block">Easing</label>
     <select
       value={value}
       onChange={e => onChange(e.target.value)}
-      className="w-full px-2 py-1.5 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-violet-500 focus:outline-none"
+      className="w-full px-2 py-1.5 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)] focus:outline-none"
     >
       {EASING_OPTIONS.map(opt => (
         <option key={opt} value={opt}>{opt}</option>
@@ -238,15 +238,15 @@ export const AnimationPanel: React.FC = () => {
   return (
     <div className="p-4 space-y-4">
       <div>
-        <h3 className="text-sm font-medium text-white mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-medium text-[var(--text-primary)] mb-3 flex items-center gap-2">
           <Zap size={14} className="text-violet-400" />
           Animation
         </h3>
         <PresetSelector onSelect={applyPreset} />
       </div>
 
-      <div className="space-y-3 pt-2 border-t border-slate-700">
-        <h4 className="text-xs font-medium text-slate-400 flex items-center gap-2">
+      <div className="space-y-3 pt-2 border-t border-[var(--border)]">
+        <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-2">
           <Clock size={12} />
           Timing
         </h4>
@@ -265,9 +265,9 @@ export const AnimationPanel: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <div className="flex-1 space-y-1">
-            <label className="text-xs text-slate-400">Iterations</label>
+            <label className="text-xs text-[var(--text-muted)]">Iterations</label>
             {localAnimation.iterations === 'infinite' ? (
-              <div className="w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-violet-400 flex items-center gap-2">
+              <div className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--accent)] flex items-center gap-2">
                 <InfinityIcon size={14} />
                 <span>Infinite</span>
               </div>
@@ -277,16 +277,15 @@ export const AnimationPanel: React.FC = () => {
                 min={1}
                 value={localAnimation.iterations || 1}
                 onChange={e => handleAnimationChange('iterations', Number(e.target.value))}
-                className="w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200"
+                className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)]"
               />
             )}
           </div>
-          <label className="flex items-center gap-1 text-xs text-slate-400 pt-4">
+          <label className="flex items-center gap-1 text-xs text-[var(--text-muted)] pt-4">
             <input
               type="checkbox"
               checked={localAnimation.iterations === 'infinite'}
               onChange={e => handleAnimationChange('iterations', e.target.checked ? 'infinite' : 1)}
-              className="rounded"
             />
             <InfinityIcon size={12} />
           </label>
@@ -298,8 +297,8 @@ export const AnimationPanel: React.FC = () => {
         />
       </div>
 
-      <div className="space-y-2 pt-2 border-t border-slate-700">
-        <h4 className="text-xs font-medium text-slate-400 flex items-center gap-2">
+      <div className="space-y-2 pt-2 border-t border-[var(--border)]">
+        <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-2">
           <Settings2 size={12} />
           Trigger
         </h4>
@@ -308,10 +307,10 @@ export const AnimationPanel: React.FC = () => {
             <button
               key={opt.value}
               onClick={() => handleAnimationChange('trigger', opt.value as AnimationConfig['trigger'])}
-              className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded transition-colors ${
+              className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs transition-colors ${
                 localAnimation.trigger === opt.value
-                  ? 'bg-violet-600 text-white'
-                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
               }`}
             >
               {opt.icon}
@@ -321,14 +320,14 @@ export const AnimationPanel: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex gap-2 pt-2 border-t border-slate-700">
+      <div className="flex gap-2 pt-2 border-t border-[var(--border)]">
         <button
           onClick={playPreview}
           disabled={isPlaying || !localAnimation.name}
-          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${
             isPlaying
               ? 'bg-green-600 text-white'
-              : 'bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-50'
+              : 'bg-[var(--accent)] hover:bg-violet-700 text-[var(--text-primary)] disabled:opacity-50'
           }`}
         >
           {isPlaying ? <Pause size={14} /> : <Play size={14} />}
@@ -336,7 +335,7 @@ export const AnimationPanel: React.FC = () => {
         </button>
         <button
           onClick={clearAnimation}
-          className="p-2 bg-red-900/50 hover:bg-red-900 text-red-400 rounded-lg transition-colors"
+          className="p-2 bg-red-900/50 hover:bg-red-900 text-red-400 transition-colors"
           title="Clear Animation"
         >
           <Trash2 size={14} />
@@ -346,7 +345,7 @@ export const AnimationPanel: React.FC = () => {
       <button
         onClick={saveToComponent}
         disabled={!localAnimation.name}
-        className="w-full py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm transition-colors disabled:opacity-50"
+        className="w-full py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] text-sm transition-colors disabled:opacity-50"
       >
         Save Animation
       </button>

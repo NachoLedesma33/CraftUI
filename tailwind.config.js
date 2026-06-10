@@ -12,14 +12,16 @@ export default {
       },
       colors: {
         editor: {
-          canvas: "#f5f5f5",
+          canvas: "#f5f0eb",
           sidebar: "#ffffff",
           toolbar: "#fafafa",
-          border: "#e5e7eb",
-          accent: "#8b5cf6",
-          "accent-fuchsia": "#d946ef",
-          "accent-orange": "#f97316",
+          border: "#000000",
+          accent: "#ef4444",
+          "accent-alt": "#3b82f6",
         },
+      },
+      borderWidth: {
+        3: "3px",
       },
       spacing: {
         18: "4.5rem",
@@ -70,16 +72,9 @@ export default {
         },
       },
       boxShadow: {
-        subtle: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-        medium:
-          "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-        large:
-          "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        glow: "0 0 20px rgba(139, 92, 246, 0.2)",
-        "glow-lg": "0 0 40px rgba(139, 92, 246, 0.25)",
-      },
-      backdropBlur: {
-        xs: "2px",
+        brutal: "3px 3px 0px #000",
+        "brutal-sm": "2px 2px 0px #000",
+        "brutal-lg": "5px 5px 0px #000",
       },
     },
   },

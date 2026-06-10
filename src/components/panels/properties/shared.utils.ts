@@ -1,7 +1,7 @@
 import type { ResponsiveValue, Styles, UIComponent } from '@/types/canvas';
 
-export const INPUT_CLASSES = "w-full px-3 py-2 text-sm bg-slate-700/60 border border-slate-600/60 rounded-lg text-slate-200 focus:border-violet-500/60 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-200 backdrop-blur-sm";
-export const LABEL_CLASSES = "text-xs font-medium text-slate-400 mb-2 block tracking-tight";
+export const INPUT_CLASSES = "w-full px-3 py-2 text-sm bg-[var(--bg-tertiary)] border-2 border-[var(--border)] text-[var(--text-primary)] focus:outline-none";
+export const LABEL_CLASSES = "text-xs font-medium text-[var(--text-secondary)] mb-2 block";
 export const SECTION_CLASSES = "mb-4";
 
 export const debounce = <T extends (...args: Parameters<T>) => void>(fn: T, delay: number) => {

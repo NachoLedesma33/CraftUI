@@ -41,7 +41,7 @@ export const CanvasOverlays = React.memo<CanvasOverlaysProps>(({
 
       {/* Mouse coordinates overlay */}
       {mousePosition && (
-        <div className="absolute top-2 left-2 bg-black/80 text-white text-xs px-2 py-1 rounded pointer-events-none z-50">
+        <div className="absolute top-2 left-2 bg-black/80 text-white text-xs px-2 py-1 pointer-events-none z-50">
           {Math.round(mousePosition.x)}, {Math.round(mousePosition.y)}
         </div>
       )}

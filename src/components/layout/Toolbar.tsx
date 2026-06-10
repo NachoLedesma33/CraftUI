@@ -49,20 +49,22 @@ const HistoryControls: React.FC<{
       <button
         onClick={onUndo}
         disabled={!canUndo}
-        className={`p-2 rounded hover:bg-slate-700 ${
-          canUndo ? "text-slate-200" : "text-slate-600 cursor-not-allowed"
+        className={`p-2 brutal-btn ${
+          canUndo ? "text-[var(--text)]" : "text-[var(--text-muted)] cursor-not-allowed"
         }`}
         title="Undo (Ctrl+Z)"
+        style={{ backgroundColor: canUndo ? "var(--bg-tertiary)" : "transparent" }}
       >
         <Undo2 size={18} />
       </button>
       <button
         onClick={onRedo}
         disabled={!canRedo}
-        className={`p-2 rounded hover:bg-slate-700 ${
-          canRedo ? "text-slate-200" : "text-slate-600 cursor-not-allowed"
+        className={`p-2 brutal-btn ${
+          canRedo ? "text-[var(--text)]" : "text-[var(--text-muted)] cursor-not-allowed"
         }`}
         title="Redo (Ctrl+Y)"
+        style={{ backgroundColor: canRedo ? "var(--bg-tertiary)" : "transparent" }}
       >
         <Redo2 size={18} />
       </button>
@@ -95,25 +97,25 @@ const Breadcrumbs: React.FC = () => {
   }, [selectedIds, components]);
 
   if (selectedIds.length > 1) {
-    return <span className="text-xs text-violet-400 font-medium">{selectedIds.length} selected</span>;
+    return <span className="text-xs font-bold" style={{ color: "var(--accent)" }}>{selectedIds.length} selected</span>;
   }
 
   if (!breadcrumb || breadcrumb.length === 0) {
-    return <span className="text-xs text-slate-500">No selection</span>;
+    return <span className="text-xs" style={{ color: "var(--text-muted)" }}>No selection</span>;
   }
 
   return (
     <div className="flex items-center gap-1 text-xs">
       {breadcrumb.map((item, index) => (
         <React.Fragment key={item.id}>
-          {index > 0 && <ChevronRight size={12} className="text-slate-500" />}
+          {index > 0 && <ChevronRight size={12} style={{ color: "var(--text-muted)" }} />}
           <button
             onClick={() => selectComponent(item.id)}
-            className={`px-2 py-1 rounded hover:bg-slate-700 ${
-              index === breadcrumb.length - 1
-                ? "text-white font-medium"
-                : "text-slate-400"
-            }`}
+            className={`px-2 py-1 brutal-btn`}
+            style={{
+              backgroundColor: index === breadcrumb.length - 1 ? "var(--bg-tertiary)" : "transparent",
+              color: index === breadcrumb.length - 1 ? "var(--text)" : "var(--text-secondary)",
+            }}
           >
             {item.metadata.name}
           </button>
@@ -140,7 +142,8 @@ const ZoomControls: React.FC<{
     <div className="flex items-center gap-1">
       <button
         onClick={onZoomOut}
-        className="p-1.5 rounded hover:bg-slate-600 text-slate-300"
+        className="p-1.5 brutal-btn"
+        style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text)" }}
         title="Zoom Out"
       >
         <ZoomOut size={16} />
@@ -149,14 +152,15 @@ const ZoomControls: React.FC<{
         type="number"
         value={Math.round(zoom * 100)}
         onChange={handleInputChange}
-        className="w-14 px-2 py-1 text-xs text-center bg-slate-700 border border-slate-600 rounded text-white"
+        className="brutal-input w-14 px-2 py-1 text-xs text-center"
         min={50}
         max={200}
       />
-      <span className="text-xs text-slate-400">%</span>
+      <span className="text-xs" style={{ color: "var(--text-muted)" }}>%</span>
       <button
         onClick={onZoomIn}
-        className="p-1.5 rounded hover:bg-slate-600 text-slate-300"
+        className="p-1.5 brutal-btn"
+        style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text)" }}
         title="Zoom In"
       >
         <ZoomIn size={16} />
@@ -170,21 +174,21 @@ const SelectionIndicator: React.FC = () => {
   const components = useEditorStore((s) => s.components);
 
   if (selectedIds.length === 0) {
-    return <span className="text-xs text-slate-500 px-2">No selection</span>;
+    return <span className="text-xs px-2" style={{ color: "var(--text-muted)" }}>No selection</span>;
   }
 
   if (selectedIds.length === 1) {
     const component = components[selectedIds[0]];
     if (!component) return null;
     return (
-      <span className="text-xs text-slate-300 px-2">
+      <span className="text-xs px-2" style={{ color: "var(--text-secondary)" }}>
         {component.type} · {component.metadata.name}
       </span>
     );
   }
 
   return (
-    <span className="text-xs text-slate-300 px-2">
+    <span className="text-xs px-2" style={{ color: "var(--text-secondary)" }}>
       {selectedIds.length} items selected
     </span>
   );
@@ -198,21 +202,33 @@ const PanelToggles: React.FC = () => {
     <div className="flex items-center gap-1">
       <button
         onClick={() => togglePanel("layers")}
-        className={`p-2 rounded ${panels.layers ? "bg-violet-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
+        className={`p-2 brutal-btn`}
+        style={{
+          backgroundColor: panels.layers ? "var(--accent)" : "var(--bg-tertiary)",
+          color: panels.layers ? "var(--bg-primary)" : "var(--text-secondary)",
+        }}
         title="Toggle Layers Panel"
       >
         <Layers size={16} />
       </button>
       <button
         onClick={() => togglePanel("components")}
-        className={`p-2 rounded ${panels.components ? "bg-violet-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
+        className={`p-2 brutal-btn`}
+        style={{
+          backgroundColor: panels.components ? "var(--accent)" : "var(--bg-tertiary)",
+          color: panels.components ? "var(--bg-primary)" : "var(--text-secondary)",
+        }}
         title="Toggle Components Panel"
       >
         <Box size={16} />
       </button>
       <button
         onClick={() => togglePanel("properties")}
-        className={`p-2 rounded ${panels.properties ? "bg-violet-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
+        className={`p-2 brutal-btn`}
+        style={{
+          backgroundColor: panels.properties ? "var(--accent)" : "var(--bg-tertiary)",
+          color: panels.properties ? "var(--bg-primary)" : "var(--text-secondary)",
+        }}
         title="Toggle Properties Panel"
       >
         <Settings size={16} />
@@ -228,7 +244,11 @@ const ViewModeToggle: React.FC = () => {
   return (
     <button
       onClick={() => setPreviewMode(!previewMode)}
-      className={`p-2 rounded ${previewMode ? "bg-green-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
+      className={`p-2 brutal-btn`}
+      style={{
+        backgroundColor: previewMode ? "var(--accent)" : "var(--bg-tertiary)",
+        color: previewMode ? "var(--bg-primary)" : "var(--text-secondary)",
+      }}
       title={previewMode ? "Exit Preview" : "Preview Mode"}
     >
       {previewMode ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -254,7 +274,8 @@ const ShortcutsPopover: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 rounded text-slate-400 hover:bg-slate-700"
+        className="p-2 brutal-btn"
+        style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
         title="Keyboard Shortcuts"
       >
         <Keyboard size={16} />
@@ -266,15 +287,15 @@ const ShortcutsPopover: React.FC = () => {
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute top-full right-0 mt-2 p-3 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-50 min-w-[200px]">
-            <h4 className="text-xs font-medium text-white mb-2">
+          <div className="brutal-card absolute top-full right-0 mt-2 p-3 z-50 min-w-[200px]" style={{ boxShadow: "3px 3px 0 var(--border)" }}>
+            <h4 className="text-xs font-bold mb-2" style={{ color: "var(--text)" }}>
               Keyboard Shortcuts
             </h4>
             <div className="space-y-1">
               {shortcuts.map((s) => (
                 <div key={s.key} className="flex justify-between text-xs">
-                  <span className="text-slate-400">{s.action}</span>
-                  <kbd className="px-1.5 py-0.5 bg-slate-700 rounded text-slate-300">
+                  <span style={{ color: "var(--text-secondary)" }}>{s.action}</span>
+                  <kbd className="px-1.5 py-0.5 border-2" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-tertiary)", color: "var(--text)", borderRadius: 0 }}>
                     {s.key}
                   </kbd>
                 </div>
@@ -298,20 +319,22 @@ const ConfirmDialog: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onCancel} />
-      <div className="relative bg-slate-800 border border-slate-700 rounded-lg p-4 max-w-sm shadow-xl">
-        <h3 className="text-sm font-medium text-white mb-2">{title}</h3>
-        <p className="text-xs text-slate-400 mb-4">{message}</p>
+      <div className="absolute inset-0 bg-black/80" onClick={onCancel} />
+      <div className="brutal-card relative p-4 max-w-sm" style={{ boxShadow: "3px 3px 0 var(--border)" }}>
+        <h3 className="text-sm font-bold mb-2" style={{ color: "var(--text)" }}>{title}</h3>
+        <p className="text-xs mb-4" style={{ color: "var(--text-secondary)" }}>{message}</p>
         <div className="flex justify-end gap-2">
           <button
             onClick={onCancel}
-            className="px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700 rounded"
+            className="px-3 py-1.5 text-xs brutal-btn"
+            style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text)" }}
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="px-3 py-1.5 text-xs bg-red-600 text-white hover:bg-red-700 rounded"
+            className="px-3 py-1.5 text-xs brutal-btn"
+            style={{ backgroundColor: "#ef4444", color: "#fff" }}
           >
             Confirm
           </button>
@@ -383,22 +406,19 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   return (
     <>
       <header className="mx-auto mt-3 w-full max-w-[calc(100%-32px)] xl:max-w-[1400px]">
-        <div className="relative h-12 flex items-center justify-between px-4 bg-slate-800/70 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl shadow-black/20">
-          {/* Top glow */}
-          <div className="absolute -top-px left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent pointer-events-none" />
-
+        <div className="brutal-card flex h-12 items-center justify-between px-4 shadow-brutal rounded-none">
           {/* Left section */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 group">
-              <div className="w-7 h-7 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-orange-500 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <span className="text-white text-xs font-bold tracking-tight">V</span>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 flex items-center justify-center" style={{ backgroundColor: "var(--accent)" }}>
+                <span className="text-xs font-bold tracking-tight" style={{ color: "var(--bg-primary)" }}>V</span>
               </div>
-              <span className="text-sm font-semibold text-white hidden sm:block tracking-tight">
+              <span className="text-sm font-bold hidden sm:block tracking-tight" style={{ color: "var(--text)" }}>
                 Visual UI
               </span>
             </div>
 
-            <div className="h-6 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent" />
+            <div className="h-6 w-px" style={{ backgroundColor: "var(--border)" }} />
 
             <HistoryControls
               canUndo={canUndo}
@@ -408,14 +428,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             />
 
             <div className="hidden md:flex items-center">
-              <div className="h-6 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent mr-3" />
+              <div className="h-6 w-px mr-3" style={{ backgroundColor: "var(--border)" }} />
               <Breadcrumbs />
             </div>
           </div>
 
           {/* Center section */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-slate-900/60 backdrop-blur-sm rounded-lg p-1.5 border border-slate-700/50">
+            <div className="flex items-center gap-1.5 p-1.5 border-2" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-tertiary)" }}>
               <ZoomControls
                 zoom={view.zoom}
                 onZoomIn={zoomIn}
@@ -441,11 +461,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               />
             )}
 
-            <div className="h-6 w-px bg-gradient-to-b from-transparent via-slate-600 to-transparent" />
+            <div className="h-6 w-px" style={{ backgroundColor: "var(--border)" }} />
 
             <button
               onClick={() => onAutoSave?.()}
-              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200"
+              className="p-2 brutal-btn"
+              style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
               title="Auto-Save Versions"
             >
               <HardDrive size={15} />
@@ -453,7 +474,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
             <button
               onClick={() => onTemplates?.()}
-              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200"
+              className="p-2 brutal-btn"
+              style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
               title="Templates & Projects"
             >
               <FileText size={15} />
@@ -462,7 +484,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="p-2 brutal-btn disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
               title="Save Project"
             >
               {isSaving ? <Loader2 size={15} className="animate-spin" /> : <Cloud size={15} />}
@@ -470,7 +493,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
             <button
               onClick={handleExport}
-              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200"
+              className="p-2 brutal-btn"
+              style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
               title="Export Code"
             >
               <Download size={15} />
@@ -478,7 +502,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
             <button
               onClick={() => setShowClearDialog(true)}
-              className="p-2 rounded-lg text-slate-300 hover:bg-red-600/20 hover:text-red-400 transition-all duration-200"
+              className="p-2 brutal-btn"
+              style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
               title="Clear Canvas"
             >
               <Trash2 size={15} />
@@ -486,7 +511,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
             <button
               onClick={toggleThemeHandler}
-              className="p-2 rounded-lg text-slate-300 hover:bg-slate-700/80 hover:text-white transition-all duration-200"
+              className="p-2 brutal-btn"
+              style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
               title="Toggle Theme"
             >
               {isDark ? <Sun size={15} /> : <Moon size={15} />}

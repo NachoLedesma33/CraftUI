@@ -21,7 +21,7 @@ export const Canvas: React.FC = () => {
   const clearSelection = useEditorStore((s) => s.clearSelection);
   const canvasConfig = useEditorStore((s) => s.canvasConfig);
   
-  const { setNodeRef, isOver } = useDroppable({
+  const { setNodeRef } = useDroppable({
     id: 'canvas-drop-zone',
   });
 
@@ -51,7 +51,7 @@ export const Canvas: React.FC = () => {
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex-1 overflow-auto ${isOver ? 'ring-2 ring-violet-400 ring-inset' : ''}`}
+      className="relative flex-1 overflow-auto"
       style={{ backgroundColor: 'var(--bg-primary)' }}
       onClick={handleCanvasClick}
     >
@@ -67,7 +67,7 @@ export const Canvas: React.FC = () => {
         }}
       >
         <div
-          className="mx-auto mt-8 shadow-2xl"
+          className="mx-auto mt-8"
           style={{
             width: `${deviceWidth}px`,
             minHeight: `${canvasConfig.height}px`,
@@ -85,13 +85,13 @@ export const Canvas: React.FC = () => {
 
           {(!rootComponent || !hasChildren) && (
             <div className="flex flex-col items-center justify-center py-24 px-8 select-none">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500/20 via-fuchsia-500/20 to-orange-500/20 flex items-center justify-center mb-5 border border-violet-500/10">
+              <div className="w-16 h-16 bg-[var(--bg-tertiary)] flex items-center justify-center mb-5 border border-[var(--border)]">
                 <span className="text-2xl opacity-60">+</span>
               </div>
-              <p className="text-base font-semibold text-slate-400 mb-2">Canvas vacío</p>
-              <p className="text-sm text-slate-500 text-center max-w-xs leading-relaxed">
+<p className="text-base font-semibold text-[var(--text-secondary)] mb-2">Canvas vacío</p>
+               <p className="text-sm text-[var(--text-muted)] text-center max-w-xs leading-relaxed">
                 Arrastrá componentes desde el panel izquierdo o presioná{" "}
-                <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-400 font-mono">Ctrl+K</kbd>{" "}
+                <kbd className="px-1.5 py-0.5 bg-[var(--bg-tertiary)] border border-[var(--border)] text-xs text-[var(--text-secondary)] font-mono">Ctrl+K</kbd>{" "}
                 para abrir la paleta de comandos
               </p>
             </div>

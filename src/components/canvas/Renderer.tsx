@@ -268,26 +268,26 @@ const ContextMenu: React.FC<{
 
   return (
     <div
-      className="fixed bg-slate-800 border border-slate-700 rounded-lg shadow-xl py-1 z-50 min-w-[150px]"
+      className="fixed bg-slate-800 brutal-card border border-[var(--border)] py-1 z-50 min-w-[150px]"
       style={{ left: x, top: y }}
       onClick={(e) => e.stopPropagation()}
     >
       <button
         onClick={() => { startRenaming(componentId); onClose(); }}
-        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
       >
         Rename
       </button>
       <button
         onClick={() => { duplicateComponent(componentId); addToast("Duplicated", "success", 2000); onClose(); }}
-        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
       >
         Duplicate
       </button>
-      <div className="border-t border-slate-700 my-1" />
+      <div className="border-t border-[var(--border)] my-1" />
       <button
         onClick={() => { deleteComponent(componentId); addToast("Deleted", "info", 2000); onClose(); }}
-        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-slate-700"
+        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-[var(--bg-tertiary)]"
       >
         Delete
       </button>
@@ -392,7 +392,7 @@ const EditWrapper = React.memo<EditWrapperProps>(({
       )}
 
       {isNew && (
-        <div className="absolute -inset-1 rounded-lg pointer-events-none z-10 animate-new-component" />
+        <div className="absolute -inset-1 pointer-events-none z-10 animate-new-component" />
       )}
 
       {/* Editor outline (subtle) + selection border */}
@@ -407,13 +407,13 @@ const EditWrapper = React.memo<EditWrapperProps>(({
       />
 
       {isSelected && (
-        <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 rounded-t-md rounded-r-md flex items-center gap-1.5 shadow-sm pointer-events-none">
+        <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 flex items-center gap-1.5 pointer-events-none border-[var(--border)]">
           <span className="cursor-grab active:cursor-grabbing" {...(!isRoot ? listeners : {})}>⠿</span>
           {component.metadata.isRenaming ? (
             <input
               ref={handleRenameSubmit}
               defaultValue={component.metadata.name}
-              className="w-24 bg-slate-700 text-white text-xs px-1 py-0 rounded border border-violet-300 outline-none"
+              className="w-24 bg-slate-700 text-white text-xs px-1 py-0 border border-violet-300 outline-none"
             />
           ) : (
             <span>{component.metadata.name}</span>
@@ -425,7 +425,7 @@ const EditWrapper = React.memo<EditWrapperProps>(({
       {isSelected && !isRoot && (
         <button
           onClick={handleDelete}
-          className="absolute -top-6 right-0 bg-red-500 text-white w-5 h-5 rounded-t-md rounded-l-md flex items-center justify-center text-xs hover:bg-red-600 pointer-events-auto shadow-sm transition-colors"
+          className="absolute -top-6 right-0 bg-red-500 text-white w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 pointer-events-auto transition-colors"
         >
           ×
         </button>

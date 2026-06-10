@@ -214,7 +214,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
       {handlePositions.map(({ position, style }) => (
         <div
           key={position}
-          className="absolute z-50 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm hover:bg-violet-100"
+          className="absolute z-50 w-3 h-3 bg-white border-2 border-[var(--border)] hover:bg-[var(--bg-tertiary)]"
           style={{
             ...style,
             transform: style.transform || 'none',
@@ -225,7 +225,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
       
       {showTooltip && (
         <div
-          className="absolute z-50 px-2 py-1 bg-slate-800 text-white text-xs rounded shadow-lg pointer-events-none"
+          className="absolute z-50 px-2 py-1 bg-[var(--bg-secondary)] text-white text-xs border-[var(--border)] shadow-brutal pointer-events-none"
           style={{
             top: -28,
             left: '50%',

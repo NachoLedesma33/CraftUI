@@ -99,7 +99,7 @@ function App() {
           onDragEnd={handleDragEnd}
         >
           <div
-            className="h-screen w-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden"
+            className="h-screen w-screen flex flex-col overflow-hidden"
             style={{ backgroundColor: "var(--bg-primary)" }}
           >
             {/* Toolbar */}
@@ -119,10 +119,10 @@ function App() {
                     defaultSize={18}
                     minSize={16}
                     maxSize={35}
-                    className="z-10 bg-slate-800/95 border-r border-slate-700/80 overflow-hidden backdrop-blur-sm panel-enter-left"
+                    className="z-10 overflow-hidden panel-enter-left"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
-                      borderRightColor: "var(--border-color)",
+                      borderRight: "2px solid var(--border)",
                     }}
                   >
                     <ComponentLibrary />
@@ -131,11 +131,8 @@ function App() {
 
                 {panels.components && (
                   <Separator
-                    className="w-1.5 bg-slate-800/60 hover:bg-violet-600/40 transition-all duration-200 cursor-col-resize z-20 group"
-                    style={{ borderRight: "1px solid var(--border-color)" }}
-                  >
-                    <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-violet-400 group-hover:shadow-lg" />
-                  </Separator>
+                    className="w-[3px] bg-[var(--border)] cursor-col-resize z-20 hover:bg-[var(--accent)] transition-colors duration-100"
+                  />
                 )}
 
                 {/* Center Panel - Canvas */}
@@ -146,7 +143,7 @@ function App() {
                   className="relative z-0 overflow-hidden flex flex-col"
                 >
                   <div
-                    className="flex-1 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden"
+                    className="flex-1 relative overflow-hidden"
                     style={{ backgroundColor: "var(--bg-primary)" }}
                   >
                     <CanvasOverlays onMouseMove={handleMouseMove}>
@@ -157,11 +154,8 @@ function App() {
 
                 {panels.properties && (
                   <Separator
-                    className="w-1.5 bg-slate-800/60 hover:bg-violet-600/40 transition-all duration-200 cursor-col-resize z-20 group"
-                    style={{ borderLeft: "1px solid var(--border-color)" }}
-                  >
-                    <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-violet-400 group-hover:shadow-lg" />
-                  </Separator>
+                    className="w-[3px] bg-[var(--border)] cursor-col-resize z-20 hover:bg-[var(--accent)] transition-colors duration-100"
+                  />
                 )}
 
                 {/* Right Panel - Properties/Layers Tabs */}
@@ -170,34 +164,38 @@ function App() {
                     defaultSize={18}
                     minSize={16}
                     maxSize={35}
-                    className="z-10 bg-slate-800/95 flex flex-col overflow-hidden backdrop-blur-sm panel-enter-right"
+                    className="z-10 flex flex-col overflow-hidden panel-enter-right"
                     style={{
                       backgroundColor: "var(--bg-secondary)",
-                      borderLeftColor: "var(--border-color)",
+                      borderLeft: "2px solid var(--border)",
                     }}
                   >
                     {/* Tab Navigation */}
                     <div
-                      className="flex border-b border-slate-700/80 bg-slate-800/60 backdrop-blur-sm"
-                      style={{ borderBottomColor: "var(--border-color)" }}
+                      className="flex"
+                      style={{ borderBottom: "2px solid var(--border)" }}
                     >
                       <button
                         onClick={() => setActiveRightTab("properties")}
-                        className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "properties" ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${
+                          activeRightTab === "properties"
+                            ? "text-[var(--bg-primary)] bg-[var(--accent)]"
+                            : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-tertiary)]"
+                        }`}
+                        style={activeRightTab === "properties" ? { borderBottom: "2px solid var(--accent)", marginBottom: "-2px" } : {}}
                       >
                         Properties
-                        {activeRightTab === "properties" && (
-                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />
-                        )}
                       </button>
                       <button
                         onClick={() => setActiveRightTab("layers")}
-                        className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "layers" ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${
+                          activeRightTab === "layers"
+                            ? "text-[var(--bg-primary)] bg-[var(--accent)]"
+                            : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-tertiary)]"
+                        }`}
+                        style={activeRightTab === "layers" ? { borderBottom: "2px solid var(--accent)", marginBottom: "-2px" } : {}}
                       >
                         Layers
-                        {activeRightTab === "layers" && (
-                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />
-                        )}
                       </button>
                     </div>
 
@@ -229,7 +227,7 @@ function App() {
           />
 
           {/* Modals */}
-          <Suspense fallback={<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"><div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>}>
+          <Suspense fallback={<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"><div className="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent animate-spin" style={{ borderTopColor: "transparent" }} /></div>}>
             <ExportModal
               isOpen={isExportOpen}
               onClose={() => setIsExportOpen(false)}

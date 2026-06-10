@@ -4,11 +4,11 @@ import type { Template, TemplateCategory } from "@/types/template";
 import { Download, Upload, Trash2, Search } from "lucide-react";
 
 const BUTTON_CLASS =
-  "px-3 py-2 text-xs rounded bg-violet-600 hover:bg-violet-700 text-white transition-colors disabled:bg-slate-600";
+  "px-3 py-2 text-xs bg-[var(--accent)] hover:bg-violet-700 text-white transition-colors disabled:bg-[var(--bg-tertiary)]";
 const BUTTON_OUTLINE =
-  "px-3 py-2 text-xs rounded border border-slate-600 hover:bg-slate-700 text-slate-200 transition-colors";
+  "px-3 py-2 text-xs border border-[var(--border)] hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition-colors";
 const INPUT_CLASS =
-  "w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-violet-500 focus:outline-none";
+  "w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)] focus:border-violet-500 focus:outline-none";
 
 interface TemplateModalProps {
   isOpen: boolean;
@@ -30,9 +30,9 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
   onExport,
 }) => {
   return (
-    <div className="flex flex-col rounded border border-slate-700 bg-slate-900 overflow-hidden hover:border-violet-500 transition-colors">
+    <div className="flex flex-col border border-[var(--border)] bg-[var(--bg-secondary)] overflow-hidden hover:border-[var(--accent)] transition-colors">
       {/* Thumbnail */}
-      <div className="w-full h-32 bg-slate-800 flex items-center justify-center overflow-hidden">
+      <div className="w-full h-32 bg-[var(--bg-tertiary)] flex items-center justify-center overflow-hidden">
         {template.thumbnail ? (
           <img
             src={template.thumbnail}
@@ -40,7 +40,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="text-slate-500 text-xs text-center px-2">
+          <div className="text-[var(--text-muted)] text-xs text-center px-2">
             {template.category}
           </div>
         )}
@@ -48,10 +48,10 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
 
       {/* Content */}
       <div className="flex-1 p-3 flex flex-col">
-        <h3 className="font-semibold text-sm text-white truncate">
+        <h3 className="font-semibold text-sm text-[var(--text-primary)] truncate">
           {template.name}
         </h3>
-        <p className="text-xs text-slate-400 line-clamp-2 mb-2">
+        <p className="text-xs text-[var(--text-secondary)] line-clamp-2 mb-2">
           {template.description}
         </p>
 
@@ -61,13 +61,13 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
             {template.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag}
-                className="text-xs px-2 py-0.5 bg-slate-800 text-slate-300 rounded"
+                className="text-xs px-2 py-0.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
               >
                 {tag}
               </span>
             ))}
             {template.tags.length > 2 && (
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-[var(--text-muted)]">
                 +{template.tags.length - 2}
               </span>
             )}
@@ -76,7 +76,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
 
         {/* Badge del sistema */}
         {template.isSystem && (
-          <div className="text-xs text-violet-400 mb-2">System Template</div>
+          <div className="text-xs text-[var(--accent)] mb-2">System Template</div>
         )}
 
         {/* Actions */}
@@ -236,13 +236,13 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-label="Templates">
-      <div className="bg-slate-900 rounded-lg border border-slate-700 w-full max-w-6xl max-h-[90vh] flex flex-col">
+      <div className="bg-[var(--bg-secondary)] border-[var(--border)] w-full max-w-6xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="border-b border-slate-700 p-4 flex items-center justify-between">
+        <div className="border-b border-[var(--border)] p-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-white">Templates</h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white text-xl"
+            className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xl"
             aria-label="Close dialog"
           >
             ×
@@ -250,13 +250,13 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-slate-700 px-4">
+        <div className="flex border-b border-[var(--border)] px-4">
           <button
             onClick={() => setSelectedTab("system")}
             className={`px-4 py-2 text-sm transition-colors ${
               selectedTab === "system"
-                ? "text-violet-400 border-b-2 border-violet-400"
-                : "text-slate-400 hover:text-white"
+                ? "text-[var(--accent)] border-b-2 border-[var(--accent)]"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             System Templates
@@ -265,8 +265,8 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
             onClick={() => setSelectedTab("user")}
             className={`px-4 py-2 text-sm transition-colors ${
               selectedTab === "user"
-                ? "text-violet-400 border-b-2 border-violet-400"
-                : "text-slate-400 hover:text-white"
+                ? "text-[var(--accent)] border-b-2 border-[var(--accent)]"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             My Templates ({userTemplates.length})
@@ -287,9 +287,9 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
         </div>
 
         {/* Search & Filter */}
-        <div className="p-4 border-b border-slate-700 space-y-3">
+        <div className="p-4 border-b border-[var(--border)] space-y-3">
           <div className="flex items-center gap-2">
-            <Search size={16} className="text-slate-500" />
+            <Search size={16} className="text-[var(--text-muted)]" />
             <input
               type="text"
               placeholder="Search templates..."
@@ -302,10 +302,10 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
           <div className="flex items-center gap-2 overflow-x-auto">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`px-3 py-1 text-xs rounded whitespace-nowrap transition-colors ${
+              className={`px-3 py-1 text-xs whitespace-nowrap transition-colors ${
                 activeCategory === "all"
-                  ? "bg-violet-600 text-white"
-                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  ? "bg-[var(--accent)] text-[var(--text-primary)]"
+                  : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
               }`}
             >
               All
@@ -314,10 +314,10 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-3 py-1 text-xs rounded whitespace-nowrap capitalize transition-colors ${
+                className={`px-3 py-1 text-xs whitespace-nowrap capitalize transition-colors ${
                   activeCategory === cat
-                    ? "bg-violet-600 text-white"
-                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                    ? "bg-[var(--accent)] text-[var(--text-primary)]"
+                    : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
                 }`}
               >
                 {cat}
@@ -329,7 +329,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
         {/* Grid */}
         <div className="flex-1 overflow-auto p-4">
           {templates.length === 0 ? (
-            <div className="flex items-center justify-center h-32 text-slate-400">
+            <div className="flex items-center justify-center h-32 text-[var(--text-secondary)]">
               No templates found
             </div>
           ) : (
@@ -348,7 +348,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="border-t border-slate-700 p-4 flex justify-end gap-2">
+        <div className="border-t border-[var(--border)] p-4 flex justify-end gap-2">
           <button onClick={onClose} className={BUTTON_OUTLINE}>
             Close
           </button>

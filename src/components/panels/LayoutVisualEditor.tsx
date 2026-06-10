@@ -42,17 +42,17 @@ const FlexPlayground: React.FC<{
 
   return (
     <div className="space-y-4">
-      <div className="text-xs font-medium text-slate-400 mb-2">Direction</div>
+      <div className="text-xs font-medium text-[var(--text-muted)] mb-2">Direction</div>
       <div className="flex gap-1 mb-3">
         {directionOptions.map((opt) => (
           <button
             key={opt.value}
             type="button"
             onClick={() => onChange({ flexDirection: { base: opt.value as 'row' | 'column' | 'row-reverse' | 'column-reverse' } })}
-            className={`flex-1 py-1.5 text-sm rounded ${
+            className={`flex-1 py-1.5 text-sm ${
               direction === opt.value
-                ? 'bg-violet-500 text-white'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
             }`}
             title={opt.title}
           >
@@ -61,17 +61,17 @@ const FlexPlayground: React.FC<{
         ))}
       </div>
 
-      <div className="text-xs font-medium text-slate-400 mb-2">Justify Content</div>
+      <div className="text-xs font-medium text-[var(--text-muted)] mb-2">Justify Content</div>
       <div className="flex gap-1 mb-3">
         {justifyOptions.map((opt) => (
           <button
             key={opt.value}
             type="button"
             onClick={() => onChange({ justifyContent: { base: opt.value as 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly' } })}
-            className={`flex-1 py-1.5 text-sm rounded ${
+            className={`flex-1 py-1.5 text-sm ${
               justify === opt.value
-                ? 'bg-violet-500 text-white'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
             }`}
             title={opt.title}
           >
@@ -80,17 +80,17 @@ const FlexPlayground: React.FC<{
         ))}
       </div>
 
-      <div className="text-xs font-medium text-slate-400 mb-2">Align Items</div>
+      <div className="text-xs font-medium text-[var(--text-muted)] mb-2">Align Items</div>
       <div className="flex gap-1 mb-3">
         {alignOptions.map((opt) => (
           <button
             key={opt.value}
             type="button"
             onClick={() => onChange({ alignItems: { base: opt.value as 'stretch' | 'flex-start' | 'flex-end' | 'center' | 'baseline' } })}
-            className={`flex-1 py-1.5 text-sm rounded ${
+            className={`flex-1 py-1.5 text-sm ${
               align === opt.value
-                ? 'bg-violet-500 text-white'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
             }`}
             title={opt.title}
           >
@@ -100,7 +100,7 @@ const FlexPlayground: React.FC<{
       </div>
 
       <div className="flex items-center gap-2 mb-3">
-        <label className="text-xs text-slate-400">Gap:</label>
+        <label className="text-xs text-[var(--text-muted)]">Gap:</label>
         <input
           type="range"
           min="0"
@@ -109,21 +109,21 @@ const FlexPlayground: React.FC<{
           onChange={(e) => onChange({ gap: { base: `${e.target.value}px` } })}
           className="flex-1"
         />
-        <span className="text-xs text-slate-300 w-12">{gap}</span>
+        <span className="text-xs text-[var(--text-secondary)] w-12">{gap}</span>
       </div>
 
       <div className="flex items-center gap-2">
-        <label className="text-xs text-slate-400">Wrap:</label>
+        <label className="text-xs text-[var(--text-muted)]">Wrap:</label>
         <button
           type="button"
           onClick={() => onChange({ flexWrap: { base: wrap === 'nowrap' ? 'wrap' : 'nowrap' } })}
-          className={`px-3 py-1 text-xs rounded ${wrap === 'wrap' ? 'bg-violet-500 text-white' : 'bg-slate-700 text-slate-300'}`}
+          className={`px-3 py-1 text-xs ${wrap === 'wrap' ? 'bg-[var(--accent)] text-[var(--text-primary)]' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`}
         >
           {wrap}
         </button>
       </div>
 
-      <div className="mt-4 p-2 bg-slate-900 rounded text-xs font-mono text-slate-300">
+      <div className="mt-4 p-2 bg-[var(--bg-primary)] text-xs font-mono text-[var(--text-secondary)]">
         {`display: flex;`}<br/>
         {`flex-direction: ${direction};`}<br/>
         {`justify-content: ${justify};`}<br/>
@@ -131,7 +131,7 @@ const FlexPlayground: React.FC<{
         {`gap: ${gap};`}
       </div>
 
-      <div className="h-32 bg-slate-800 rounded border-2 border-dashed border-slate-600 p-2" style={{ display: 'flex' }}>
+      <div className="h-32 bg-[var(--bg-secondary)] border-2 border-dashed border-[var(--border)] p-2" style={{ display: 'flex' }}>
         <div
           className="h-full w-full"
           style={{
@@ -146,7 +146,7 @@ const FlexPlayground: React.FC<{
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`px-3 py-2 rounded text-xs text-white font-medium ${
+              className={`px-3 py-2 text-xs text-white font-medium ${
                 i === 1 ? 'bg-red-500' : i === 2 ? 'bg-green-500' : 'bg-violet-500'
               }`}
             >
@@ -208,14 +208,14 @@ const GridMatrixEditor: React.FC<{
 
   return (
     <div className="space-y-4">
-      <div className="text-xs font-medium text-slate-400 mb-2">Presets</div>
+      <div className="text-xs font-medium text-[var(--text-muted)] mb-2">Presets</div>
       <div className="flex flex-wrap gap-1 mb-3">
         {presets.map((preset) => (
           <button
             key={preset.name}
             type="button"
             onClick={() => applyPreset(preset)}
-            className="px-2 py-1 text-xs bg-slate-700 text-slate-300 rounded hover:bg-slate-600"
+            className="px-2 py-1 text-xs bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
           >
             {preset.name}
           </button>
@@ -224,7 +224,7 @@ const GridMatrixEditor: React.FC<{
 
       <div className="flex gap-4">
         <div className="flex-1">
-          <label className="text-xs text-slate-400">Columns: {cols}</label>
+          <label className="text-xs text-[var(--text-muted)]">Columns: {cols}</label>
           <input
             type="range"
             min="1"
@@ -235,7 +235,7 @@ const GridMatrixEditor: React.FC<{
           />
         </div>
         <div className="flex-1">
-          <label className="text-xs text-slate-400">Rows: {rowsCount}</label>
+          <label className="text-xs text-[var(--text-muted)]">Rows: {rowsCount}</label>
           <input
             type="range"
             min="1"
@@ -248,7 +248,7 @@ const GridMatrixEditor: React.FC<{
       </div>
 
       <div className="flex items-center gap-2">
-        <label className="text-xs text-slate-400">Gap:</label>
+        <label className="text-xs text-[var(--text-muted)]">Gap:</label>
         <input
           type="range"
           min="0"
@@ -257,10 +257,10 @@ const GridMatrixEditor: React.FC<{
           onChange={(e) => onChange({ gap: { base: `${e.target.value}px` } })}
           className="flex-1"
         />
-        <span className="text-xs text-slate-300 w-12">{gap}</span>
+        <span className="text-xs text-[var(--text-secondary)] w-12">{gap}</span>
       </div>
 
-      <div className="mt-4 p-2 bg-slate-900 rounded text-xs font-mono text-slate-300">
+      <div className="mt-4 p-2 bg-[var(--bg-primary)] text-xs font-mono text-[var(--text-secondary)]">
         {`display: grid;`}<br/>
         {`grid-template-columns: ${columns};`}<br/>
         {`grid-template-rows: ${rows};`}<br/>
@@ -268,7 +268,7 @@ const GridMatrixEditor: React.FC<{
       </div>
 
       <div
-        className="h-32 bg-slate-800 rounded border-2 border-dashed border-slate-600 p-2"
+        className="h-32 bg-[var(--bg-secondary)] border-2 border-dashed border-[var(--border)] p-2"
         style={{
           display: 'grid',
           gridTemplateColumns: columns,
@@ -279,7 +279,7 @@ const GridMatrixEditor: React.FC<{
         {Array(cols * rowsCount).fill(0).map((_, i) => (
           <div
             key={i}
-            className="bg-slate-700 rounded flex items-center justify-center text-xs text-slate-400"
+            className="bg-[var(--bg-tertiary)] flex items-center justify-center text-xs text-[var(--text-muted)]"
           >
             {i + 1}
           </div>
@@ -320,21 +320,21 @@ export const LayoutVisualEditor: React.FC<LayoutEditorProps> = ({ component }) =
   if (!isFlex && !isGrid) {
     return (
       <div className="p-4 text-center">
-        <p className="text-sm text-slate-400 mb-3">
+        <p className="text-sm text-[var(--text-muted)] mb-3">
           This element doesn't have a Flex or Grid layout.
         </p>
         <div className="flex gap-2 justify-center">
           <button
             type="button"
             onClick={() => handleChange({ display: { base: 'flex' } })}
-            className="px-3 py-2 text-sm bg-violet-500 text-white rounded hover:bg-violet-600"
+            className="px-3 py-2 text-sm bg-[var(--accent)] text-[var(--text-primary)]"
           >
             Convert to Flex
           </button>
           <button
             type="button"
             onClick={() => handleChange({ display: { base: 'grid' } })}
-            className="px-3 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600"
+            className="px-3 py-2 text-sm bg-green-500 text-white"
           >
             Convert to Grid
           </button>
@@ -344,20 +344,20 @@ export const LayoutVisualEditor: React.FC<LayoutEditorProps> = ({ component }) =
   }
 
   return (
-    <div className="p-3 space-y-4 bg-slate-800 rounded-lg">
+    <div className="p-3 space-y-4 bg-[var(--bg-secondary)]">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-bold text-white">Visual Layout Editor</h3>
-        <span className={`px-2 py-0.5 text-xs rounded font-mono ${isFlex ? 'bg-violet-900 text-violet-300' : 'bg-green-900 text-green-300'}`}>
+        <h3 className="text-sm font-bold text-[var(--text-primary)]">Visual Layout Editor</h3>
+        <span className={`px-2 py-0.5 text-xs font-mono ${isFlex ? 'bg-[var(--accent)] text-[var(--text-primary)]' : 'bg-green-900 text-green-300'}`}>
           {display.toUpperCase()}
         </span>
       </div>
 
       <div className="flex items-center gap-2">
-        <label className="text-xs text-slate-400">Live Update:</label>
+        <label className="text-xs text-[var(--text-muted)]">Live Update:</label>
         <button
           type="button"
           onClick={() => setLiveUpdate(!liveUpdate)}
-          className={`w-10 h-5 rounded-full transition-colors ${liveUpdate ? 'bg-violet-500' : 'bg-slate-600'}`}
+          className={`w-10 h-5 transition-colors ${liveUpdate ? 'bg-[var(--accent)]' : 'bg-slate-600'}`}
         >
           <div className={`w-4 h-4 rounded-full bg-white transition-transform ${liveUpdate ? 'translate-x-5' : 'translate-x-0.5'}`} />
         </button>
@@ -370,14 +370,14 @@ export const LayoutVisualEditor: React.FC<LayoutEditorProps> = ({ component }) =
         <button
           type="button"
           onClick={handleApply}
-          className="flex-1 py-2 text-sm bg-violet-500 text-white rounded hover:bg-violet-600 font-medium"
+          className="flex-1 py-2 text-sm bg-[var(--accent)] text-[var(--text-primary)] font-medium"
         >
           Apply Changes
         </button>
         <button
           type="button"
           onClick={handleReset}
-          className="px-4 py-2 text-sm bg-slate-700 text-slate-300 rounded hover:bg-slate-600"
+          className="px-4 py-2 text-sm bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
         >
           Reset
         </button>

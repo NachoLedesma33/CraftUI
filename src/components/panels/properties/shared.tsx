@@ -28,8 +28,8 @@ export const StyleInput: React.FC<StyleInputProps> = ({ label, value, onChange, 
 export const StyleSection: React.FC<{ title: string; children: React.ReactNode; defaultOpen?: boolean }> = ({ title, children, defaultOpen = true }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-slate-700 pb-2 mb-2">
-      <button type="button" className="flex items-center justify-between w-full text-xs font-medium text-slate-300 hover:text-white"
+    <div className="border-b border-[var(--border)] pb-2 mb-2">
+      <button type="button" className="flex items-center justify-between w-full text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         onClick={() => setIsOpen(!isOpen)}>
         <span>{title}</span>
         <span className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>▼</span>

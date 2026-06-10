@@ -47,10 +47,10 @@ const BreakpointTabs: React.FC<{
             key={bp}
             type="button"
             onClick={() => onSelect(bp)}
-            className={`px-1.5 py-0.5 text-xs rounded transition-colors ${
+            className={`px-1.5 py-0.5 text-xs transition-colors ${
               active === bp
-                ? 'bg-violet-500 text-white'
-                : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
+                ? 'bg-[var(--accent)] text-[var(--text-primary)]'
+                : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
             } ${!hasValue ? 'opacity-50' : ''}`}
             title={breakpointLabels[bp]}
           >
@@ -89,7 +89,7 @@ const UnitSelector: React.FC<{
     <select
       value={currentUnit}
       onChange={(e) => handleChange(e.target.value)}
-      className="px-1 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-300 focus:border-violet-500 focus:outline-none"
+      className="px-1 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-secondary)] focus:border-violet-500 focus:outline-none"
     >
       {units.map((unit) => (
         <option key={unit} value={unit}>{unit}</option>
@@ -108,13 +108,13 @@ const ColorPicker: React.FC<{
     <div className="relative">
       <button
         type="button"
-        className="w-8 h-8 rounded border-2 border-slate-600 cursor-pointer"
+        className="w-8 h-8 border-2 border-[var(--border)] cursor-pointer"
         style={{ backgroundColor: value || '#ffffff' }}
         onClick={() => setIsOpen(!isOpen)}
         title="Click to pick color"
       />
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 p-2 bg-slate-800 border border-slate-700 rounded shadow-lg z-50">
+        <div className="absolute top-full left-0 mt-1 p-2 bg-[var(--bg-secondary)] border-[var(--border)] shadow-brutal z-50">
           <input
             type="color"
             value={value || '#000000'}
@@ -126,7 +126,7 @@ const ColorPicker: React.FC<{
               <button
                 key={c}
                 type="button"
-                className="w-5 h-5 rounded border border-slate-600 cursor-pointer"
+                className="w-5 h-5 border border-[var(--border)] cursor-pointer"
                 style={{ backgroundColor: c }}
                 onClick={() => { onChange(c); setIsOpen(false); }}
               />
@@ -138,12 +138,12 @@ const ColorPicker: React.FC<{
               value={value || ''}
               onChange={(e) => onChange(e.target.value)}
               placeholder="#000000"
-              className="w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200"
+              className="w-full px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
           <button
             type="button"
-            className="mt-2 w-full py-1 text-xs bg-slate-700 text-slate-300 rounded hover:bg-slate-600"
+            className="mt-2 w-full py-1 text-xs bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
             onClick={() => setIsOpen(false)}
           >
             Done
@@ -162,7 +162,7 @@ const ResetButton: React.FC<{
     type="button"
     onClick={onClick}
     disabled={disabled}
-    className={`p-1 text-slate-400 hover:text-slate-200 transition-colors ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    className={`p-1 text-[var(--text-secondary)] transition-colors ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     title="Reset to inherited value"
   >
     ↺
@@ -262,7 +262,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
           value={currentValue}
           onChange={(e) => handleChange(e.target.value)}
           disabled={disabled}
-          className="flex-1 px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-violet-500 focus:outline-none"
+          className="flex-1 px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)] focus:border-violet-500 focus:outline-none"
         >
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -300,7 +300,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
           max={max}
           step={step}
           disabled={disabled}
-          className="flex-1 px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-violet-500 focus:outline-none placeholder:text-slate-500"
+          className="flex-1 px-2 py-1 text-xs bg-[var(--bg-tertiary)] border-[var(--border)] text-[var(--text-primary)] focus:border-violet-500 focus:outline-none placeholder:text-[var(--text-muted)]"
         />
         {units && units.length > 0 && (
           <UnitSelector units={units} value={currentValue} onChange={handleChange} />
@@ -313,7 +313,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center">
         <label 
-          className="text-xs font-medium text-slate-300"
+          className="text-xs font-medium text-[var(--text-secondary)]"
           title={description}
         >
           {label}
@@ -332,7 +332,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
         />
       </div>
       {showInherited && (
-        <span className="text-xs text-slate-500 italic">
+        <span className="text-xs text-[var(--text-muted)] italic">
           Inherited: {inheritedValue}
         </span>
       )}
@@ -347,7 +347,7 @@ interface StyleInputGroupProps {
 
 export const StyleInputGroup: React.FC<StyleInputGroupProps> = ({ label, children }) => (
   <div className="flex flex-col gap-1">
-    <label className="text-xs font-medium text-slate-400">{label}</label>
+    <label className="text-xs font-medium text-[var(--text-muted)]">{label}</label>
     {children}
   </div>
 );

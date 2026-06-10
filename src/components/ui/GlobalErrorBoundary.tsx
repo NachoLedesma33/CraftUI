@@ -113,13 +113,13 @@ export class GlobalErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-          <div className="bg-slate-800 border border-red-500 rounded-lg p-8 max-w-2xl w-full text-center">
+        <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-4">
+          <div className="bg-[var(--bg-secondary)] border-2 border-[var(--border)] shadow-brutal-lg p-8 max-w-2xl w-full text-center">
             <div className="text-red-400 text-6xl mb-6">⚠️</div>
             <h1 className="text-white text-2xl font-bold mb-4">
               Something went wrong
             </h1>
-            <p className="text-slate-400 text-lg mb-6">
+            <p className="text-[var(--text-secondary)] text-lg mb-6">
               The editor encountered a critical error. Don't worry, your work
               might still be recoverable.
             </p>
@@ -127,27 +127,27 @@ export class GlobalErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <button
                 onClick={this.handleDownloadBackup}
-                className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                className="bg-[var(--accent)] hover:bg-violet-700 text-white px-6 py-3 font-medium transition-colors"
               >
                 📥 Download Backup
               </button>
               <button
                 onClick={this.handleResetEditor}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 font-medium transition-colors"
               >
                 🔄 Reset Editor
               </button>
               <button
                 onClick={this.handleReload}
-                className="bg-slate-600 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                className="bg-[var(--bg-tertiary)] hover:bg-slate-700 text-white px-6 py-3 font-medium transition-colors"
               >
                 ↻ Reload Page
               </button>
             </div>
 
             {process.env.NODE_ENV === "development" && this.state.error && (
-              <details className="text-left bg-slate-900 p-4 rounded-lg border border-slate-700">
-                <summary className="text-slate-400 cursor-pointer font-medium mb-2">
+              <details className="text-left bg-[var(--bg-primary)] border-[var(--border)]">
+                <summary className="text-[var(--text-secondary)] cursor-pointer font-medium mb-2">
                   Error Details (Development Mode)
                 </summary>
                 <div className="space-y-4">
@@ -155,7 +155,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
                     <h4 className="text-red-400 font-medium mb-1">
                       Error Message:
                     </h4>
-                    <pre className="text-red-300 text-sm overflow-auto bg-slate-950 p-2 rounded">
+                    <pre className="text-red-300 text-sm overflow-auto bg-[var(--bg-primary)]">
                       {this.state.error.message}
                     </pre>
                   </div>
@@ -164,7 +164,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
                       <h4 className="text-red-400 font-medium mb-1">
                         Stack Trace:
                       </h4>
-                      <pre className="text-red-300 text-xs overflow-auto bg-slate-950 p-2 rounded max-h-40">
+                      <pre className="text-red-300 text-xs overflow-auto bg-[var(--bg-primary)] max-h-40">
                         {this.state.error.stack}
                       </pre>
                     </div>
@@ -174,7 +174,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
                       <h4 className="text-red-400 font-medium mb-1">
                         Component Stack:
                       </h4>
-                      <pre className="text-red-300 text-xs overflow-auto bg-slate-950 p-2 rounded max-h-40">
+                      <pre className="text-red-300 text-xs overflow-auto bg-[var(--bg-primary)] max-h-40">
                         {this.state.errorInfo.componentStack}
                       </pre>
                     </div>
@@ -183,7 +183,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
               </details>
             )}
 
-            <p className="text-slate-500 text-sm mt-6">
+            <p className="text-[var(--text-muted)] text-sm mt-6">
               If this problem persists, please report it with the backup file.
             </p>
           </div>

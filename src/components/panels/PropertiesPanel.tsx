@@ -22,12 +22,12 @@ export const PropertiesPanel: React.FC = () => {
 
   if (!component) {
     return (
-      <div className="bg-slate-800 flex items-center justify-center p-8 h-full w-full">
+      <div className="bg-[var(--bg-secondary)] flex items-center justify-center p-8 h-full w-full">
         <div className="text-center">
-          <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl text-slate-500">⚙️</span>
+          <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl text-[var(--text-muted)]">⚙️</span>
           </div>
-          <p className="text-slate-400 text-sm text-center font-medium">
+          <p className="text-[var(--text-muted)] text-sm text-center font-medium">
             No canvas initialized
           </p>
         </div>
@@ -49,26 +49,26 @@ export const PropertiesPanel: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-800 flex flex-col h-full w-full overflow-hidden">
-      <div className="p-4 border-b border-slate-700/80 flex items-center gap-3 flex-shrink-0 bg-gradient-to-r from-slate-800 to-slate-800/95">
-        <div className="w-10 h-10 bg-gradient-to-br from-slate-700 to-slate-600 rounded-lg flex items-center justify-center shadow-inner">
+    <div className="bg-[var(--bg-secondary)] flex flex-col h-full w-full overflow-hidden">
+      <div className="p-4 border-b border-[var(--border)] flex items-center gap-3 flex-shrink-0">
+        <div className="w-10 h-10 bg-[var(--bg-tertiary)] flex items-center justify-center">
           <span className="text-lg">{typeIcon(component.type)}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <span className="text-sm font-semibold text-white block truncate">{component.metadata.name}</span>
-          <span className="text-xs text-slate-500">
+          <span className="text-sm font-semibold text-[var(--text-primary)] block truncate">{component.metadata.name}</span>
+          <span className="text-xs text-[var(--text-muted)]">
             {isRootFallback ? "Page / Root properties" : `(${component.type})`}
           </span>
         </div>
       </div>
 
-      <div className="flex border-b border-slate-700/80 overflow-x-auto flex-shrink-0 bg-slate-800/50">
+      <div className="flex border-b border-[var(--border)] overflow-x-auto flex-shrink-0">
         {(["styles", "content", "layout", "advanced", "animations"] as const).map((tab) => (
           <button key={tab} type="button" role="tab" aria-selected={activeTab === tab}
-            className={`flex-1 py-3 text-xs font-medium capitalize transition-all duration-200 whitespace-nowrap relative ${activeTab === tab ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+            className={`flex-1 py-3 text-xs font-medium capitalize transition-all duration-200 whitespace-nowrap relative ${activeTab === tab ? "text-[var(--accent)] bg-[var(--bg-tertiary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}
             onClick={() => setActiveTab(tab)}>
             {tab}
-            {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />}
+            {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent)]" />}
           </button>
         ))}
       </div>

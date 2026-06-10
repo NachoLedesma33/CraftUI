@@ -42,7 +42,7 @@ export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
   }, [lastSaved, isEnabled, now]);
 
   const getStatusColor = () => {
-    if (!isEnabled) return 'text-slate-500';
+    if (!isEnabled) return 'text-[var(--text-muted)]';
     if (hasChanges) return 'text-orange-400';
     return 'text-green-400';
   };
@@ -55,7 +55,7 @@ export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
 
   return (
     <div
-      className={`flex items-center gap-1.5 px-2 py-1 rounded text-xs ${getStatusColor()} bg-slate-800/50`}
+      className={`flex items-center gap-1.5 px-2 py-1 text-xs ${getStatusColor()} bg-[var(--bg-tertiary)]`}
       title={isEnabled ? 'Auto-save status' : 'Auto-save is disabled'}
     >
       {getIcon()}

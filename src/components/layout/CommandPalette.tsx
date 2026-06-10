@@ -121,18 +121,19 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-50 bg-black/80" onClick={onClose} />
       <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]">
         <div
           ref={dialogRef}
-          className="w-full max-w-xl bg-slate-900/95 backdrop-blur-xl border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden"
+          className="brutal-card w-full max-w-xl overflow-hidden"
+          style={{ boxShadow: "3px 3px 0 var(--border)" }}
           role="dialog"
           aria-modal="true"
           aria-label="Command palette"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-700/60">
-            <Search size={18} className="text-slate-400 shrink-0" />
+          <div className="flex items-center gap-3 px-5 py-4" style={{ borderBottom: "2px solid var(--border)" }}>
+            <Search size={18} style={{ color: "var(--text-muted)" }} />
             <input
               ref={inputRef}
               type="text"
@@ -140,9 +141,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
               onChange={(e) => { setQuery(e.target.value); setSelectedIndex(0); }}
               onKeyDown={handleKeyDown}
               placeholder="Search commands..."
-              className="flex-1 bg-transparent text-white text-base placeholder-slate-500 outline-none"
+              className="brutal-input flex-1 text-base px-2 py-1"
+              style={{ backgroundColor: "transparent", border: "none", boxShadow: "none" }}
             />
-            <kbd className="px-2 py-0.5 bg-slate-800 border border-slate-700 rounded-md text-xs text-slate-400 font-mono">
+            <kbd className="px-2 py-0.5 border-2 text-xs font-mono" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-tertiary)", color: "var(--text-muted)" }}>
               <Command size={12} className="inline mr-0.5 -mt-0.5" />K
             </kbd>
           </div>
@@ -150,13 +152,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
           <div className="max-h-[320px] overflow-y-auto py-2">
             {filtered.length === 0 ? (
               <div className="px-5 py-8 text-center">
-                <p className="text-sm text-slate-500">No commands found</p>
-                <p className="text-xs text-slate-600 mt-1">Try a different search term</p>
+                <p className="text-sm" style={{ color: "var(--text-muted)" }}>No commands found</p>
+                <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>Try a different search term</p>
               </div>
             ) : (
               Array.from(categories.entries()).map(([category, cmds]) => (
                 <div key={category}>
-                  <div className="px-5 py-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
+                  <div className="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
                     {category}
                   </div>
                   {cmds.map((cmd) => (
@@ -164,19 +166,21 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                       key={cmd.id}
                       onClick={() => { cmd.action(); onClose(); }}
                       onMouseEnter={() => setSelectedIndex(filtered.indexOf(cmd))}
-                      className={`w-full flex items-center gap-3 px-5 py-2.5 text-left transition-colors ${
-                        filtered.indexOf(cmd) === selectedIndex
-                          ? "bg-violet-600/20 text-white"
-                          : "text-slate-300 hover:bg-slate-800/50"
-                      }`}
+                      className={`w-full flex items-center gap-3 px-5 py-2.5 text-left brutal-btn`}
+                      style={{
+                        backgroundColor: filtered.indexOf(cmd) === selectedIndex ? "var(--accent)" : "transparent",
+                        color: filtered.indexOf(cmd) === selectedIndex ? "var(--bg-primary)" : "var(--text)",
+                        border: "none",
+                        borderRadius: 0,
+                      }}
                     >
                       <span className="text-base shrink-0">{cmd.icon ?? <ArrowRight size={14} />}</span>
                       <div className="flex-1 min-w-0">
-                        <span className="text-sm font-medium block truncate">{cmd.label}</span>
-                        <span className="text-xs text-slate-500 block truncate">{cmd.description}</span>
+                        <span className="text-sm font-bold block truncate">{cmd.label}</span>
+                        <span className="text-xs block truncate" style={{ color: "var(--text-muted)" }}>{cmd.description}</span>
                       </div>
                       {cmd.shortcut && (
-                        <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] text-slate-400 font-mono shrink-0">
+                        <kbd className="px-1.5 py-0.5 border-2 text-[10px] font-mono shrink-0" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-tertiary)", color: "var(--text-muted)" }}>
                           {cmd.shortcut}
                         </kbd>
                       )}
@@ -187,17 +191,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
             )}
           </div>
 
-          <div className="flex items-center gap-4 px-5 py-3 border-t border-slate-700/60 bg-slate-900/50">
-            <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
-              <kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-xs">↑↓</kbd>
+          <div className="flex items-center gap-4 px-5 py-3" style={{ borderTop: "2px solid var(--border)", backgroundColor: "var(--bg-tertiary)" }}>
+            <div className="flex items-center gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>
+              <kbd className="px-1 py-0.5 border-2 text-xs" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-secondary)", color: "var(--text)" }}>↑↓</kbd>
               <span>Navigate</span>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
-              <kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-xs">↵</kbd>
+            <div className="flex items-center gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>
+              <kbd className="px-1 py-0.5 border-2 text-xs" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-secondary)", color: "var(--text)" }}>↵</kbd>
               <span>Select</span>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
-              <kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-xs">Esc</kbd>
+            <div className="flex items-center gap-1.5 text-[10px]" style={{ color: "var(--text-muted)" }}>
+              <kbd className="px-1 py-0.5 border-2 text-xs" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-secondary)", color: "var(--text)" }}>Esc</kbd>
               <span>Close</span>
             </div>
           </div>
