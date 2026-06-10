@@ -4,8 +4,8 @@
   "description": "A powerful visual UI editor for creating responsive web interfaces",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#3b82f6",
+  "background_color": "#1c1c1c",
+  "theme_color": "#fbbf24",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
