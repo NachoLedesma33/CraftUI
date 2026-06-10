@@ -103,7 +103,7 @@ export const useDragDrop = () => {
             updateComponent(overId, {
               styles: {
                 ...overComponent.styles,
-                borderColor: { base: "#3b82f6" },
+                borderColor: { base: "#8b5cf6" },
               },
             });
           }
@@ -115,7 +115,7 @@ export const useDragDrop = () => {
           updateComponent(overId, {
             styles: {
               ...overComponent.styles,
-              borderColor: { base: "#3b82f6" },
+              borderColor: { base: "#8b5cf6" },
             },
           });
         }
@@ -275,7 +275,7 @@ export const getDragOverlayContent = (item: DragItem | null): React.ReactNode =>
   if (!item) return null;
   if (item.type === "new") {
     return (
-      <div className="px-3 py-2 bg-blue-500 text-white rounded shadow-lg text-sm">
+      <div className="px-3 py-2 bg-violet-500 text-white rounded shadow-lg text-sm">
         {item.componentType?.charAt(0).toUpperCase()}
         {item.componentType?.slice(1)}
       </div>
@@ -284,7 +284,7 @@ export const getDragOverlayContent = (item: DragItem | null): React.ReactNode =>
 
   if (item.data) {
     return (
-      <div className="px-3 py-2 bg-white border border-blue-500 rounded shadow-lg text-sm">
+      <div className="px-3 py-2 bg-white border border-violet-500 rounded shadow-lg text-sm">
         {item.data.metadata.name}
       </div>
     );

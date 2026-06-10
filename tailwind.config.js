@@ -16,7 +16,9 @@ export default {
           sidebar: "#ffffff",
           toolbar: "#fafafa",
           border: "#e5e7eb",
-          accent: "#3b82f6",
+          accent: "#8b5cf6",
+          "accent-fuchsia": "#d946ef",
+          "accent-orange": "#f97316",
         },
       },
       spacing: {
@@ -73,8 +75,8 @@ export default {
           "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
         large:
           "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        glow: "0 0 20px rgba(59, 130, 246, 0.15)",
-        "glow-lg": "0 0 40px rgba(59, 130, 246, 0.2)",
+        glow: "0 0 20px rgba(139, 92, 246, 0.2)",
+        "glow-lg": "0 0 40px rgba(139, 92, 246, 0.25)",
       },
       backdropBlur: {
         xs: "2px",

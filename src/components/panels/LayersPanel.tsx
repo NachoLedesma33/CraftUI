@@ -151,7 +151,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         style={style}
         className={`
           flex items-center gap-1 py-1 px-2 cursor-pointer select-none min-w-0
-          ${isSelected ? "bg-blue-600 text-white" : "text-slate-300 hover:bg-slate-700"}
+          ${isSelected ? "bg-violet-600 text-white" : "text-slate-300 hover:bg-slate-700"}
           ${!component.metadata.isVisible ? "opacity-50" : ""}
         `}
         onClick={handleClick}
@@ -186,7 +186,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
 
         {hasChildren && (
           <span
-            className={`hidden sm:inline text-xs px-1 rounded flex-shrink-0 ${isSelected ? "bg-blue-500" : "bg-slate-600"}`}
+            className={`hidden sm:inline text-xs px-1 rounded flex-shrink-0 ${isSelected ? "bg-violet-500" : "bg-slate-600"}`}
           >
             {component.children.length}
           </span>

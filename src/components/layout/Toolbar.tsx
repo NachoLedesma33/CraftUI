@@ -193,21 +193,21 @@ const PanelToggles: React.FC = () => {
     <div className="flex items-center gap-1">
       <button
         onClick={() => togglePanel("layers")}
-        className={`p-2 rounded ${panels.layers ? "bg-blue-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
+        className={`p-2 rounded ${panels.layers ? "bg-violet-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
         title="Toggle Layers Panel"
       >
         <Layers size={16} />
       </button>
       <button
         onClick={() => togglePanel("components")}
-        className={`p-2 rounded ${panels.components ? "bg-blue-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
+        className={`p-2 rounded ${panels.components ? "bg-violet-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
         title="Toggle Components Panel"
       >
         <Box size={16} />
       </button>
       <button
         onClick={() => togglePanel("properties")}
-        className={`p-2 rounded ${panels.properties ? "bg-blue-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
+        className={`p-2 rounded ${panels.properties ? "bg-violet-600 text-white" : "text-slate-400 hover:bg-slate-700"}`}
         title="Toggle Properties Panel"
       >
         <Settings size={16} />
@@ -372,7 +372,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
     <header className="h-14 border-b border-slate-700/80 flex items-center justify-between px-6 bg-gradient-to-r from-slate-800/95 to-slate-900/95 backdrop-blur-md sticky top-0 z-50 shadow-lg">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-3 group">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+          <div className="w-8 h-8 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-orange-500 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
             <span className="text-white text-sm font-bold tracking-tight">V</span>
           </div>
           <span className="text-base font-semibold text-white hidden sm:block tracking-tight">

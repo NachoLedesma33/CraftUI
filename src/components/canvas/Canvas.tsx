@@ -58,7 +58,7 @@ export const Canvas: React.FC = () => {
   return (
     <div
       ref={setNodeRef}
-      className={`relative flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 ${isOver ? 'ring-2 ring-blue-400 ring-inset' : ''}`}
+      className={`relative flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 ${isOver ? 'ring-2 ring-violet-400 ring-inset' : ''}`}
       onClick={handleCanvasClick}
     >
       <div

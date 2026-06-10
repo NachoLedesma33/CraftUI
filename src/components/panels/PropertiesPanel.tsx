@@ -62,10 +62,10 @@ export const PropertiesPanel: React.FC = () => {
       <div className="flex border-b border-slate-700/80 overflow-x-auto flex-shrink-0 bg-slate-800/50">
         {(["styles", "content", "layout", "advanced", "animations"] as const).map((tab) => (
           <button key={tab} type="button"
-            className={`flex-1 py-3 text-xs font-medium capitalize transition-all duration-200 whitespace-nowrap relative ${activeTab === tab ? "text-blue-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+            className={`flex-1 py-3 text-xs font-medium capitalize transition-all duration-200 whitespace-nowrap relative ${activeTab === tab ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
             onClick={() => setActiveTab(tab)}>
             {tab}
-            {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-400" />}
+            {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />}
           </button>
         ))}
       </div>

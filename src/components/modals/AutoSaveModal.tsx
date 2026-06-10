@@ -88,7 +88,7 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-700 bg-slate-900/50">
             <div className="flex items-center gap-3">
-              <HardDrive size={20} className="text-blue-400" />
+              <HardDrive size={20} className="text-violet-400" />
               <h2 className="text-lg font-semibold text-white">Auto-Save Versions</h2>
             </div>
             <button
@@ -130,8 +130,8 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
                     className="flex items-center justify-between p-4 rounded-lg bg-slate-900/50 border border-slate-700 hover:border-slate-600 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center">
-                        <span className="text-xs font-medium text-blue-400">
+                      <div className="w-8 h-8 rounded-full bg-violet-600/20 flex items-center justify-center">
+                        <span className="text-xs font-medium text-violet-400">
                           {versions.length - index}
                         </span>
                       </div>
@@ -148,7 +148,7 @@ export const AutoSaveModal: React.FC<AutoSaveModalProps> = ({ isOpen, onClose })
                     <button
                       onClick={() => setShowConfirmDialog(version.id)}
                       disabled={restoringVersion === version.id}
-                      className="flex items-center gap-2 px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 text-white rounded transition-colors"
+                      className="flex items-center gap-2 px-3 py-1.5 text-xs bg-violet-600 hover:bg-violet-700 disabled:bg-slate-600 text-white rounded transition-colors"
                     >
                       {restoringVersion === version.id ? (
                         <>

@@ -3,7 +3,7 @@ import type { Styles, UIComponent } from '@/types/canvas';
 import { debounce, getValue, handleStyleChange } from './shared.utils';
 import { StyleInput, StyleSection } from './shared';
 
-const colors = ['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899'];
+const colors = ['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#8b5cf6', '#8b5cf6', '#ec4899'];
 
 export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id: string, updates: Partial<UIComponent>) => void }> = ({ component, updateComponent }) => {
   const [device, setDevice] = useState<'base' | 'tablet' | 'desktop'>('base');
@@ -18,7 +18,7 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
     <div className="p-2 space-y-2 overflow-auto">
       <div className="flex gap-1 mb-3">
         {(['base', 'tablet', 'desktop'] as const).map((d) => (
-          <button key={d} type="button" className={`flex-1 py-1 text-xs rounded ${device === d ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-300'}`} onClick={() => setDevice(d)}>
+          <button key={d} type="button" className={`flex-1 py-1 text-xs rounded ${device === d ? 'bg-violet-500 text-white' : 'bg-slate-700 text-slate-300'}`} onClick={() => setDevice(d)}>
             {d === 'base' ? '📱' : d === 'tablet' ? '📐' : '💻'}
           </button>
         ))}
@@ -27,7 +27,7 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
       <StyleSection title="Colors">
         <div className="flex gap-1 flex-wrap mb-2 w-full">
           {colors.map((c) => (
-            <button key={c} type="button" className={`flex-1 min-w-6 h-6 rounded border-12 cursor-pointer ${val('backgroundColor') === c ? 'border-blue-500' : 'border-slate-600'}`}
+            <button key={c} type="button" className={`flex-1 min-w-6 h-6 rounded border-12 cursor-pointer ${val('backgroundColor') === c ? 'border-violet-500' : 'border-slate-600'}`}
               style={{ backgroundColor: c, borderColor: c }} onClick={() => onStyleChange('backgroundColor', c)} />
           ))}
         </div>

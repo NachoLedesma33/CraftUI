@@ -280,14 +280,14 @@ const EditWrapper = React.memo<EditWrapperProps>(({
       <div
         className="absolute inset-0 pointer-events-none transition-opacity duration-150"
         style={{
-          border: isSelected ? "2px dashed #3b82f6" : "1px solid transparent",
+          border: isSelected ? "2px dashed #8b5cf6" : "1px solid transparent",
           opacity: isSelected ? 1 : 0,
         }}
       />
 
       {isSelected && (
         <>
-          <div className="absolute -top-6 left-0 bg-blue-500 text-white text-xs px-2 py-0.5 rounded flex items-center gap-1">
+          <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 rounded flex items-center gap-1">
             <span>{component.metadata.name}</span>
           </div>
 
@@ -300,10 +300,10 @@ const EditWrapper = React.memo<EditWrapperProps>(({
             </button>
           )}
 
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-blue-500 rounded-sm cursor-nwse-resize pointer-events-auto" />
-          <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-blue-500 rounded-sm cursor-nesw-resize pointer-events-auto" />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 bg-white border-2 border-blue-500 rounded-sm cursor-nesw-resize pointer-events-auto" />
-          <div className="absolute bottom-0 right-1/2 translate-x-1/2 translate-y-1/2 w-3 h-3 bg-white border-2 border-blue-500 rounded-sm cursor-nwse-resize pointer-events-auto" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm cursor-nwse-resize pointer-events-auto" />
+          <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm cursor-nesw-resize pointer-events-auto" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm cursor-nesw-resize pointer-events-auto" />
+          <div className="absolute bottom-0 right-1/2 translate-x-1/2 translate-y-1/2 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm cursor-nwse-resize pointer-events-auto" />
         </>
       )}
     </div>

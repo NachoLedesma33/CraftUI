@@ -68,7 +68,7 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
             onClick={() => onDeviceChange(device.id)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               activeDevice === device.id
-                ? 'bg-blue-600 text-white'
+                ? 'bg-violet-600 text-white'
                 : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
             }`}
           >
@@ -91,7 +91,7 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
         <select
           value={zoom}
           onChange={(e) => onZoomChange(e.target.value as ZoomLevel)}
-          className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:border-blue-500 focus:outline-none"
+          className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:border-violet-500 focus:outline-none"
         >
           <option value="50">50%</option>
           <option value="75">75%</option>
@@ -111,7 +111,7 @@ const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
 
         <button
           onClick={onExit}
-          className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-sm font-medium transition-colors"
         >
           <X size={16} />
           Exit Preview

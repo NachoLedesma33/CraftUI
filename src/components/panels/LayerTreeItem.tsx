@@ -135,12 +135,12 @@ export const LayerTreeItem: React.FC<LayerTreeItemProps> = memo(({
 
   const itemClasses = `
     relative flex items-center gap-1 py-1 pr-2 cursor-pointer select-none
-    ${isSelected ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-700'}
+    ${isSelected ? 'bg-violet-600 text-white' : 'text-slate-300 hover:bg-slate-700'}
     ${!component.metadata.isVisible ? 'opacity-50' : ''}
     ${isDragging ? 'opacity-50' : ''}
-    ${dropPosition === 'before' ? 'border-t-2 border-blue-500' : ''}
-    ${dropPosition === 'after' ? 'border-b-2 border-blue-500' : ''}
-    ${dropPosition === 'inside' ? 'ring-2 ring-blue-500 ring-inset' : ''}
+    ${dropPosition === 'before' ? 'border-t-2 border-violet-500' : ''}
+    ${dropPosition === 'after' ? 'border-b-2 border-violet-500' : ''}
+    ${dropPosition === 'inside' ? 'ring-2 ring-violet-500 ring-inset' : ''}
   `;
 
   return (
@@ -184,7 +184,7 @@ export const LayerTreeItem: React.FC<LayerTreeItemProps> = memo(({
 
         {hasChildren && (
           <span className={`flex-shrink-0 text-xs px-1.5 py-0.5 rounded ${
-            isSelected ? 'bg-blue-500' : 'bg-slate-600'
+            isSelected ? 'bg-violet-500' : 'bg-slate-600'
           }`}>
             {component.children.length}
           </span>

@@ -47,7 +47,7 @@ export const componentBlueprints: ComponentBlueprint[] = [
     defaultStyles: {
       display: { base: 'inline-block' },
       padding: { base: '8px 16px' },
-      backgroundColor: { base: '#3b82f6' },
+      backgroundColor: { base: '#8b5cf6' },
       color: { base: '#ffffff' },
       borderRadius: { base: '6px' },
       fontWeight: { base: '500' },

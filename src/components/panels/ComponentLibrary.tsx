@@ -52,7 +52,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
       case "form":
         return "from-orange-500/30 to-orange-600/10 border-orange-500/20 text-orange-300 hover:from-orange-500/40 hover:to-orange-600/20";
       default:
-        return "from-blue-500/30 to-blue-600/10 border-blue-500/20 text-blue-300 hover:from-blue-500/40 hover:to-blue-600/20";
+        return "from-violet-500/30 to-violet-600/10 border-violet-500/20 text-violet-300 hover:from-violet-500/40 hover:to-violet-600/20";
     }
   };
 
@@ -80,7 +80,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
         <div className="text-lg">{componentIcons[blueprint.type]}</div>
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-semibold text-white truncate group-hover:text-blue-100 transition-colors">
+        <div className="text-sm font-semibold text-white truncate group-hover:text-violet-100 transition-colors">
           {blueprint.label}
         </div>
         <div className="text-xs text-slate-300 truncate hidden sm:block group-hover:text-slate-200 transition-colors">
@@ -113,7 +113,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
       case "form":
         return "bg-orange-500/10 hover:bg-orange-500/15 border-orange-500/20";
       default:
-        return "bg-blue-500/10 hover:bg-blue-500/15 border-blue-500/20";
+        return "bg-violet-500/10 hover:bg-violet-500/15 border-violet-500/20";
     }
   };
 
@@ -126,7 +126,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
       case "form":
         return "text-orange-300";
       default:
-        return "text-blue-300";
+        return "text-violet-300";
     }
   };
 
@@ -227,8 +227,8 @@ export const ComponentLibrary: React.FC = () => {
     <div className="flex flex-col bg-slate-800 h-full w-full">
       <div className="p-5 border-b border-slate-700/60 bg-gradient-to-br from-slate-800 via-slate-800/95 to-slate-900/80 backdrop-blur-sm">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center border border-blue-500/30 flex-shrink-0">
-            <Box size={16} className="text-blue-400" />
+          <div className="w-8 h-8 bg-gradient-to-br from-violet-500/30 via-fuchsia-500/20 to-orange-500/20 rounded-lg flex items-center justify-center border border-violet-500/30 flex-shrink-0">
+            <Box size={16} className="text-violet-400" />
           </div>
           <h3 className="text-lg font-bold text-white tracking-tight">
             Components Library
@@ -239,7 +239,7 @@ export const ComponentLibrary: React.FC = () => {
           placeholder="Search components..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-3 text-sm bg-slate-700/40 border border-slate-600/60 rounded-xl text-white placeholder:text-slate-500 focus:border-blue-500/60 focus:bg-slate-700/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 backdrop-blur-sm"
+          className="w-full px-4 py-3 text-sm bg-slate-700/40 border border-slate-600/60 rounded-xl text-white placeholder:text-slate-500 focus:border-violet-500/60 focus:bg-slate-700/60 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-200 backdrop-blur-sm"
         />
       </div>
 
@@ -283,7 +283,7 @@ export const ComponentLibrary: React.FC = () => {
 
       <div className="p-4 border-t border-slate-700/60 bg-gradient-to-t from-slate-800/60 via-slate-800/40 to-slate-800 backdrop-blur-sm">
         <div className="flex items-center justify-center gap-2">
-          <div className="w-6 h-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center">
+          <div className="w-6 h-6 bg-gradient-to-br from-violet-500/20 via-fuchsia-500/20 to-orange-500/20 rounded-full flex items-center justify-center">
             <span className="text-xs">💡</span>
           </div>
           <p className="text-xs text-slate-400 text-center font-medium">

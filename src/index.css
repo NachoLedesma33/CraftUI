@@ -23,11 +23,13 @@
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-tertiary: #334155;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --accent-light: #60a5fa;
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
+  --accent-light: #a78bfa;
+  --accent-fuchsia: #d946ef;
+  --accent-orange: #f97316;
   --border-color: #334155;
-  --selection: rgba(59, 130, 246, 0.2);
+  --selection: rgba(139, 92, 246, 0.25);
   --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
   --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-medium:
@@ -73,10 +75,10 @@ body {
     --bg-primary: #ffffff;
     --bg-secondary: #f9fafb;
     --bg-tertiary: #f3f4f6;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
+    --accent: #7c3aed;
+    --accent-hover: #6d28d9;
     --border-color: #d1d5db;
-    --selection: rgba(37, 99, 235, 0.1);
+    --selection: rgba(124, 58, 237, 0.1);
     --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
 }
@@ -88,10 +90,10 @@ body {
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
   --bg-tertiary: #f3f4f6;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
   --border-color: #d1d5db;
-  --selection: rgba(37, 99, 235, 0.1);
+  --selection: rgba(124, 58, 237, 0.1);
   --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
@@ -132,7 +134,7 @@ textarea:focus,
 select:focus {
   border-color: var(--accent);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
 ::selection {
@@ -178,5 +180,5 @@ select:focus {
   color: #111827;
 }
 
-:root.light button:not(.bg-blue-600):not(.bg-green-600):not(.bg-red-600):not(.bg-emerald-600) { color: #111827; }
-:root.light button:not(.bg-blue-600):not(.bg-green-600):not(.bg-red-600):not(.bg-emerald-600):hover { background-color: #e5e7eb; }
+:root.light button:not(.bg-violet-600):not(.bg-green-600):not(.bg-red-600):not(.bg-emerald-600) { color: #111827; }
+:root.light button:not(.bg-violet-600):not(.bg-green-600):not(.bg-red-600):not(.bg-emerald-600):hover { background-color: #e5e7eb; }

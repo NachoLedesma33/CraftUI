@@ -49,7 +49,7 @@ const BreakpointTabs: React.FC<{
             onClick={() => onSelect(bp)}
             className={`px-1.5 py-0.5 text-xs rounded transition-colors ${
               active === bp
-                ? 'bg-blue-500 text-white'
+                ? 'bg-violet-500 text-white'
                 : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
             } ${!hasValue ? 'opacity-50' : ''}`}
             title={breakpointLabels[bp]}
@@ -89,7 +89,7 @@ const UnitSelector: React.FC<{
     <select
       value={currentUnit}
       onChange={(e) => handleChange(e.target.value)}
-      className="px-1 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-300 focus:border-blue-500 focus:outline-none"
+      className="px-1 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-300 focus:border-violet-500 focus:outline-none"
     >
       {units.map((unit) => (
         <option key={unit} value={unit}>{unit}</option>
@@ -122,7 +122,7 @@ const ColorPicker: React.FC<{
             className="w-32 h-32 cursor-pointer"
           />
           <div className="mt-2 flex gap-1">
-            {['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899'].map((c) => (
+            {['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#8b5cf6', '#8b5cf6', '#ec4899'].map((c) => (
               <button
                 key={c}
                 type="button"
@@ -262,7 +262,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
           value={currentValue}
           onChange={(e) => handleChange(e.target.value)}
           disabled={disabled}
-          className="flex-1 px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none"
+          className="flex-1 px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-violet-500 focus:outline-none"
         >
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -300,7 +300,7 @@ export const StyleInput: React.FC<StyleInputProps> = ({
           max={max}
           step={step}
           disabled={disabled}
-          className="flex-1 px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-500"
+          className="flex-1 px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-violet-500 focus:outline-none placeholder:text-slate-500"
         />
         {units && units.length > 0 && (
           <UnitSelector units={units} value={currentValue} onChange={handleChange} />

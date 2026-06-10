@@ -113,10 +113,10 @@ function App() {
                 </Panel>
 
                 <Separator
-                  className="w-1.5 bg-slate-800/60 hover:bg-blue-600/40 transition-all duration-200 cursor-col-resize z-20 group"
+                  className="w-1.5 bg-slate-800/60 hover:bg-violet-600/40 transition-all duration-200 cursor-col-resize z-20 group"
                   style={{ borderRight: "1px solid var(--border-color)" }}
                 >
-                  <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-blue-400 group-hover:shadow-lg" />
+                  <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-violet-400 group-hover:shadow-lg" />
                 </Separator>
 
                 {/* Center Panel - Canvas */}
@@ -137,10 +137,10 @@ function App() {
                 </Panel>
 
                 <Separator
-                  className="w-1.5 bg-slate-800/60 hover:bg-blue-600/40 transition-all duration-200 cursor-col-resize z-20 group"
+                  className="w-1.5 bg-slate-800/60 hover:bg-violet-600/40 transition-all duration-200 cursor-col-resize z-20 group"
                   style={{ borderLeft: "1px solid var(--border-color)" }}
                 >
-                  <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-blue-400 group-hover:shadow-lg" />
+                  <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-violet-400 group-hover:shadow-lg" />
                 </Separator>
 
                 {/* Right Panel - Properties/Layers Tabs */}
@@ -161,20 +161,20 @@ function App() {
                   >
                     <button
                       onClick={() => setActiveRightTab("properties")}
-                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "properties" ? "text-blue-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "properties" ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
                     >
                       Properties
                       {activeRightTab === "properties" && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-400" />
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />
                       )}
                     </button>
                     <button
                       onClick={() => setActiveRightTab("layers")}
-                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "layers" ? "text-blue-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "layers" ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
                     >
                       Layers
                       {activeRightTab === "layers" && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-400" />
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />
                       )}
                     </button>
                   </div>

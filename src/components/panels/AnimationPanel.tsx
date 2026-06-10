@@ -96,7 +96,7 @@ const TimeSlider: React.FC<TimeSliderProps> = ({ label, value, onChange, min = 0
       step={50}
       value={value}
       onChange={e => onChange(Number(e.target.value))}
-      className="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+      className="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500"
     />
   </div>
 );
@@ -112,7 +112,7 @@ const EasingSelector: React.FC<EasingSelectorProps> = ({ value, onChange }) => (
     <select
       value={value}
       onChange={e => onChange(e.target.value)}
-      className="w-full px-2 py-1.5 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none"
+      className="w-full px-2 py-1.5 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-violet-500 focus:outline-none"
     >
       {EASING_OPTIONS.map(opt => (
         <option key={opt} value={opt}>{opt}</option>
@@ -244,7 +244,7 @@ export const AnimationPanel: React.FC = () => {
     <div className="p-4 space-y-4">
       <div>
         <h3 className="text-sm font-medium text-white mb-3 flex items-center gap-2">
-          <Zap size={14} className="text-blue-400" />
+          <Zap size={14} className="text-violet-400" />
           Animation
         </h3>
         <PresetSelector onSelect={applyPreset} />
@@ -308,7 +308,7 @@ export const AnimationPanel: React.FC = () => {
               onClick={() => handleAnimationChange('trigger', opt.value as AnimationConfig['trigger'])}
               className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded transition-colors ${
                 localAnimation.trigger === opt.value
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-violet-600 text-white'
                   : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
               }`}
             >
@@ -326,7 +326,7 @@ export const AnimationPanel: React.FC = () => {
           className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
             isPlaying
               ? 'bg-green-600 text-white'
-              : 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
+              : 'bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-50'
           }`}
         >
           {isPlaying ? <Pause size={14} /> : <Play size={14} />}

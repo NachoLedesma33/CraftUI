@@ -4,11 +4,11 @@ import type { Template, TemplateCategory } from "@/types/template";
 import { Download, Upload, Trash2, Search } from "lucide-react";
 
 const BUTTON_CLASS =
-  "px-3 py-2 text-xs rounded bg-blue-600 hover:bg-blue-700 text-white transition-colors disabled:bg-slate-600";
+  "px-3 py-2 text-xs rounded bg-violet-600 hover:bg-violet-700 text-white transition-colors disabled:bg-slate-600";
 const BUTTON_OUTLINE =
   "px-3 py-2 text-xs rounded border border-slate-600 hover:bg-slate-700 text-slate-200 transition-colors";
 const INPUT_CLASS =
-  "w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-blue-500 focus:outline-none";
+  "w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200 focus:border-violet-500 focus:outline-none";
 
 interface TemplateModalProps {
   isOpen: boolean;
@@ -30,7 +30,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
   onExport,
 }) => {
   return (
-    <div className="flex flex-col rounded border border-slate-700 bg-slate-900 overflow-hidden hover:border-blue-500 transition-colors">
+    <div className="flex flex-col rounded border border-slate-700 bg-slate-900 overflow-hidden hover:border-violet-500 transition-colors">
       {/* Thumbnail */}
       <div className="w-full h-32 bg-slate-800 flex items-center justify-center overflow-hidden">
         {template.thumbnail ? (
@@ -76,7 +76,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
 
         {/* Badge del sistema */}
         {template.isSystem && (
-          <div className="text-xs text-blue-400 mb-2">System Template</div>
+          <div className="text-xs text-violet-400 mb-2">System Template</div>
         )}
 
         {/* Actions */}
@@ -255,7 +255,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
             onClick={() => setSelectedTab("system")}
             className={`px-4 py-2 text-sm transition-colors ${
               selectedTab === "system"
-                ? "text-blue-400 border-b-2 border-blue-400"
+                ? "text-violet-400 border-b-2 border-violet-400"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -265,7 +265,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
             onClick={() => setSelectedTab("user")}
             className={`px-4 py-2 text-sm transition-colors ${
               selectedTab === "user"
-                ? "text-blue-400 border-b-2 border-blue-400"
+                ? "text-violet-400 border-b-2 border-violet-400"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -304,7 +304,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
               onClick={() => setActiveCategory("all")}
               className={`px-3 py-1 text-xs rounded whitespace-nowrap transition-colors ${
                 activeCategory === "all"
-                  ? "bg-blue-600 text-white"
+                  ? "bg-violet-600 text-white"
                   : "bg-slate-800 text-slate-300 hover:bg-slate-700"
               }`}
             >
@@ -316,7 +316,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
                 onClick={() => setActiveCategory(cat)}
                 className={`px-3 py-1 text-xs rounded whitespace-nowrap capitalize transition-colors ${
                   activeCategory === cat
-                    ? "bg-blue-600 text-white"
+                    ? "bg-violet-600 text-white"
                     : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                 }`}
               >

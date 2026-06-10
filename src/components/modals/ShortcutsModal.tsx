@@ -134,7 +134,7 @@ const ShortcutCategory: React.FC<{
   return (
     <div className="mb-4">
       <h4 className="text-xs font-semibold text-slate-300 mb-2 flex items-center gap-2">
-        <div className="w-1 h-3 bg-blue-500 rounded" />
+        <div className="w-1 h-3 bg-violet-500 rounded" />
         {category}
       </h4>
       <div className="space-y-2">
@@ -189,7 +189,7 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-700 bg-slate-900/50">
             <div className="flex items-center gap-3">
-              <Keyboard size={20} className="text-blue-400" />
+              <Keyboard size={20} className="text-violet-400" />
               <h2 className="text-lg font-semibold text-white">
                 Keyboard Shortcuts
               </h2>
@@ -265,7 +265,7 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
           <div className="flex justify-end gap-2 p-4 border-t border-slate-700 bg-slate-900/50">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm rounded bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"
+              className="px-4 py-2 text-sm rounded bg-violet-600 hover:bg-violet-700 text-white font-medium transition-colors"
             >
               Close
             </button>

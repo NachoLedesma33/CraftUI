@@ -31,8 +31,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       root.style.setProperty("--text-secondary", "#cbd5e1"); // slate-300
       root.style.setProperty("--text-muted", "#94a3b8"); // slate-400
       root.style.setProperty("--border-color", "#475569"); // slate-600
-      root.style.setProperty("--accent-color", "#3b82f6"); // blue-500
-      root.style.setProperty("--accent-hover", "#2563eb"); // blue-600
+      root.style.setProperty("--accent-color", "#8b5cf6"); // violet-500
+      root.style.setProperty("--accent-hover", "#7c3aed"); // violet-600
       root.style.setProperty("--success-color", "#10b981"); // emerald-500
       root.style.setProperty("--error-color", "#ef4444"); // red-500
       root.style.setProperty("--warning-color", "#f59e0b"); // amber-500
@@ -46,8 +46,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       root.style.setProperty("--text-secondary", "#374151"); // gray-700
       root.style.setProperty("--text-muted", "#6b7280"); // gray-500
       root.style.setProperty("--border-color", "#d1d5db"); // gray-300
-      root.style.setProperty("--accent-color", "#2563eb"); // blue-600 (más saturado en light)
-      root.style.setProperty("--accent-hover", "#1d4ed8"); // blue-700
+      root.style.setProperty("--accent-color", "#7c3aed"); // violet-600 (más saturado en light)
+      root.style.setProperty("--accent-hover", "#6d28d9"); // violet-700
       root.style.setProperty("--success-color", "#059669"); // emerald-600
       root.style.setProperty("--error-color", "#dc2626"); // red-600
       root.style.setProperty("--warning-color", "#d97706"); // amber-600

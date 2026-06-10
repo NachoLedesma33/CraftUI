@@ -186,7 +186,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
       <div className="relative bg-slate-900 rounded-xl shadow-2xl w-[95vw] h-[85vh] max-w-7xl flex flex-col overflow-hidden border border-slate-700">
         <header className="flex items-center justify-between p-4 border-b border-slate-700 bg-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-orange-500 rounded-lg flex items-center justify-center">
               <FileCode size={20} className="text-white" />
             </div>
             <div>
@@ -224,7 +224,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                     onClick={() => updateOption('framework', opt.value)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                       options.framework === opt.value
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-violet-600 text-white'
                         : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                     }`}
                   >
@@ -240,7 +240,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
               <select
                 value={options.styling}
                 onChange={(e) => updateOption('styling', e.target.value as StylingStrategy)}
-                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white focus:border-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white focus:border-violet-500 focus:outline-none"
               >
                 {stylingOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -254,7 +254,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                 type="text"
                 value={options.componentName}
                 onChange={(e) => updateOption('componentName', e.target.value)}
-                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white focus:border-blue-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white focus:border-violet-500 focus:outline-none"
               />
             </div>
 

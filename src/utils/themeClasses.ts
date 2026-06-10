@@ -26,7 +26,7 @@ export const themeClasses = {
 
   // Combined classes for common patterns
   button:
-    "bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-700 light:bg-blue-600 light:hover:bg-blue-700",
+    "bg-violet-600 hover:bg-violet-700 text-white dark:bg-violet-600 dark:hover:bg-violet-700 light:bg-violet-600 light:hover:bg-violet-700",
   input:
     "bg-slate-700 border border-slate-600 text-white dark:bg-slate-700 dark:border-slate-600 dark:text-white light:bg-slate-100 light:border-slate-300 light:text-gray-900",
 };

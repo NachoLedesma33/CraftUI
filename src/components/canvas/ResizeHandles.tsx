@@ -203,7 +203,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
       {handlePositions.map(({ position, style }) => (
         <div
           key={position}
-          className="absolute z-50 w-3 h-3 bg-white border-2 border-blue-500 rounded-sm hover:bg-blue-100"
+          className="absolute z-50 w-3 h-3 bg-white border-2 border-violet-500 rounded-sm hover:bg-violet-100"
           style={{
             ...style,
             transform: style.transform || 'none',
