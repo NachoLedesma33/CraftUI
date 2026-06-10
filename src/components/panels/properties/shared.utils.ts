@@ -4,11 +4,24 @@ export const INPUT_CLASSES = "w-full px-3 py-2 text-sm bg-[var(--bg-tertiary)] b
 export const LABEL_CLASSES = "text-xs font-medium text-[var(--text-secondary)] mb-2 block";
 export const SECTION_CLASSES = "mb-4";
 
-export const debounce = <T extends (...args: Parameters<T>) => void>(fn: T, delay: number) => {
-  let timeoutId: ReturnType<typeof setTimeout>;
+export const debounce = <T extends (...args: any[]) => void>(fn: T, delay: number, options?: { leading?: boolean }) => {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let lastArgs: Parameters<T> | null = null;
+
   return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn(...args), delay);
+    lastArgs = args;
+
+    if (options?.leading && timeoutId === null) {
+      fn(...args);
+      lastArgs = null;
+    }
+
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      if (lastArgs) fn(...lastArgs);
+      timeoutId = null;
+      lastArgs = null;
+    }, delay);
   };
 };
 

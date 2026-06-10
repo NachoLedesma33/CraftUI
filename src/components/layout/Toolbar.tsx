@@ -19,7 +19,6 @@ import {
   ChevronRight,
   Loader2,
   FileText,
-  HardDrive,
 } from "lucide-react";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
@@ -278,7 +277,7 @@ const ShortcutsPopover: React.FC = () => {
         style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
         title="Keyboard Shortcuts"
       >
-        <Keyboard size={16} />
+        <Keyboard size={15} />
       </button>
 
       {isOpen && (
@@ -408,24 +407,15 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       <header className="mx-auto mt-3 w-full max-w-[calc(100%-32px)] xl:max-w-[1400px]">
         <div className="brutal-card flex h-12 items-center justify-between px-4 shadow-brutal rounded-none">
           {/* Left section */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 flex items-center justify-center" style={{ backgroundColor: "var(--accent)" }}>
-                <span className="text-xs font-bold tracking-tight" style={{ color: "var(--bg-primary)" }}>V</span>
+          <div className="flex items-center gap-4" style={{ paddingLeft: 20 }}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 flex items-center justify-center border-2 border-black shadow-brutal-sm" style={{ backgroundColor: "var(--accent)" }}>
+                <Box size={20} className="text-black" />
               </div>
-              <span className="text-sm font-bold hidden sm:block tracking-tight" style={{ color: "var(--text)" }}>
-                Visual UI
+              <span className="text-sm font-extrabold uppercase tracking-[0.1em]" style={{ color: "var(--text)" }}>
+                Craft
               </span>
             </div>
-
-            <div className="h-6 w-px" style={{ backgroundColor: "var(--border)" }} />
-
-            <HistoryControls
-              canUndo={canUndo}
-              canRedo={canRedo}
-              onUndo={undo}
-              onRedo={redo}
-            />
 
             <div className="hidden md:flex items-center">
               <div className="h-6 w-px mr-3" style={{ backgroundColor: "var(--border)" }} />
@@ -435,6 +425,15 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
           {/* Center section */}
           <div className="flex items-center gap-3">
+            <HistoryControls
+              canUndo={canUndo}
+              canRedo={canRedo}
+              onUndo={undo}
+              onRedo={redo}
+            />
+
+            <div className="h-8 w-px" style={{ backgroundColor: "var(--border)" }} />
+
             <div className="flex items-center gap-1.5 p-1.5 border-2" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-tertiary)" }}>
               <ZoomControls
                 zoom={view.zoom}
@@ -458,19 +457,9 @@ export const Toolbar: React.FC<ToolbarProps> = ({
                 lastSaved={autoSaveStatus.lastSaved}
                 isEnabled={autoSaveStatus.isEnabled}
                 hasChanges={autoSaveStatus.hasChanges}
+                onClick={() => onAutoSave?.()}
               />
             )}
-
-            <div className="h-6 w-px" style={{ backgroundColor: "var(--border)" }} />
-
-            <button
-              onClick={() => onAutoSave?.()}
-              className="p-2 brutal-btn"
-              style={{ backgroundColor: "var(--bg-tertiary)", color: "var(--text-secondary)" }}
-              title="Auto-Save Versions"
-            >
-              <HardDrive size={15} />
-            </button>
 
             <button
               onClick={() => onTemplates?.()}

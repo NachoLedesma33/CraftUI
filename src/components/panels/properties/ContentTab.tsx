@@ -3,7 +3,7 @@ import type { UIComponent } from '@/types/canvas';
 import { INPUT_CLASSES, LABEL_CLASSES, SECTION_CLASSES, debounce } from './shared.utils';
 
 export const ContentTab: React.FC<{ component: UIComponent; updateComponent: (id: string, updates: Partial<UIComponent>) => void }> = ({ component, updateComponent }) => {
-  const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 300), [component.id, updateComponent]);
+  const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 100, { leading: true }), [component.id, updateComponent]);
 
   const handleChange = useCallback((key: string, value: string | boolean) => debouncedUpdate({ props: { ...component.props, [key]: value } }), [component.props, debouncedUpdate]);
 

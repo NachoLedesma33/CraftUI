@@ -4,7 +4,7 @@ import { debounce } from './shared.utils';
 import { StyleInput, StyleSection } from './shared';
 
 export const LayoutTab: React.FC<{ component: UIComponent; updateComponent: (id: string, updates: Partial<UIComponent>) => void }> = ({ component, updateComponent }) => {
-  const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 300), [component.id, updateComponent]);
+  const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 100, { leading: true }), [component.id, updateComponent]);
 
   const handleStyleChange = useCallback((key: keyof Styles, value: string) => debouncedUpdate({ styles: { ...component.styles, [key]: { base: value } } }), [component.styles, debouncedUpdate]);
 

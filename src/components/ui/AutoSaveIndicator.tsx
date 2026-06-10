@@ -5,12 +5,14 @@ interface AutoSaveIndicatorProps {
   lastSaved: number | null;
   isEnabled: boolean;
   hasChanges: boolean;
+  onClick?: () => void;
 }
 
 export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
   lastSaved,
   isEnabled,
   hasChanges,
+  onClick,
 }) => {
   const [now, setNow] = useState(() => Date.now());
 
@@ -48,15 +50,28 @@ export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
   };
 
   const getIcon = () => {
-    if (!isEnabled) return <AlertTriangle size={14} />;
-    if (hasChanges) return <Clock size={14} />;
-    return <HardDrive size={14} />;
+    if (!isEnabled) return <AlertTriangle size={15} />;
+    if (hasChanges) return <Clock size={15} />;
+    return <HardDrive size={15} />;
   };
+
+  if (onClick) {
+    return (
+      <button
+        onClick={onClick}
+        className={`p-2 ${getStatusColor()} brutal-btn`}
+        style={{ backgroundColor: "var(--bg-tertiary)" }}
+        title={statusText}
+      >
+        {getIcon()}
+      </button>
+    );
+  }
 
   return (
     <div
       className={`flex items-center gap-1.5 px-2 py-1 text-xs ${getStatusColor()} bg-[var(--bg-tertiary)]`}
-      title={isEnabled ? 'Auto-save status' : 'Auto-save is disabled'}
+      title={statusText}
     >
       {getIcon()}
       <span className="hidden sm:inline">{statusText}</span>

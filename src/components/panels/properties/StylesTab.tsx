@@ -10,7 +10,7 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
   const [device, setDevice] = useState<'base' | 'tablet' | 'desktop'>('base');
   const styles = component.styles;
 
-  const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 300), [component.id, updateComponent]);
+  const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 100, { leading: true }), [component.id, updateComponent]);
 
   const onStyleChange = useCallback((key: keyof Styles, value: string) => handleStyleChange(key, value, styles, device, debouncedUpdate), [styles, device, debouncedUpdate]);
   const val = useCallback((key: keyof Styles): string => getValue(key, styles, device), [styles, device]);
