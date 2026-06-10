@@ -14,14 +14,6 @@ const getDeviceWidth = (device: 'mobile' | 'tablet' | 'desktop'): number => {
   }
 };
 
-const CanvasHUD: React.FC<{ zoom: number }> = ({ zoom }) => {
-  return (
-    <div className="absolute bottom-4 right-4 bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-mono pointer-events-none select-none">
-      Zoom: {Math.round(zoom * 100)}%
-    </div>
-  );
-};
-
 export const Canvas: React.FC = () => {
   const rootId = useEditorStore((s) => s.rootId);
   const components = useEditorStore((s) => s.components);
@@ -39,7 +31,7 @@ export const Canvas: React.FC = () => {
   );
 
   const handleCanvasClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget || (e.target as HTMLElement).id === 'canvas-viewport') {
+    if (e.target === e.currentTarget || (e.target as HTMLElement).closest('#canvas-viewport') === e.target) {
       clearSelection();
     }
   }, [clearSelection]);
@@ -100,14 +92,12 @@ export const Canvas: React.FC = () => {
               <p className="text-sm text-slate-500 text-center max-w-xs leading-relaxed">
                 Arrastrá componentes desde el panel izquierdo o presioná{" "}
                 <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-xs text-slate-400 font-mono">Ctrl+K</kbd>{" "}
-                para empezar
+                para abrir la paleta de comandos
               </p>
             </div>
           )}
         </div>
       </div>
-
-      <CanvasHUD zoom={view.zoom} />
     </div>
   );
 };

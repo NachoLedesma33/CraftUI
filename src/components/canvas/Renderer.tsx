@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
@@ -246,21 +246,81 @@ interface RendererProps {
   isRoot?: boolean;
 }
 
+const ContextMenu: React.FC<{
+  x: number;
+  y: number;
+  componentId: string;
+  onClose: () => void;
+}> = ({ x, y, componentId, onClose }) => {
+  const component = useEditorStore((s) => s.components[componentId]);
+  const deleteComponent = useEditorStore((s) => s.deleteComponent);
+  const duplicateComponent = useEditorStore((s) => s.duplicateComponent);
+  const startRenaming = useEditorStore((s) => s.startRenaming);
+  const addToast = useUIStore((s) => s.addToast);
+
+  useEffect(() => {
+    const close = () => onClose();
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [onClose]);
+
+  if (!component) return null;
+
+  return (
+    <div
+      className="fixed bg-slate-800 border border-slate-700 rounded-lg shadow-xl py-1 z-50 min-w-[150px]"
+      style={{ left: x, top: y }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        onClick={() => { startRenaming(componentId); onClose(); }}
+        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+      >
+        Rename
+      </button>
+      <button
+        onClick={() => { duplicateComponent(componentId); addToast("Duplicated", "success", 2000); onClose(); }}
+        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700"
+      >
+        Duplicate
+      </button>
+      <div className="border-t border-slate-700 my-1" />
+      <button
+        onClick={() => { deleteComponent(componentId); addToast("Deleted", "info", 2000); onClose(); }}
+        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-slate-700"
+      >
+        Delete
+      </button>
+    </div>
+  );
+};
+
 interface EditWrapperProps {
   isSelected: boolean;
   isRoot: boolean;
   children: React.ReactNode;
   onClick: (e: React.MouseEvent) => void;
+  onDoubleClick?: (e: React.MouseEvent) => void;
   component: UIComponent;
 }
+
+const areEditWrapperPropsEqual: React.Comparator<EditWrapperProps> = (prev, next) => {
+  if (prev.isSelected !== next.isSelected) return false;
+  if (prev.isRoot !== next.isRoot) return false;
+  if (prev.children !== next.children) return false;
+  if (prev.component.id !== next.component.id) return false;
+  return prev.component === next.component;
+};
 
 const EditWrapper = React.memo<EditWrapperProps>(({
   isSelected,
   isRoot,
   children,
   onClick,
+  onDoubleClick,
   component,
 }) => {
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
   const deleteComponent = useEditorStore((s) => s.deleteComponent);
   const endRenaming = useEditorStore((s) => s.endRenaming);
   const cancelRenaming = useEditorStore((s) => s.cancelRenaming);
@@ -303,31 +363,46 @@ const EditWrapper = React.memo<EditWrapperProps>(({
     };
   }, [transform, isDragging]);
 
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  }, []);
+
   return (
     <div
       ref={setNodeRef}
       className={`relative group ${isSelected ? "" : ""}`}
       onClick={onClick}
+      onDoubleClick={onDoubleClick}
+      onContextMenu={handleContextMenu}
       style={{ outline: "none", ...dragStyle }}
       {...(isSelected && !isRoot ? listeners : {})}
       {...(isSelected && !isRoot ? attributes : {})}
     >
       {children}
 
-      {/* Editor outline (subtle) + selection border + entrance animation */}
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          componentId={component.id}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
+
+      {isNew && (
+        <div className="absolute -inset-1 rounded-lg pointer-events-none z-10 animate-new-component" />
+      )}
+
+      {/* Editor outline (subtle) + selection border */}
       <div
-        className={`absolute inset-0 pointer-events-none transition-all duration-150 ${isNew ? 'animate-pulse-once' : ''}`}
+        className="absolute inset-0 pointer-events-none transition-all duration-150"
         style={{
           border: isSelected ? "2px dashed #8b5cf6" : "1px solid rgba(148, 163, 184, 0.15)",
           opacity: isSelected ? 1 : (isRoot ? 0 : 0.4),
           borderRadius: '4px',
           transition: 'border-color 0.15s, opacity 0.15s',
-        }}
-      />
-      <div
-        className={`absolute inset-0 pointer-events-none rounded transition-opacity duration-150 ${isNew ? 'animate-pulse-once' : ''}`}
-        style={{
-          boxShadow: isNew ? 'inset 0 0 0 2px rgba(139, 92, 246, 0.5)' : 'none',
         }}
       />
 
@@ -360,7 +435,7 @@ const EditWrapper = React.memo<EditWrapperProps>(({
       <ResizeHandles componentId={component.id} isSelected={isSelected && !isRoot} />
     </div>
   );
-});
+}, areEditWrapperPropsEqual);
 
 const RendererInner: React.FC<RendererProps> = ({
   componentId,
@@ -407,19 +482,60 @@ const RendererInner: React.FC<RendererProps> = ({
     [component?.children, isPreview, onClick],
   );
 
+  const updateComponent = useEditorStore((s) => s.updateComponent);
+  const saveToHistory = useEditorStore((s) => s.saveToHistory);
+
+  const [isEditingInline, setIsEditingInline] = useState(false);
+  const [inlineText, setInlineText] = useState(
+    component?.type === "text" ? (component?.props.text as string) || "" : ""
+  );
+
+  const handleDoubleClick = useCallback((e: React.MouseEvent) => {
+    if (component?.type !== "text") return;
+    e.stopPropagation();
+    setIsEditingInline(true);
+    setInlineText((component.props.text as string) || "");
+  }, [component]);
+
+  const finishInlineEdit = useCallback(() => {
+    if (component?.type === "text" && inlineText !== component.props.text) {
+      updateComponent(component.id, {
+        props: { ...component.props, text: inlineText },
+      });
+      saveToHistory();
+    }
+    setIsEditingInline(false);
+  }, [component, inlineText, updateComponent, saveToHistory]);
+
   if (!component) return null;
 
   const Tag = componentTypeMap[component.type];
 
   const element = (
     <Tag
-      id={componentId}
+      id={`c-${componentId}`}
       data-component-id={componentId}
       style={inlineStyles}
       onClick={handleClick}
       {...component.props}
     >
-      {component.type === "text" && component.props.text}
+      {component.type === "text" && isEditingInline ? (
+        <input
+          autoFocus
+          value={inlineText}
+          onChange={(e) => setInlineText(e.target.value)}
+          onBlur={finishInlineEdit}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === "Enter") finishInlineEdit();
+            if (e.key === "Escape") { setIsEditingInline(false); }
+          }}
+          className="w-full bg-transparent border-none outline-none text-inherit font-inherit"
+          style={{ all: "unset", width: "100%", display: "inline-block" }}
+        />
+      ) : (
+        component.type === "text" && component.props.text
+      )}
       {childElements}
     </Tag>
   );
@@ -434,6 +550,7 @@ const RendererInner: React.FC<RendererProps> = ({
       isSelected={isSelected}
       isRoot={isRoot}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
     >
       {element}
     </EditWrapper>

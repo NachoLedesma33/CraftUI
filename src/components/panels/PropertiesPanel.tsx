@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useEditorStore, useSelectedId } from "@/store";
+import { useState } from "react";
+import { useEditorStore } from "@/store/editorStore";
+import { useSelectedId } from "@/store";
 import type { ComponentType } from "@/types/canvas";
 import { AnimationPanel } from "./AnimationPanel";
 import { StylesTab } from "./properties/StylesTab";
@@ -9,12 +10,15 @@ import { AdvancedTab } from "./properties/AdvancedTab";
 
 export const PropertiesPanel: React.FC = () => {
   const selectedId = useSelectedId();
+  const rootId = useEditorStore((s) => s.rootId);
   const components = useEditorStore((s) => s.components);
   const updateComponent = useEditorStore((s) => s.updateComponent);
 
   const [activeTab, setActiveTab] = useState<"styles" | "content" | "layout" | "advanced" | "animations">("styles");
 
-  const component = selectedId ? components[selectedId] : null;
+  const selectionFallback = selectedId ? components[selectedId] : null;
+  const isRootFallback = !selectionFallback && !!rootId;
+  const component = selectionFallback || (rootId ? components[rootId] : null);
 
   if (!component) {
     return (
@@ -24,10 +28,7 @@ export const PropertiesPanel: React.FC = () => {
             <span className="text-2xl text-slate-500">⚙️</span>
           </div>
           <p className="text-slate-400 text-sm text-center font-medium">
-            Select an element to edit its properties
-          </p>
-          <p className="text-slate-500 text-xs text-center mt-1">
-            Click on any component in the canvas to get started
+            No canvas initialized
           </p>
         </div>
       </div>
@@ -55,13 +56,15 @@ export const PropertiesPanel: React.FC = () => {
         </div>
         <div className="flex-1 min-w-0">
           <span className="text-sm font-semibold text-white block truncate">{component.metadata.name}</span>
-          <span className="text-xs text-slate-500">({component.type})</span>
+          <span className="text-xs text-slate-500">
+            {isRootFallback ? "Page / Root properties" : `(${component.type})`}
+          </span>
         </div>
       </div>
 
       <div className="flex border-b border-slate-700/80 overflow-x-auto flex-shrink-0 bg-slate-800/50">
         {(["styles", "content", "layout", "advanced", "animations"] as const).map((tab) => (
-          <button key={tab} type="button"
+          <button key={tab} type="button" role="tab" aria-selected={activeTab === tab}
             className={`flex-1 py-3 text-xs font-medium capitalize transition-all duration-200 whitespace-nowrap relative ${activeTab === tab ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
             onClick={() => setActiveTab(tab)}>
             {tab}

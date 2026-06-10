@@ -68,6 +68,11 @@ const SHORTCUTS: Shortcut[] = [
   },
   {
     category: "Editing",
+    keys: ["Ctrl", "K"],
+    description: "Command Palette",
+  },
+  {
+    category: "Editing",
     keys: ["F2"],
     description: "Rename Component",
   },

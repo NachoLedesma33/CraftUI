@@ -94,6 +94,10 @@ const Breadcrumbs: React.FC = () => {
     return path;
   }, [selectedIds, components]);
 
+  if (selectedIds.length > 1) {
+    return <span className="text-xs text-violet-400 font-medium">{selectedIds.length} selected</span>;
+  }
+
   if (!breadcrumb || breadcrumb.length === 0) {
     return <span className="text-xs text-slate-500">No selection</span>;
   }

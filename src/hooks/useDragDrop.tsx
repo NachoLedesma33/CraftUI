@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   type DragEndEvent,
   type DragOverEvent,
@@ -52,7 +52,36 @@ export const useDragDrop = () => {
   const rootId = useEditorStore((s) => s.rootId);
   const updateComponent = useEditorStore((s) => s.updateComponent);
 
-  useUIStore((s) => s.view.zoom);
+  // Track mouse position during drag for auto-scroll near canvas edges
+  const [mouseCoords, setMouseCoords] = useState<{ x: number; y: number } | null>(null);
+  useEffect(() => {
+    if (!activeItem) return;
+    const handler = (e: PointerEvent) => setMouseCoords({ x: e.clientX, y: e.clientY });
+    document.addEventListener('pointermove', handler);
+    return () => document.removeEventListener('pointermove', handler);
+  }, [activeItem]);
+
+  // Auto-scroll interval that reads mouseCoords
+  useEffect(() => {
+    if (!activeItem || !mouseCoords) return;
+    const SCROLL_ZONE = 40;
+    const SCROLL_SPEED = 12;
+    const id = window.setInterval(() => {
+      const canvas = document.querySelector('.flex-1.overflow-auto') as HTMLElement | null;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      let dx = 0, dy = 0;
+      if (mouseCoords.x < rect.left + SCROLL_ZONE) dx = -SCROLL_SPEED;
+      else if (mouseCoords.x > rect.right - SCROLL_ZONE) dx = SCROLL_SPEED;
+      if (mouseCoords.y < rect.top + SCROLL_ZONE) dy = -SCROLL_SPEED;
+      else if (mouseCoords.y > rect.bottom - SCROLL_ZONE) dy = SCROLL_SPEED;
+      if (dx || dy) {
+        canvas.scrollLeft += dx;
+        canvas.scrollTop += dy;
+      }
+    }, 50);
+    return () => clearInterval(id);
+  }, [activeItem, mouseCoords]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -124,6 +153,17 @@ export const useDragDrop = () => {
     [activeItem, components, updateComponent],
   );
 
+  const addNewComponent = useCallback((parentId: string, componentType: string, message: string) => {
+    const newId = addComponent(parentId, componentType);
+    if (newId) {
+      const label = componentType.charAt(0).toUpperCase() + componentType.slice(1);
+      useUIStore.getState().addToast(`${label} added to ${message}`, 'success', 2000);
+      useUIStore.getState().setLastAddedId(newId);
+      setTimeout(() => useUIStore.getState().setLastAddedId(null), 800);
+    }
+    return newId;
+  }, [addComponent]);
+
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { over } = event;
@@ -160,16 +200,12 @@ export const useDragDrop = () => {
 
       // ===== NEW COMPONENT FROM LIBRARY =====
       if (activeItem?.type === "new" && activeItem.componentType && isCanvasDrop && rootId) {
-        const newId = addComponent(rootId, activeItem.componentType);
+        const newId = addNewComponent(rootId, activeItem.componentType, 'canvas');
         if (newId) {
           const rootComponent = components[rootId];
           if (rootComponent) {
             useEditorStore.getState().reorderChildren(rootId, [...rootComponent.children, newId]);
           }
-          const label = activeItem.componentType.charAt(0).toUpperCase() + activeItem.componentType.slice(1);
-          useUIStore.getState().addToast(`${label} added to canvas`, 'success', 2000);
-          useUIStore.getState().setLastAddedId(newId);
-          setTimeout(() => useUIStore.getState().setLastAddedId(null), 800);
         }
         setActiveItem(null);
         return;
@@ -191,26 +227,18 @@ export const useDragDrop = () => {
           const overIndex = children.indexOf(overId);
           const insertIndex = overIndex >= 0 ? overIndex : children.length;
 
-          const newId = addComponent(targetParentId, componentType);
+          const newId = addNewComponent(targetParentId, componentType, overComponent.metadata.name);
           if (newId) {
             children.splice(insertIndex, 0, newId);
             useEditorStore.getState().reorderChildren(targetParentId, children);
-            const label = componentType.charAt(0).toUpperCase() + componentType.slice(1);
-            useUIStore.getState().addToast(`${label} added to ${overComponent.metadata.name}`, 'success', 2000);
-            useUIStore.getState().setLastAddedId(newId);
-            setTimeout(() => useUIStore.getState().setLastAddedId(null), 800);
           }
         } else if (rootId) {
-          const newId = addComponent(rootId, componentType);
+          const newId = addNewComponent(rootId, componentType, 'canvas');
           if (newId) {
             const rootComponent = components[rootId];
             if (rootComponent) {
               useEditorStore.getState().reorderChildren(rootId, [...rootComponent.children, newId]);
             }
-            const label = componentType.charAt(0).toUpperCase() + componentType.slice(1);
-            useUIStore.getState().addToast(`${label} added to canvas`, 'success', 2000);
-            useUIStore.getState().setLastAddedId(newId);
-            setTimeout(() => useUIStore.getState().setLastAddedId(null), 800);
           }
         }
       }
@@ -253,7 +281,7 @@ export const useDragDrop = () => {
 
       setActiveItem(null);
     },
-    [activeItem, components, rootId, moveComponent, addComponent, updateComponent],
+    [activeItem, components, rootId, moveComponent, updateComponent, addNewComponent],
   );
 
   return {

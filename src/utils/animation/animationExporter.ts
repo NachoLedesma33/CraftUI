@@ -103,7 +103,7 @@ export const generateAnimationTriggerHTML = (
 
   if (animation.trigger === "onHover") {
     script += `
-const elem_${elementId} = document.getElementById('${elementId}');
+const elem_${elementId} = document.getElementById('c-${elementId}');
 if (elem_${elementId}) {
   elem_${elementId}.addEventListener('mouseenter', function() {
     this.style.animationName = '${animation.name}';
@@ -122,7 +122,7 @@ const observer_${elementId} = new IntersectionObserver(function(entries) {
     }
   });
 });
-const elem_${elementId}_inView = document.getElementById('${elementId}');
+const elem_${elementId}_inView = document.getElementById('c-${elementId}');
 if (elem_${elementId}_inView) {
   observer_${elementId}.observe(elem_${elementId}_inView);
 }

@@ -18,6 +18,8 @@ import {
   type ComponentBlueprint,
 } from "@/constants/componentBlueprints";
 import type { ComponentType } from "@/types/canvas";
+import { useEditorStore } from "@/store";
+import { useUIStore } from "@/store";
 
 const componentIcons: Record<ComponentType, React.ReactNode> = {
   box: <Square size={16} />,
@@ -63,6 +65,23 @@ interface DraggableItemProps {
 }
 
 const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
+  const addComponent = useEditorStore((s) => s.addComponent);
+  const rootId = useEditorStore((s) => s.rootId);
+  const selectComponent = useEditorStore((s) => s.selectComponent);
+  const addToast = useUIStore((s) => s.addToast);
+  const setLastAddedId = useUIStore((s) => s.setLastAddedId);
+
+  const handleClickAdd = useCallback(() => {
+    if (!rootId) return;
+    const newId = addComponent(rootId, blueprint.type);
+    if (newId) {
+      selectComponent(newId);
+      setLastAddedId(newId);
+      setTimeout(() => setLastAddedId(null), 1200);
+      addToast(`${blueprint.label} added to canvas`, "success", 2000);
+    }
+  }, [rootId, blueprint, addComponent, selectComponent, addToast, setLastAddedId]);
+
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `library-${blueprint.type}`,
     data: {
@@ -90,6 +109,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      onClick={handleClickAdd}
       className={`
         flex items-center gap-3 p-3 rounded-xl cursor-grab active:cursor-grabbing
         bg-gradient-to-br ${getCategoryColors(blueprint.category)}
@@ -97,7 +117,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
         shadow-sm hover:shadow-md
         ${isDragging ? "opacity-50 z-50" : ""}
       `}
-      title={blueprint.description}
+      title={`${blueprint.description} (click to add, drag to canvas)`}
     >
       <div
         className={`
@@ -189,7 +209,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
       </button>
 
       {isExpanded && (
-        <div className="mt-3 space-y-2 pl-2 border-l-2 border-slate-700 pl-4">
+        <div className="mt-3 space-y-2 border-l-2 border-slate-700 pl-4">
           {blueprints.map((bp) => (
             <DraggableItem key={bp.type} blueprint={bp} />
           ))}
@@ -266,13 +286,23 @@ export const ComponentLibrary: React.FC = () => {
             Components Library
           </h3>
         </div>
-        <input
-          type="text"
-          placeholder="Search components..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-3 text-sm bg-slate-700/40 border border-slate-600/60 rounded-xl text-white placeholder:text-slate-500 focus:border-violet-500/60 focus:bg-slate-700/60 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-200 backdrop-blur-sm"
-        />
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search components..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-4 py-3 text-sm bg-slate-700/40 border border-slate-600/60 rounded-xl text-white placeholder:text-slate-500 focus:border-violet-500/60 focus:bg-slate-700/60 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-200 backdrop-blur-sm"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white hover:bg-slate-600 rounded transition-colors"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-5 space-y-2">
@@ -292,8 +322,19 @@ export const ComponentLibrary: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-2">
-                {filteredBlueprints.map((bp) => (
-                  <DraggableItem key={bp.type} blueprint={bp} />
+                {Array.from(
+                  new Set(filteredBlueprints.map((bp) => bp.category))
+                ).map((cat) => (
+                  <div key={cat}>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold px-1 py-2">
+                      {cat}
+                    </div>
+                    {filteredBlueprints
+                      .filter((bp) => bp.category === cat)
+                      .map((bp) => (
+                        <DraggableItem key={bp.type} blueprint={bp} />
+                      ))}
+                  </div>
                 ))}
               </div>
             )}

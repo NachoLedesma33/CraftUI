@@ -5,7 +5,7 @@ import { INPUT_CLASSES, LABEL_CLASSES, SECTION_CLASSES, debounce } from './share
 export const ContentTab: React.FC<{ component: UIComponent; updateComponent: (id: string, updates: Partial<UIComponent>) => void }> = ({ component, updateComponent }) => {
   const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 300), [component.id, updateComponent]);
 
-  const handleChange = useCallback((key: string, value: string) => debouncedUpdate({ props: { ...component.props, [key]: value } }), [component.props, debouncedUpdate]);
+  const handleChange = useCallback((key: string, value: string | boolean) => debouncedUpdate({ props: { ...component.props, [key]: value } }), [component.props, debouncedUpdate]);
 
   return (
     <div className="p-2 space-y-3">
@@ -68,7 +68,7 @@ export const ContentTab: React.FC<{ component: UIComponent; updateComponent: (id
         <label className={LABEL_CLASSES}>Disabled</label>
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={component.props.disabled || false}
-            onChange={(e) => handleChange('disabled', e.target.checked ? 'true' : 'false')} className="rounded" />
+            onChange={(e) => updateComponent(component.id, { props: { ...component.props, disabled: e.target.checked } })} className="rounded" />
           <span className="text-xs text-slate-400">Disabled</span>
         </label>
       </div>

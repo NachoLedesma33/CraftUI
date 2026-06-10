@@ -1,12 +1,12 @@
 import { useState, useCallback, useMemo, lazy, Suspense } from "react";
-import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { Panel, Group, Separator } from "react-resizable-panels";
 import { Toolbar, CommandPalette } from "@/components/layout";
 import { Canvas, CanvasOverlays, ResponsivePreview } from "@/components/canvas";
 import { PropertiesPanel } from "@/components/panels/PropertiesPanel";
 import { ComponentLibrary } from "@/components/panels/ComponentLibrary";
 import { LayersPanel } from "@/components/panels/LayersPanel";
-import { StatusBar, ErrorBoundary, ThemeProvider } from "@/components/ui";
+import { StatusBar, ErrorBoundary, ThemeProvider, ToastContainer } from "@/components/ui";
 
 const ExportModal = lazy(() => import("@/components/modals/ExportModal").then(m => ({ default: m.ExportModal })));
 const TemplateModal = lazy(() => import("@/components/modals/TemplateModal").then(m => ({ default: m.default })));
@@ -41,6 +41,7 @@ function App() {
     handleDragStart,
     handleDragEnd,
     handleDragOver,
+    collisionDetection,
   } = useDragDrop();
 
   const previewMode = useUIStore((s) => s.view.previewMode);
@@ -92,7 +93,7 @@ function App() {
       <ThemeProvider>
         <DndContext
           sensors={sensors}
-          collisionDetection={pointerWithin}
+          collisionDetection={collisionDetection}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
@@ -228,7 +229,7 @@ function App() {
           />
 
           {/* Modals */}
-          <Suspense fallback={null}>
+          <Suspense fallback={<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"><div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" /></div>}>
             <ExportModal
               isOpen={isExportOpen}
               onClose={() => setIsExportOpen(false)}
@@ -247,6 +248,7 @@ function App() {
             />
           </Suspense>
         </DndContext>
+        <ToastContainer />
       </ThemeProvider>
     </ErrorBoundary>
   );

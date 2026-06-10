@@ -1,6 +1,32 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { Search, ArrowRight, Command } from "lucide-react";
 
+const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea';
+
+const useFocusTrap = (isActive: boolean) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!isActive || !ref.current) return;
+    const container = ref.current;
+    const focusable = container.querySelectorAll<HTMLElement>(FOCUSABLE);
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        const active = document.activeElement;
+        if (e.shiftKey) {
+          if (active === first) { e.preventDefault(); last?.focus(); }
+        } else {
+          if (active === last) { e.preventDefault(); first?.focus(); }
+        }
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [isActive]);
+  return ref;
+};
+
 interface CommandItem {
   id: string;
   label: string;
@@ -22,15 +48,24 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Simple fuzzy match: all chars in query appear in order in target
+  const fuzzyMatch = (text: string, query: string): boolean => {
+    let qi = 0;
+    for (let ti = 0; ti < text.length && qi < query.length; ti++) {
+      if (text[ti] === query[qi]) qi++;
+    }
+    return qi === query.length;
+  };
+
   const filtered = useMemo(() => {
     if (!query.trim()) return commands;
 
     const q = query.toLowerCase();
     return commands.filter(
       (cmd) =>
-        cmd.label.toLowerCase().includes(q) ||
-        cmd.description.toLowerCase().includes(q) ||
-        cmd.category.toLowerCase().includes(q),
+        fuzzyMatch(cmd.label.toLowerCase(), q) ||
+        fuzzyMatch(cmd.description.toLowerCase(), q) ||
+        fuzzyMatch(cmd.category.toLowerCase(), q),
     );
   }, [commands, query]);
 
@@ -39,6 +74,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   }, [isOpen]);
+
+  const dialogRef = useFocusTrap(isOpen);
 
   const executeSelected = useCallback(() => {
     if (filtered[selectedIndex]) {
@@ -87,6 +124,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
       <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]">
         <div
+          ref={dialogRef}
           className="w-full max-w-xl bg-slate-900/95 backdrop-blur-xl border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden"
           role="dialog"
           aria-modal="true"

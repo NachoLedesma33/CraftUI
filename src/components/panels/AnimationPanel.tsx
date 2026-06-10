@@ -155,16 +155,12 @@ export const AnimationPanel: React.FC = () => {
     };
     setLocalAnimation(newAnimation);
     if (!selectedComponent || !selectedId) return;
-    const styles = {
-      ...selectedComponent.styles,
-      animationName: { base: newAnimation.name },
-      animationDuration: { base: `${newAnimation.duration}ms` },
-      animationDelay: { base: `${newAnimation.delay}ms` },
-      animationIterationCount: { base: String(newAnimation.iterations) },
-      animationTimingFunction: { base: newAnimation.easing },
-      animationFillMode: { base: newAnimation.fillMode },
-    };
-    updateComponent(selectedId, { styles: styles as typeof selectedComponent.styles });
+    updateComponent(selectedId, {
+      styles: {
+        ...selectedComponent.styles,
+        animation: newAnimation,
+      } as typeof selectedComponent.styles,
+    });
   }, [selectedComponent, selectedId, updateComponent]);
 
   const playPreview = useCallback(() => {
@@ -172,37 +168,28 @@ export const AnimationPanel: React.FC = () => {
     
     setIsPlaying(true);
     
-    const animationConfig: Partial<AnimationConfig> = {
+    const animationConfig: AnimationConfig = {
       name: localAnimation.name || `anim-${selectedId}`,
       duration: localAnimation.duration || 300,
       delay: localAnimation.delay || 0,
       easing: localAnimation.easing || 'ease-out',
       iterations: localAnimation.iterations || 1,
-      fillMode: localAnimation.fillMode || 'both',
-      trigger: localAnimation.trigger || 'onLoad',
+      fillMode: (localAnimation.fillMode || 'both') as AnimationConfig['fillMode'],
+      trigger: (localAnimation.trigger || 'onLoad') as AnimationConfig['trigger'],
     };
     
-    const styles = {
-      animationName: { base: animationConfig.name! },
-      animationDuration: { base: `${animationConfig.duration}ms` },
-      animationDelay: { base: `${animationConfig.delay}ms` },
-      animationIterationCount: { base: animationConfig.iterations === 'infinite' ? 'infinite' : String(animationConfig.iterations) },
-      animationTimingFunction: { base: animationConfig.easing! },
-      animationFillMode: { base: animationConfig.fillMode! },
-    };
+    updateComponent(selectedId, {
+      styles: {
+        ...selectedComponent.styles,
+        animation: animationConfig,
+      } as typeof selectedComponent.styles,
+    });
     
-    updateComponent(selectedId, { styles: { ...selectedComponent.styles, ...styles } as typeof selectedComponent.styles });
-    
-    const totalDuration = (animationConfig.duration! + (animationConfig.delay || 0)) * (animationConfig.iterations === 'infinite' ? 1 : animationConfig.iterations!);
+    const totalDuration = (animationConfig.duration + (animationConfig.delay)) * (animationConfig.iterations === 'infinite' ? 1 : animationConfig.iterations);
     setTimeout(() => {
       setIsPlaying(false);
       const restored = { ...selectedComponent.styles };
-      delete restored.animationName;
-      delete restored.animationDuration;
-      delete restored.animationDelay;
-      delete restored.animationIterationCount;
-      delete restored.animationTimingFunction;
-      delete restored.animationFillMode;
+      delete restored.animation;
       updateComponent(selectedId, { styles: restored as typeof selectedComponent.styles });
     }, totalDuration);
   }, [selectedComponent, selectedId, localAnimation, updateComponent]);
@@ -211,12 +198,7 @@ export const AnimationPanel: React.FC = () => {
     if (!selectedComponent || !selectedId) return;
     
     const clearedStyles = { ...selectedComponent.styles };
-    delete clearedStyles.animationName;
-    delete clearedStyles.animationDuration;
-    delete clearedStyles.animationDelay;
-    delete clearedStyles.animationIterationCount;
-    delete clearedStyles.animationTimingFunction;
-    delete clearedStyles.animationFillMode;
+    delete clearedStyles.animation;
     
     updateComponent(selectedId, { styles: clearedStyles });
     setLocalAnimation({
@@ -233,26 +215,25 @@ export const AnimationPanel: React.FC = () => {
   const saveToComponent = useCallback(() => {
     if (!selectedComponent || !selectedId || !localAnimation.name) return;
     
-    const styles = {
-      ...selectedComponent.styles,
-      animationName: { base: localAnimation.name! },
-      animationDuration: { base: `${localAnimation.duration}ms` },
-      animationDelay: { base: `${localAnimation.delay}ms` },
-      animationIterationCount: { base: localAnimation.iterations === 'infinite' ? 'infinite' : String(localAnimation.iterations) },
-      animationTimingFunction: { base: localAnimation.easing! },
-      animationFillMode: { base: localAnimation.fillMode! },
+    const animationConfig: AnimationConfig = {
+      name: localAnimation.name,
+      duration: localAnimation.duration || 300,
+      delay: localAnimation.delay || 0,
+      easing: localAnimation.easing || 'ease-out',
+      iterations: localAnimation.iterations || 1,
+      fillMode: (localAnimation.fillMode || 'both') as AnimationConfig['fillMode'],
+      trigger: (localAnimation.trigger || 'onLoad') as AnimationConfig['trigger'],
     };
     
-    updateComponent(selectedId, { styles: styles as typeof selectedComponent.styles });
+    updateComponent(selectedId, {
+      styles: {
+        ...selectedComponent.styles,
+        animation: animationConfig,
+      } as typeof selectedComponent.styles,
+    });
   }, [selectedComponent, selectedId, localAnimation, updateComponent]);
 
-  if (!selectedComponent) {
-    return (
-      <div className="p-4 text-center text-slate-500 text-sm">
-        Select a component to edit animations
-      </div>
-    );
-  }
+  if (!selectedComponent) return null;
 
   return (
     <div className="p-4 space-y-4">
