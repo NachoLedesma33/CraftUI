@@ -143,17 +143,29 @@ export const AnimationPanel: React.FC = () => {
   }, []);
 
   const applyPreset = useCallback((preset: AnimationPreset) => {
-    setLocalAnimation({
+    const newAnimation = {
       name: preset.animationName,
       duration: preset.duration,
       delay: 0,
       easing: preset.easing,
-      iterations: preset.category === 'emphasis' ? 1 : 1,
+      iterations: 1,
       fillMode: 'both',
       trigger: 'onLoad',
       keyframes: preset.keyframes,
-    });
-  }, []);
+    };
+    setLocalAnimation(newAnimation);
+    if (!selectedComponent || !selectedId) return;
+    const styles = {
+      ...selectedComponent.styles,
+      animationName: { base: newAnimation.name },
+      animationDuration: { base: `${newAnimation.duration}ms` },
+      animationDelay: { base: `${newAnimation.delay}ms` },
+      animationIterationCount: { base: String(newAnimation.iterations) },
+      animationTimingFunction: { base: newAnimation.easing },
+      animationFillMode: { base: newAnimation.fillMode },
+    };
+    updateComponent(selectedId, { styles: styles as typeof selectedComponent.styles });
+  }, [selectedComponent, selectedId, updateComponent]);
 
   const playPreview = useCallback(() => {
     if (!selectedComponent || !selectedId) return;
@@ -273,13 +285,20 @@ export const AnimationPanel: React.FC = () => {
         <div className="flex items-center gap-2">
           <div className="flex-1 space-y-1">
             <label className="text-xs text-slate-400">Iterations</label>
-            <input
-              type="number"
-              min={1}
-              value={localAnimation.iterations === 'infinite' ? 1 : localAnimation.iterations || 1}
-              onChange={e => handleAnimationChange('iterations', Number(e.target.value))}
-              className="w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200"
-            />
+            {localAnimation.iterations === 'infinite' ? (
+              <div className="w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-violet-400 flex items-center gap-2">
+                <InfinityIcon size={14} />
+                <span>Infinite</span>
+              </div>
+            ) : (
+              <input
+                type="number"
+                min={1}
+                value={localAnimation.iterations || 1}
+                onChange={e => handleAnimationChange('iterations', Number(e.target.value))}
+                className="w-full px-2 py-1 text-xs bg-slate-700 border border-slate-600 rounded text-slate-200"
+              />
+            )}
           </div>
           <label className="flex items-center gap-1 text-xs text-slate-400 pt-4">
             <input

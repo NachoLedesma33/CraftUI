@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo, useEffect, useReducer } from "react";
 import {
   ChevronRight,
   ChevronDown,
@@ -24,7 +24,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
-import type { ComponentType } from "@/types/canvas";
+import type { ComponentType, UIComponent } from "@/types/canvas";
 
 const componentIcons: Record<ComponentType, React.ReactNode> = {
   box: <Square size={14} />,
@@ -196,7 +196,7 @@ const SortableTreeItem: React.FC<TreeItemProps> = ({
         )}
 
         <div
-          className={`flex items-center gap-0.5 flex-shrink-0 ${isHovered ? "opacity-100" : "opacity-0"}`}
+          className={`flex items-center gap-0.5 flex-shrink-0 transition-opacity duration-150 ${isHovered ? "opacity-100" : "opacity-60 sm:opacity-0"}`}
         >
           <button
             onClick={handleToggleVisibility}
@@ -398,29 +398,57 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   );
 };
 
+type ExpandAction =
+  | { type: 'toggle'; id: string }
+  | { type: 'expandAncestors'; ids: string[] };
+
+const expandedReducer = (state: Set<string>, action: ExpandAction) => {
+  const next = new Set(state);
+  if (action.type === 'toggle') {
+    if (next.has(action.id)) next.delete(action.id);
+    else next.add(action.id);
+  } else if (action.type === 'expandAncestors') {
+    action.ids.forEach(id => next.add(id));
+  }
+  return next;
+};
+
 export const LayersPanel: React.FC = () => {
   const components = useEditorStore((s) => s.components);
   const rootId = useEditorStore((s) => s.rootId);
   const addComponent = useEditorStore((s) => s.addComponent);
   const selectComponent = useEditorStore((s) => s.selectComponent);
+  const selectedIds = useEditorStore((s) => s.selectedIds);
 
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set(rootId ? [rootId] : []));
+  const [expandedIds, dispatch] = useReducer(expandedReducer, rootId ? [rootId] : [], (init) => new Set(init));
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
     componentId: string;
   } | null>(null);
 
+  // Auto-expand ancestors when a component is selected
+  useEffect(() => {
+    if (selectedIds.length === 0) return;
+    const firstId = selectedIds[0];
+    const comp = components[firstId];
+    if (!comp) return;
+    const toExpand: string[] = [];
+    let current: UIComponent | undefined = comp;
+    while (current?.parent) {
+      const parent = components[current.parent];
+      if (parent) {
+        toExpand.push(parent.id);
+        current = parent;
+      } else break;
+    }
+    if (toExpand.length > 0) {
+      dispatch({ type: 'expandAncestors', ids: toExpand });
+    }
+  }, [selectedIds, components]);
+
   const handleToggleExpand = useCallback((id: string) => {
-    setExpandedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
+    dispatch({ type: 'toggle', id });
   }, []);
 
   const handleContextMenu = useCallback((e: React.MouseEvent, id: string) => {

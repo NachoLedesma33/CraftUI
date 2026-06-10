@@ -57,7 +57,7 @@ export const useDragDrop = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 2,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -241,6 +241,8 @@ export const useDragDrop = () => {
               }
             }
           }
+        } else if (overComponent && !canDrop(overId, activeId, components)) {
+          useUIStore.getState().addToast("Cannot drop a parent into its own child", "warning", 3000);
         } else if (isCanvasDrop && rootId) {
           const currentParentId = components[activeId]?.parent;
           if (currentParentId !== rootId) {

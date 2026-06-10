@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from "react";
+import { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
 import { Panel, Group, Separator } from "react-resizable-panels";
 import { Toolbar, CommandPalette } from "@/components/layout";
@@ -30,8 +30,11 @@ function App() {
   );
 
   // Initialize hooks
-  const { showShortcutsModal, setShowShortcutsModal, showCommandPalette, setShowCommandPalette } = useKeyboardShortcuts();
-  const { lastSaved, isEnabled, hasChanges } = useAutoSave();
+  const { showShortcutsModal, setShowShortcutsModal, showCommandPalette, setShowCommandPalette } = useKeyboardShortcuts({
+    onSave: () => performSave(),
+    onExport: () => setIsExportOpen(true),
+  });
+  const { lastSaved, isEnabled, hasChanges, performSave } = useAutoSave();
   const {
     activeItem,
     sensors,
@@ -41,17 +44,10 @@ function App() {
   } = useDragDrop();
 
   const previewMode = useUIStore((s) => s.view.previewMode);
-
-  // Listen for custom events from keyboard shortcuts
-  useEffect(() => {
-    const handleOpenExportModal = () => setIsExportOpen(true);
-    window.addEventListener("openExportModal", handleOpenExportModal);
-    return () =>
-      window.removeEventListener("openExportModal", handleOpenExportModal);
-  }, []);
+  const panels = useUIStore((s) => s.panels);
 
   const commands = useMemo(() => [
-    { id: "save", label: "Save Project", description: "Save current project state", shortcut: "⌘S", icon: "💾", category: "Project", action: () => setIsExportOpen(false) },
+    { id: "save", label: "Save Project", description: "Save current project state", shortcut: "⌘S", icon: "💾", category: "Project", action: () => performSave() },
     { id: "export", label: "Export Code", description: "Export project to HTML/CSS", shortcut: "⌘E", icon: "📦", category: "Project", action: () => setIsExportOpen(true) },
     { id: "templates", label: "Templates", description: "Open template gallery", icon: "📄", category: "Project", action: () => setIsTemplateModalOpen(true) },
     { id: "autosave", label: "Auto-Save Versions", description: "View and restore auto-saved versions", icon: "💿", category: "Project", action: () => setIsAutoSaveModalOpen(true) },
@@ -66,7 +62,7 @@ function App() {
     { id: "delete", label: "Delete Selected", description: "Remove selected component(s)", shortcut: "⌫", icon: "🗑", category: "Editing", action: () => useEditorStore.getState().deleteSelected() },
     { id: "deselect", label: "Deselect All", description: "Clear current selection", shortcut: "Esc", icon: "✕", category: "Editing", action: () => useEditorStore.getState().clearSelection() },
     { id: "shortcuts", label: "Keyboard Shortcuts", description: "Show all keyboard shortcuts", shortcut: "?", icon: "⌨", category: "Help", action: () => setShowShortcutsModal(true) },
-  ], [setShowShortcutsModal, setIsExportOpen, setIsTemplateModalOpen, setIsAutoSaveModalOpen]);
+  ], [setShowShortcutsModal, setIsExportOpen, setIsTemplateModalOpen, setIsAutoSaveModalOpen, performSave]);
 
   const handleMouseMove = useCallback((position: { x: number; y: number }) => {
     setMousePosition(prev => {
@@ -110,32 +106,36 @@ function App() {
               onExport={() => setIsExportOpen(true)}
               onTemplates={() => setIsTemplateModalOpen(true)}
               onAutoSave={() => setIsAutoSaveModalOpen(true)}
-              autoSaveStatus={{ lastSaved, isEnabled, hasChanges }}
+              autoSaveStatus={{ lastSaved, isEnabled, hasChanges, performSave }}
             />
 
             {/* Main Content Area */}
             <div className="flex-1 min-h-0 relative">
               <Group orientation="horizontal" className="h-full w-full">
                 {/* Left Panel - Component Library */}
-                <Panel
-                  defaultSize={18}
-                  minSize={16}
-                  maxSize={35}
-                  className="z-10 bg-slate-800/95 border-r border-slate-700/80 overflow-hidden backdrop-blur-sm panel-enter-left"
-                  style={{
-                    backgroundColor: "var(--bg-secondary)",
-                    borderRightColor: "var(--border-color)",
-                  }}
-                >
-                  <ComponentLibrary />
-                </Panel>
+                {panels.components && (
+                  <Panel
+                    defaultSize={18}
+                    minSize={16}
+                    maxSize={35}
+                    className="z-10 bg-slate-800/95 border-r border-slate-700/80 overflow-hidden backdrop-blur-sm panel-enter-left"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderRightColor: "var(--border-color)",
+                    }}
+                  >
+                    <ComponentLibrary />
+                  </Panel>
+                )}
 
-                <Separator
-                  className="w-1.5 bg-slate-800/60 hover:bg-violet-600/40 transition-all duration-200 cursor-col-resize z-20 group"
-                  style={{ borderRight: "1px solid var(--border-color)" }}
-                >
-                  <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-violet-400 group-hover:shadow-lg" />
-                </Separator>
+                {panels.components && (
+                  <Separator
+                    className="w-1.5 bg-slate-800/60 hover:bg-violet-600/40 transition-all duration-200 cursor-col-resize z-20 group"
+                    style={{ borderRight: "1px solid var(--border-color)" }}
+                  >
+                    <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-violet-400 group-hover:shadow-lg" />
+                  </Separator>
+                )}
 
                 {/* Center Panel - Canvas */}
                 <Panel
@@ -154,58 +154,62 @@ function App() {
                   </div>
                 </Panel>
 
-                <Separator
-                  className="w-1.5 bg-slate-800/60 hover:bg-violet-600/40 transition-all duration-200 cursor-col-resize z-20 group"
-                  style={{ borderLeft: "1px solid var(--border-color)" }}
-                >
-                  <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-violet-400 group-hover:shadow-lg" />
-                </Separator>
+                {panels.properties && (
+                  <Separator
+                    className="w-1.5 bg-slate-800/60 hover:bg-violet-600/40 transition-all duration-200 cursor-col-resize z-20 group"
+                    style={{ borderLeft: "1px solid var(--border-color)" }}
+                  >
+                    <div className="h-full w-px bg-slate-700/60 mx-auto group-hover:bg-violet-400 group-hover:shadow-lg" />
+                  </Separator>
+                )}
 
                 {/* Right Panel - Properties/Layers Tabs */}
-                <Panel
-                  defaultSize={18}
-                  minSize={16}
-                  maxSize={35}
-                  className="z-10 bg-slate-800/95 flex flex-col overflow-hidden backdrop-blur-sm panel-enter-right"
-                  style={{
-                    backgroundColor: "var(--bg-secondary)",
-                    borderLeftColor: "var(--border-color)",
-                  }}
-                >
-                  {/* Tab Navigation */}
-                  <div
-                    className="flex border-b border-slate-700/80 bg-slate-800/60 backdrop-blur-sm"
-                    style={{ borderBottomColor: "var(--border-color)" }}
+                {panels.properties && (
+                  <Panel
+                    defaultSize={18}
+                    minSize={16}
+                    maxSize={35}
+                    className="z-10 bg-slate-800/95 flex flex-col overflow-hidden backdrop-blur-sm panel-enter-right"
+                    style={{
+                      backgroundColor: "var(--bg-secondary)",
+                      borderLeftColor: "var(--border-color)",
+                    }}
                   >
-                    <button
-                      onClick={() => setActiveRightTab("properties")}
-                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "properties" ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+                    {/* Tab Navigation */}
+                    <div
+                      className="flex border-b border-slate-700/80 bg-slate-800/60 backdrop-blur-sm"
+                      style={{ borderBottomColor: "var(--border-color)" }}
                     >
-                      Properties
-                      {activeRightTab === "properties" && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => setActiveRightTab("layers")}
-                      className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "layers" ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
-                    >
-                      Layers
-                      {activeRightTab === "layers" && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />
-                      )}
-                    </button>
-                  </div>
+                      <button
+                        onClick={() => setActiveRightTab("properties")}
+                        className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "properties" ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+                      >
+                        Properties
+                        {activeRightTab === "properties" && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => setActiveRightTab("layers")}
+                        className={`flex-1 px-4 py-3 text-xs font-semibold transition-all duration-200 relative ${activeRightTab === "layers" ? "text-violet-400 bg-slate-700/40" : "text-slate-400 hover:text-white hover:bg-slate-700/20"}`}
+                      >
+                        Layers
+                        {activeRightTab === "layers" && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500" />
+                        )}
+                      </button>
+                    </div>
 
-                  {/* Tab Content */}
-                  <div className="flex-1 overflow-hidden min-h-0 w-full">
-                    {activeRightTab === "properties" ? (
-                      <PropertiesPanel />
-                    ) : (
-                      <LayersPanel />
-                    )}
-                  </div>
-                </Panel>
+                    {/* Tab Content */}
+                    <div className="flex-1 overflow-hidden min-h-0 w-full">
+                      {activeRightTab === "properties" ? (
+                        <PropertiesPanel />
+                      ) : (
+                        <LayersPanel />
+                      )}
+                    </div>
+                  </Panel>
+                )}
               </Group>
             </div>
 

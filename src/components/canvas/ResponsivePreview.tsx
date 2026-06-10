@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import {
   Smartphone,
   Tablet,
@@ -130,6 +130,24 @@ export const ResponsivePreview: React.FC = () => {
   const [device, setDevice] = useState<DeviceType>('desktop');
   const [isLandscape, setIsLandscape] = useState(false);
   const [zoom, setZoom] = useState<ZoomLevel>('fit');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) {
+        setContainerSize({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        });
+      }
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const dimensions = useMemo(
     () => getDeviceDimensions(device, isLandscape),
@@ -176,9 +194,16 @@ export const ResponsivePreview: React.FC = () => {
   }, [srcDoc]);
 
   const scale = useMemo(() => {
-    if (zoom === 'fit') return undefined;
+    if (zoom === 'fit') {
+      if (!containerSize.width || !containerSize.height) return 1;
+      const outerWidth = dimensions.width + 16;
+      const outerHeight = dimensions.height + 16;
+      const scaleX = containerSize.width / outerWidth;
+      const scaleY = containerSize.height / outerHeight;
+      return Math.min(scaleX, scaleY, 1);
+    }
     return parseInt(zoom) / 100;
-  }, [zoom]);
+  }, [zoom, containerSize, dimensions]);
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-100 flex flex-col overflow-hidden">
@@ -193,7 +218,7 @@ export const ResponsivePreview: React.FC = () => {
         onOpenInNewTab={handleOpenInNewTab}
       />
 
-      <div className="flex-1 flex items-center justify-center p-8 overflow-auto">
+      <div ref={containerRef} className="flex-1 flex items-center justify-center p-8 overflow-auto">
         <DeviceFrame
           device={device}
           width={dimensions.width}

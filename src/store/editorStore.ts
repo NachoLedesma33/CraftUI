@@ -49,7 +49,9 @@ export interface EditorActions {
   endHistoryBatch: () => void;
   
   deleteSelected: () => void;
+  pasteComponents: (components: UIComponent[], targetParentId?: string) => string[];
   selectAllAtLevel: () => void;
+  selectAllComponents: () => void;
   startRenaming: (id: string) => void;
   endRenaming: (id: string, newName: string) => void;
   cancelRenaming: (id: string) => void;
@@ -368,6 +370,41 @@ export const useEditorStore = create<EditorWithImmer>()(
           get().clearSelection();
         },
 
+        pasteComponents: (clipboardComps: UIComponent[], targetParentId?: string) => {
+          const newIds: string[] = [];
+          const parentId = targetParentId || null;
+
+          set((state: EditorWithImmer) => {
+            const cloneRecursive = (comp: UIComponent, newParentId: string | null): string => {
+              const cid = uuidv4();
+              const cloned: UIComponent = {
+                ...JSON.parse(JSON.stringify(comp)),
+                id: cid,
+                parent: newParentId,
+                children: [],
+              };
+              cloned.children = comp.children.map((childId: string) => {
+                const child = clipboardComps.find(c => c.id === childId) || state.components[childId];
+                return child ? cloneRecursive(child, cid) : '';
+              }).filter(Boolean);
+              state.components[cid] = cloned;
+              return cid;
+            };
+
+            clipboardComps.forEach((comp) => {
+              const newId = cloneRecursive(comp, parentId);
+              newIds.push(newId);
+              if (parentId && state.components[parentId]) {
+                state.components[parentId].children.push(newId);
+              }
+            });
+          });
+
+          get().saveToHistory();
+          get().setSelection(newIds);
+          return newIds;
+        },
+
         selectAllAtLevel: () => {
           const state = get();
           if (state.selectedIds.length === 0) return;
@@ -384,6 +421,14 @@ export const useEditorStore = create<EditorWithImmer>()(
             // Root level: select all root children
             const roots = Object.values(state.components).filter(c => !c.parent);
             get().setSelection(roots.map(r => r.id));
+          }
+        },
+
+        selectAllComponents: () => {
+          const state = get();
+          const allIds = Object.keys(state.components);
+          if (allIds.length > 0) {
+            get().setSelection(allIds);
           }
         },
 

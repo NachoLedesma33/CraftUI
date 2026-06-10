@@ -34,6 +34,7 @@ interface ToolbarProps {
     lastSaved: number | null;
     isEnabled: boolean;
     hasChanges: boolean;
+    performSave: () => Promise<void>;
   };
 }
 
@@ -342,15 +343,20 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
   const handleSave = useCallback(async () => {
     setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      if (autoSaveStatus && typeof autoSaveStatus.performSave === 'function') {
+        await autoSaveStatus.performSave();
+      }
+    } catch {
+      addToast("Save failed", "error");
+    }
     setIsSaving(false);
     addToast("Project saved successfully!", "success");
-  }, [addToast]);
+  }, [addToast, autoSaveStatus]);
 
   const handleExport = useCallback(() => {
     onExport?.();
-    addToast("Code exported!", "success");
-  }, [onExport, addToast]);
+  }, [onExport]);
 
   const handleClear = useCallback(() => {
     const rootId = Object.values(components).find((c) => c.parent === null)?.id;

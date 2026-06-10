@@ -57,7 +57,10 @@ const isTextEditingShortcut = (e: KeyboardEvent): boolean => {
  * Global keyboard shortcuts hook
  * Centralizes all keyboard event listeners for the editor
  */
-export const useKeyboardShortcuts = () => {
+export const useKeyboardShortcuts = (options?: {
+  onSave?: () => void;
+  onExport?: () => void;
+}) => {
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
@@ -67,10 +70,11 @@ export const useKeyboardShortcuts = () => {
   const redo = useEditorStore((s) => s.redo);
   const deleteSelected = useEditorStore((s) => s.deleteSelected);
   const duplicateComponent = useEditorStore((s) => s.duplicateComponent);
+  const pasteComponents = useEditorStore((s) => s.pasteComponents);
   const selectComponent = useEditorStore((s) => s.selectComponent);
   const clearSelection = useEditorStore((s) => s.clearSelection);
   const startRenaming = useEditorStore((s) => s.startRenaming);
-  const selectAllAtLevel = useEditorStore((s) => s.selectAllAtLevel);
+  const selectAllComponents = useEditorStore((s) => s.selectAllComponents);
   const selectedIds = useEditorStore((s) => s.selectedIds);
   const components = useEditorStore((s) => s.components);
 
@@ -112,14 +116,12 @@ export const useKeyboardShortcuts = () => {
   const handlePaste = useCallback(() => {
     if (!clipboard || clipboard.length === 0) return;
 
-    // For now, we'll just show a toast
-    // Full paste implementation would need to add components to the selected parent
-    addToast(
-      `Paste feature coming soon (${clipboard.length} item(s) in clipboard)`,
-      "info",
-      2000,
-    );
-  }, [clipboard, addToast]);
+    const targetParentId = selectedIds.length === 1 ? selectedIds[0] : undefined;
+    const newIds = pasteComponents(clipboard, targetParentId);
+    if (newIds.length > 0) {
+      addToast(`Pasted ${newIds.length} component(s)`, "success", 2000);
+    }
+  }, [clipboard, selectedIds, pasteComponents, addToast]);
 
   /**
    * Handle duplicate of selected component
@@ -168,15 +170,13 @@ export const useKeyboardShortcuts = () => {
       // ===== PROJECT MANAGEMENT =====
       if (isMod && key === "s") {
         e.preventDefault();
-        addToast("Project saved (mock)", "success", 2000);
+        options?.onSave?.();
         return;
       }
 
       if (isMod && key === "e") {
         e.preventDefault();
-        addToast("Opening export modal...", "info", 2000);
-        // This would be dispatched to open ExportModal
-        window.dispatchEvent(new CustomEvent("openExportModal"));
+        options?.onExport?.();
         return;
       }
 
@@ -254,7 +254,7 @@ export const useKeyboardShortcuts = () => {
         // Only prevent default when not typing
         if (!isTyping) {
           e.preventDefault();
-          selectAllAtLevel();
+          selectAllComponents();
           const count = components ? Object.keys(components).length : 0;
           addToast(`Selected all components (total: ${count})`, "info", 2000);
         }
@@ -343,9 +343,10 @@ export const useKeyboardShortcuts = () => {
       handleCopy,
       handlePaste,
       handleStartRenaming,
-      selectAllAtLevel,
+      selectAllComponents,
       addToast,
       showShortcutsModal,
+      options,
     ],
   );
 
