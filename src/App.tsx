@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { DndContext, DragOverlay, pointerWithin } from "@dnd-kit/core";
 import { Panel, Group, Separator } from "react-resizable-panels";
 import { Toolbar } from "@/components/layout";
@@ -6,11 +6,12 @@ import { Canvas, CanvasOverlays, ResponsivePreview } from "@/components/canvas";
 import { PropertiesPanel } from "@/components/panels/PropertiesPanel";
 import { ComponentLibrary } from "@/components/panels/ComponentLibrary";
 import { LayersPanel } from "@/components/panels/LayersPanel";
-import { ExportModal } from "@/components/modals/ExportModal";
-import { TemplateModal } from "@/components/modals/TemplateModal";
-import { ShortcutsModal } from "@/components/modals/ShortcutsModal";
-import { AutoSaveModal } from "@/components/modals/AutoSaveModal";
 import { StatusBar, ErrorBoundary, ThemeProvider } from "@/components/ui";
+
+const ExportModal = lazy(() => import("@/components/modals/ExportModal").then(m => ({ default: m.ExportModal })));
+const TemplateModal = lazy(() => import("@/components/modals/TemplateModal").then(m => ({ default: m.default })));
+const ShortcutsModal = lazy(() => import("@/components/modals/ShortcutsModal").then(m => ({ default: m.ShortcutsModal })));
+const AutoSaveModal = lazy(() => import("@/components/modals/AutoSaveModal").then(m => ({ default: m.AutoSaveModal })));
 import { useUIStore } from "@/store";
 import { useKeyboardShortcuts } from "@/hooks";
 import { useAutoSave } from "@/hooks";
@@ -50,7 +51,12 @@ function App() {
   }, []);
 
   const handleMouseMove = useCallback((position: { x: number; y: number }) => {
-    setMousePosition(position);
+    setMousePosition(prev => {
+      if (prev && Math.abs(prev.x - position.x) < 2 && Math.abs(prev.y - position.y) < 2) {
+        return prev;
+      }
+      return position;
+    });
   }, []);
 
   const dragOverlayContent = activeItem
@@ -193,22 +199,24 @@ function App() {
           <DragOverlay>{dragOverlayContent}</DragOverlay>
 
           {/* Modals */}
-          <ExportModal
-            isOpen={isExportOpen}
-            onClose={() => setIsExportOpen(false)}
-          />
-          <TemplateModal
-            isOpen={isTemplateModalOpen}
-            onClose={() => setIsTemplateModalOpen(false)}
-          />
-          <ShortcutsModal
-            isOpen={showShortcutsModal}
-            onClose={() => setShowShortcutsModal(false)}
-          />
-          <AutoSaveModal
-            isOpen={isAutoSaveModalOpen}
-            onClose={() => setIsAutoSaveModalOpen(false)}
-          />
+          <Suspense fallback={null}>
+            <ExportModal
+              isOpen={isExportOpen}
+              onClose={() => setIsExportOpen(false)}
+            />
+            <TemplateModal
+              isOpen={isTemplateModalOpen}
+              onClose={() => setIsTemplateModalOpen(false)}
+            />
+            <ShortcutsModal
+              isOpen={showShortcutsModal}
+              onClose={() => setShowShortcutsModal(false)}
+            />
+            <AutoSaveModal
+              isOpen={isAutoSaveModalOpen}
+              onClose={() => setIsAutoSaveModalOpen(false)}
+            />
+          </Suspense>
         </DndContext>
       </ThemeProvider>
     </ErrorBoundary>

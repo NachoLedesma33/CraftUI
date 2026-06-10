@@ -235,7 +235,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-label="Templates">
       <div className="bg-slate-900 rounded-lg border border-slate-700 w-full max-w-6xl max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="border-b border-slate-700 p-4 flex items-center justify-between">
@@ -243,6 +243,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-white text-xl"
+            aria-label="Close dialog"
           >
             ×
           </button>

@@ -1,4 +1,5 @@
 import type { TemplateData, MigrationResult } from "@/types/template";
+import type { UIComponent } from "@/types/canvas";
 
 /**
  * Sistema de migraciones para manejar cambios en la estructura de plantillas
@@ -84,11 +85,11 @@ export function migrateTemplateData(
     };
   }
 
-  const templateData = data as any;
+  const templateData = data as Record<string, unknown>;
   let currentData: TemplateData = {
-    components: templateData.components || {},
-    rootId: templateData.rootId || "",
-    version: fromVersion || templateData.version || "0.9.0",
+    components: (templateData.components as Record<string, UIComponent>) || {},
+    rootId: (templateData.rootId as string) || "",
+    version: fromVersion || (templateData.version as string) || "0.9.0",
   };
 
   // Si ya es la versión actual, retorna directamente
@@ -155,7 +156,7 @@ export function validateTemplateData(data: unknown): {
     return { valid: false, errors };
   }
 
-  const template = data as any;
+  const template = data as Record<string, unknown>;
 
   if (!template.components || typeof template.components !== "object") {
     errors.push("Template must have a components object");
@@ -165,22 +166,24 @@ export function validateTemplateData(data: unknown): {
     errors.push("Template must have a rootId string");
   }
 
-  if (template.rootId && !template.components[template.rootId]) {
+  const components = template.components as Record<string, unknown> | undefined;
+  const rootId = template.rootId as string | undefined;
+
+  if (rootId && components && !components[rootId]) {
     errors.push("rootId does not reference a valid component");
   }
 
-  // Validar que todos los parent/children referencias sean válidas
-  const componentIds = new Set(Object.keys(template.components || {}));
-  for (const [id, component] of Object.entries(template.components || {})) {
-    const comp = component as any;
+  const componentIds = new Set(Object.keys(components || {}));
+  for (const [id, component] of Object.entries(components || {})) {
+    const comp = component as Record<string, unknown>;
 
-    if (comp.parent && !componentIds.has(comp.parent)) {
+    if (typeof comp.parent === "string" && !componentIds.has(comp.parent)) {
       errors.push(`Component ${id} references invalid parent ${comp.parent}`);
     }
 
     if (Array.isArray(comp.children)) {
       for (const childId of comp.children) {
-        if (!componentIds.has(childId)) {
+        if (typeof childId === "string" && !componentIds.has(childId)) {
           errors.push(`Component ${id} references invalid child ${childId}`);
         }
       }

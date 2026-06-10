@@ -401,7 +401,7 @@ export const LayersPanel: React.FC = () => {
   const addComponent = useEditorStore((s) => s.addComponent);
   const selectComponent = useEditorStore((s) => s.selectComponent);
 
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set(rootId ? [rootId] : []));
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
@@ -442,16 +442,6 @@ export const LayersPanel: React.FC = () => {
     if (rootId) flatten(rootId);
     return result;
   }, [components, rootId]);
-
-  useEffect(() => {
-    if (rootId) {
-      setExpandedIds((prev) => {
-        const next = new Set(prev);
-        next.add(rootId);
-        return next;
-      });
-    }
-  }, [rootId]);
 
   if (!rootId || !components[rootId]) {
     return (

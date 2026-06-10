@@ -252,7 +252,7 @@ interface EditWrapperProps {
   component: UIComponent;
 }
 
-const EditWrapper: React.FC<EditWrapperProps> = ({
+const EditWrapper = React.memo<EditWrapperProps>(({
   isSelected,
   isRoot,
   children,
@@ -308,7 +308,7 @@ const EditWrapper: React.FC<EditWrapperProps> = ({
       )}
     </div>
   );
-};
+});
 
 const RendererInner: React.FC<RendererProps> = ({
   componentId,
@@ -334,27 +334,30 @@ const RendererInner: React.FC<RendererProps> = ({
     [componentId, onClick],
   );
 
-  if (!component) return null;
-
-  const Tag = componentTypeMap[component.type];
   const inlineStyles = useMemo(
-    () => resolveStyles(component.styles, activeDevice),
-    [component.styles, activeDevice],
+    () => (component ? resolveStyles(component.styles, activeDevice) : {}),
+    [component?.styles, activeDevice],
   );
 
   const childElements = useMemo(
     () =>
-      component.children.map((childId) => (
-        <RendererInner
-          key={childId}
-          componentId={childId}
-          isPreview={isPreview}
-          onClick={onClick}
-          isRoot={false}
-        />
-      )),
-    [component.children, isPreview, onClick],
+      component
+        ? component.children.map((childId) => (
+            <RendererInner
+              key={childId}
+              componentId={childId}
+              isPreview={isPreview}
+              onClick={onClick}
+              isRoot={false}
+            />
+          ))
+        : [],
+    [component?.children, isPreview, onClick],
   );
+
+  if (!component) return null;
+
+  const Tag = componentTypeMap[component.type];
 
   const element = (
     <Tag

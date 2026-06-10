@@ -1,20 +1,18 @@
-import { useEffect, useRef, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import { useEditorStore } from '@/store/editorStore';
 import { useUIStore } from '@/store/uiStore';
 import { set as idbSet, get as idbGet } from 'idb-keyval';
+import type { UIComponent, CanvasConfig } from '@/types';
 
 interface AutoSavePayload {
-  components: Record<string, any>;
+  components: Record<string, UIComponent>;
   rootId: string;
-  canvasConfig: any;
+  canvasConfig: CanvasConfig;
   timestamp: number;
   version: string;
 }
 
-/**
- * Generate a lightweight hash of the editor state for change detection
- */
-const generateStateHash = (components: Record<string, any>): string => {
+export const generateStateHash = (components: Record<string, UIComponent>): string => {
   const keys = Object.keys(components).sort();
   const simplified = keys.map(key => {
     const comp = components[key];
@@ -26,7 +24,7 @@ const generateStateHash = (components: Record<string, any>): string => {
 /**
  * Determine if data should be stored in IndexedDB (for large projects)
  */
-const shouldUseIndexedDB = (dataSize: number): boolean => {
+export const shouldUseIndexedDB = (dataSize: number): boolean => {
   return dataSize > 1024 * 1024; // > 1MB
 };
 
@@ -88,18 +86,17 @@ export const useAutoSave = () => {
     setAutoSaveEnabled,
   } = useUIStore();
 
-  // Refs for tracking state
-  const lastHashRef = useRef<string>('');
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isSavingRef = useRef(false);
-
   // Memoized current state hash
   const currentHash = useMemo(() => generateStateHash(components), [components]);
 
-  // Check if there are changes since last save
-  const hasChanges = useCallback(() => {
-    return currentHash !== lastHashRef.current;
-  }, [currentHash]);
+  // Track last saved hash to detect unsaved changes
+  const [lastSavedHash, setLastSavedHash] = useState(() => currentHash);
+
+  // Derived: whether there are unsaved changes
+  const hasChanges = currentHash !== lastSavedHash;
+
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isSavingRef = useRef(false);
 
   // Perform the actual save operation
   const performSave = useCallback(async (force = false) => {
@@ -129,7 +126,7 @@ export const useAutoSave = () => {
 
       addAutoSaveVersion(version);
       updateLastSaved(payload.timestamp);
-      lastHashRef.current = currentHash;
+      setLastSavedHash(currentHash);
 
       // Show silent toast notification
       addToast('Changes auto-saved', 'success', 2000);
@@ -160,7 +157,7 @@ export const useAutoSave = () => {
   // Emergency save on page unload
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (hasChanges()) {
+      if (hasChanges) {
         // Synchronous save for beforeunload (limited to localStorage)
         try {
           const payload: AutoSavePayload = {
@@ -191,7 +188,7 @@ export const useAutoSave = () => {
       }
 
       saveTimeoutRef.current = setTimeout(async () => {
-        if (hasChanges()) {
+        if (hasChanges) {
           await performSave();
         }
         // Schedule next save
@@ -207,11 +204,6 @@ export const useAutoSave = () => {
       }
     };
   }, [autoSave.enabled, autoSave.interval, hasChanges, performSave]);
-
-  // Update hash when components change
-  useEffect(() => {
-    lastHashRef.current = currentHash;
-  }, [currentHash]);
 
   // Load emergency save on mount (if exists)
   useEffect(() => {
@@ -240,6 +232,6 @@ export const useAutoSave = () => {
     isEnabled: autoSave.enabled,
     versions: autoSave.versions,
     performSave: () => performSave(true), // Force save
-    hasChanges: hasChanges(),
+    hasChanges,
   };
 };

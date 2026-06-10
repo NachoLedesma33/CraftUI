@@ -180,7 +180,7 @@ export const useEditorStore = create<EditorWithImmer>()(
               metadata: { ...comp.metadata, name: `${comp.metadata.name} (Copy)` },
             };
 
-            let newChildren: string[] = [];
+            const newChildren: string[] = [];
 
             comp.children.forEach((childId: string) => {
               const child = get().components[childId];

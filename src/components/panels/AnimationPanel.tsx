@@ -7,7 +7,7 @@ import {
   Eye,
   Trash2,
   Clock,
-  Infinity,
+  Infinity as InfinityIcon,
   Settings2,
 } from 'lucide-react';
 import { useEditorStore, useSelectedId } from '@/store';
@@ -286,7 +286,7 @@ export const AnimationPanel: React.FC = () => {
               onChange={e => handleAnimationChange('iterations', e.target.checked ? 'infinite' : 1)}
               className="rounded"
             />
-            <Infinity size={12} />
+            <InfinityIcon size={12} />
           </label>
         </div>
 

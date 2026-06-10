@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Clock, HardDrive, AlertTriangle } from 'lucide-react';
 
 interface AutoSaveIndicatorProps {
@@ -12,6 +12,13 @@ export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
   isEnabled,
   hasChanges,
 }) => {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const statusText = useMemo(() => {
     if (!isEnabled) {
       return 'Auto-save disabled';
@@ -21,7 +28,6 @@ export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
       return 'Never saved';
     }
 
-    const now = Date.now();
     const diffMs = now - lastSaved;
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
     const diffSeconds = Math.floor(diffMs / 1000);
@@ -33,7 +39,7 @@ export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
     } else {
       return 'Saved just now';
     }
-  }, [lastSaved, isEnabled]);
+  }, [lastSaved, isEnabled, now]);
 
   const getStatusColor = () => {
     if (!isEnabled) return 'text-slate-500';

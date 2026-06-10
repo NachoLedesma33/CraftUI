@@ -112,7 +112,7 @@ export function optimizeThumbnail(
   }
 
   // Extraer tipo y datos
-  const [_, data] = thumbnail.split(",");
+  const [, data] = thumbnail.split(",");
 
   // Calcular tamaño en KB
   const sizeKB = (data.length * 0.75) / 1024; // Base64 es 33% más grande

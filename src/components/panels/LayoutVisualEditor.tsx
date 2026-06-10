@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useEditorStore } from '@/store';
 import type { UIComponent, Styles } from '@/types/canvas';
 
@@ -294,10 +294,6 @@ export const LayoutVisualEditor: React.FC<LayoutEditorProps> = ({ component }) =
   
   const [tempStyles, setTempStyles] = useState<Partial<Styles>>(component.styles);
   const [liveUpdate, setLiveUpdate] = useState(false);
-
-  useEffect(() => {
-    setTempStyles(component.styles);
-  }, [component.id, component.styles]);
 
   const display = (tempStyles.display?.base as string) || 'block';
 

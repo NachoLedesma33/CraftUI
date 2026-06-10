@@ -385,15 +385,14 @@ export const templateLibrary = {
         return { success: false, error: "Invalid JSON format" };
       }
 
-      const obj = export_obj as any;
+      const obj = export_obj as Record<string, unknown>;
 
       // Extraer template
       let template: Template;
-      if (obj.template) {
-        template = obj.template;
-      } else if (obj.components && obj.rootId) {
-        // JSON directo de datos
-        const migrationResult = migrateTemplateData(obj);
+      if (obj.template && typeof obj.template === 'object') {
+        template = obj.template as Template;
+      } else if (typeof obj.components === 'object' && obj.components && typeof obj.rootId === 'string') {
+        const migrationResult = migrateTemplateData(obj as { components: Record<string, unknown>; rootId: string });
         if (!migrationResult.success) {
           return { success: false, error: "Failed to migrate template data" };
         }
@@ -460,7 +459,7 @@ export const templateLibrary = {
       localStorage.removeItem(STORAGE_INDEX_KEY);
 
       return { success: true, count: index.length };
-    } catch (error) {
+    } catch {
       return { success: false, count: 0 };
     }
   },

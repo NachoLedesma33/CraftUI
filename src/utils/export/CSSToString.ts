@@ -481,12 +481,13 @@ export const generateCSSFile = (
         result += '\n\n';
         break;
         
-      case 'tailwind':
+      case 'tailwind': {
         const twClasses = styleObjectToTailwind(component.styles);
         if (twClasses) {
           result += `/* ${component.metadata.name} */\n.${className} { @apply ${twClasses}; }\n\n`;
         }
         break;
+      }
     }
   }
   

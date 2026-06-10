@@ -50,7 +50,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
   const [options, setOptions] = useState<ExportModalOptions>(defaultModalOptions);
   const [activeTab, setActiveTab] = useState<'component' | 'styles' | 'config'>('component');
   const [copied, setCopied] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
 
   const components = useEditorStore((s) => s.components);
   const rootId = useEditorStore((s) => s.rootId);
@@ -61,8 +60,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
       return { main: '// No component selected', styles: '', config: '' };
     }
 
-    setIsGenerating(true);
-
     try {
       if (options.framework === 'html') {
         const html = exportToHTML(components, rootId, {
@@ -71,7 +68,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
           includeReset: options.includeReset,
           componentName: options.componentName,
         });
-        setIsGenerating(false);
         return { main: html, styles: '', config: '<!-- No additional config needed for HTML -->' };
       }
 
@@ -85,20 +81,16 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
 
         const mainFile = reactExport.files.find(f => f.filename.endsWith('.tsx') || f.filename.endsWith('.jsx'));
         const cssFile = reactExport.files.find(f => f.filename.endsWith('.css'));
-        const configFile = reactExport.files.find(f => f.filename === 'tailwind.config.js');
 
-        setIsGenerating(false);
         return {
           main: mainFile?.content || '// Error generating code',
           styles: cssFile?.content || '',
-          config: configFile?.content || '',
+          config: '',
         };
       }
 
-      setIsGenerating(false);
       return { main: '// Framework not supported yet', styles: '', config: '' };
     } catch (error) {
-      setIsGenerating(false);
       return { main: `// Error: ${error}`, styles: '', config: '' };
     }
   }, [components, rootId, options]);
@@ -180,7 +172,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="Export project">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       
       <div className="relative bg-slate-900 rounded-xl shadow-2xl w-[95vw] h-[85vh] max-w-7xl flex flex-col overflow-hidden border border-slate-700">
@@ -206,6 +198,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
             <button
               onClick={onClose}
               className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition-colors"
+              aria-label="Close dialog"
             >
               <X size={20} />
             </button>
@@ -350,15 +343,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
             </div>
 
             <div className="flex-1 overflow-auto">
-              {isGenerating ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="flex items-center gap-3 text-slate-400">
-                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                    Generating code...
-                  </div>
-                </div>
-              ) : (
-                <SyntaxHighlighter
+              <SyntaxHighlighter
                   language={options.framework === 'html' ? 'html' : 'typescript'}
                   style={atomDark}
                   customStyle={{
@@ -375,7 +360,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose }: Exp
                    activeTab === 'styles' ? generatedCode.styles : 
                    generatedCode.config}
                 </SyntaxHighlighter>
-              )}
             </div>
           </main>
         </div>

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useEditorStore } from '@/store/editorStore';
 import { useUIStore } from '@/store/uiStore';
 
@@ -6,17 +6,23 @@ interface StatusBarProps {
   mousePosition?: { x: number; y: number } | null;
 }
 
-export const StatusBar: React.FC<StatusBarProps> = ({ mousePosition }) => {
+export const StatusBar = React.memo<StatusBarProps>(({ mousePosition }) => {
   const components = useEditorStore((s) => s.components);
   const selectedIds = useEditorStore((s) => s.selectedIds);
   const zoom = useUIStore((s) => s.view.zoom);
   const lastSaved = useUIStore((s) => s.autoSave.lastSaved);
 
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const metrics = useMemo(() => {
     const totalComponents = Object.keys(components).length;
     const selectedCount = selectedIds.length;
 
-    // Count layers (components with children or at root level)
     const layersCount = Object.values(components).filter(comp =>
       comp.children.length > 0 || !comp.parent
     ).length;
@@ -27,7 +33,6 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mousePosition }) => {
   const formatLastSaved = useMemo(() => {
     if (!lastSaved) return 'Never saved';
 
-    const now = Date.now();
     const diffMs = now - lastSaved;
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
     const diffSeconds = Math.floor(diffMs / 1000);
@@ -35,7 +40,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mousePosition }) => {
     if (diffMinutes > 0) return `${diffMinutes}m ago`;
     if (diffSeconds > 30) return `${diffSeconds}s ago`;
     return 'Just now';
-  }, [lastSaved]);
+  }, [lastSaved, now]);
 
   const formatMousePosition = useMemo(() => {
     if (!mousePosition) return null;
@@ -61,4 +66,4 @@ export const StatusBar: React.FC<StatusBarProps> = ({ mousePosition }) => {
       </div>
     </footer>
   );
-};
+});

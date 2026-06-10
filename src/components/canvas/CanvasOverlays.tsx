@@ -5,7 +5,7 @@ interface CanvasOverlaysProps {
   onMouseMove?: (position: { x: number; y: number }) => void;
 }
 
-export const CanvasOverlays: React.FC<CanvasOverlaysProps> = ({
+export const CanvasOverlays = React.memo<CanvasOverlaysProps>(({
   children,
   onMouseMove,
 }) => {
@@ -47,4 +47,4 @@ export const CanvasOverlays: React.FC<CanvasOverlaysProps> = ({
       )}
     </div>
   );
-};
+});

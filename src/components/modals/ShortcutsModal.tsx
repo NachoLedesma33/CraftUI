@@ -184,7 +184,7 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
         <div className="bg-slate-800 border border-slate-700 rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-700 bg-slate-900/50">
