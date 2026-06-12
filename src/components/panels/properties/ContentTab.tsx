@@ -1,6 +1,8 @@
 import React, { useMemo, useCallback } from 'react';
 import type { UIComponent } from '@/types/canvas';
 import { INPUT_CLASSES, LABEL_CLASSES, SECTION_CLASSES, debounce } from './shared.utils';
+import { ImageUploader } from '@/components/ui/ImageUploader';
+import { IconBrowser } from '@/components/ui/IconBrowser';
 
 export const ContentTab: React.FC<{ component: UIComponent; updateComponent: (id: string, updates: Partial<UIComponent>) => void }> = ({ component, updateComponent }) => {
   const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 100, { leading: true }), [component.id, updateComponent]);
@@ -44,9 +46,8 @@ export const ContentTab: React.FC<{ component: UIComponent; updateComponent: (id
       {component.type === 'image' && (
         <>
           <div className={SECTION_CLASSES}>
-            <label className={LABEL_CLASSES}>Image URL</label>
-            <input type="text" className={INPUT_CLASSES} value={component.props.src || ''}
-              onChange={(e) => handleChange('src', e.target.value)} placeholder="https://..." />
+            <label className={LABEL_CLASSES}>Image Source</label>
+            <ImageUploader onSelect={(src) => handleChange('src', src)} currentSrc={component.props.src} />
           </div>
           <div className={SECTION_CLASSES}>
             <label className={LABEL_CLASSES}>Alt Text</label>
@@ -54,6 +55,13 @@ export const ContentTab: React.FC<{ component: UIComponent; updateComponent: (id
               onChange={(e) => handleChange('alt', e.target.value)} placeholder="Image description" />
           </div>
         </>
+      )}
+
+      {component.type === 'icon' && (
+        <div className={SECTION_CLASSES}>
+          <label className={LABEL_CLASSES}>Icon</label>
+          <IconBrowser onSelect={(iconName) => handleChange('iconName', iconName)} currentIcon={component.props.iconName} />
+        </div>
       )}
 
       {component.type === 'button' && (

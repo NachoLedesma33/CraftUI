@@ -4,6 +4,8 @@ import { useUIStore } from '@/store';
 import { debounce, getValue, handleStyleChange } from './shared.utils';
 import { StyleInput, StyleSection } from './shared';
 import { SpacingDiagram } from './SpacingDiagram';
+import { FontManager } from '@/components/ui/FontManager';
+import { ColorPaletteManager } from '@/components/ui/ColorPaletteManager';
 
 const colors = ['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#8b5cf6', '#8b5cf6', '#ec4899'];
 
@@ -17,7 +19,7 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
   const val = useCallback((key: keyof Styles): string => getValue(key, styles, activeBreakpoint), [styles, activeBreakpoint]);
 
   return (
-    <div className="p-2 space-y-2 overflow-auto">
+    <div className="p-2 space-y-2">
 
       <StyleSection title="Colors">
         <div className="flex gap-1 flex-wrap mb-2 w-full">
@@ -28,12 +30,22 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
         </div>
         <StyleInput label="Background" value={val('backgroundColor')} onChange={(v) => onStyleChange('backgroundColor', v)} placeholder="#000000" />
         <StyleInput label="Text Color" value={val('color')} onChange={(v) => onStyleChange('color', v)} placeholder="#000000" />
+        <details className="mt-1">
+          <summary className="text-[10px] font-semibold text-[var(--text-muted)] uppercase cursor-pointer hover:text-[var(--text-secondary)]">Palettes</summary>
+          <div className="mt-1">
+            <ColorPaletteManager onSelect={(color) => onStyleChange('backgroundColor', color)} />
+          </div>
+        </details>
       </StyleSection>
 
       <StyleSection title="Typography">
         <StyleInput label="Font Size" value={val('fontSize')} onChange={(v) => onStyleChange('fontSize', v)} placeholder="16px" />
         <StyleInput label="Font Weight" value={val('fontWeight')} onChange={(v) => onStyleChange('fontWeight', v)} type="select" options={['400', '500', '600', '700', '800', '900']} />
         <StyleInput label="Text Align" value={val('textAlign')} onChange={(v) => onStyleChange('textAlign', v)} type="select" options={['left', 'center', 'right', 'justify']} />
+        <div className="mt-1">
+          <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Font Family</label>
+          <FontManager onSelect={(family) => onStyleChange('fontFamily', family)} currentFamily={val('fontFamily')} />
+        </div>
       </StyleSection>
 
       <StyleSection title="Spacing">
