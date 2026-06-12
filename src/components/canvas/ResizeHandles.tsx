@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useEditorStore } from '@/store';
 import { useUIStore } from '@/store';
+import { findSnapGuides, showGuides, hideGuides } from '@/utils/snapGuides';
+import type { Bounds } from '@/utils/snapGuides';
 
 interface ResizeHandlesProps {
   componentId: string;
@@ -26,7 +28,7 @@ interface ResizeState {
   startHeight: number;
   currentWidth: number;
   currentHeight: number;
-  startRect: { left: number; top: number } | null;
+  startRect: { left: number; top: number; right: number; bottom: number } | null;
 }
 
 const MIN_SIZE = 20;
@@ -62,6 +64,8 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
     currentHeight: 0,
     startRect: null,
   });
+
+  const containerRef = useRef<HTMLElement | null>(null);
   
   const [isResizing, setIsResizing] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -100,10 +104,13 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
   const handleResizeStart = useCallback((handle: HandlePosition, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+
+    containerRef.current = document.querySelector('.flex-1.overflow-hidden') as HTMLElement;
     
     const { width, height } = getCurrentSize();
     const rect = componentRef.current?.getBoundingClientRect() || null;
     
+    hideGuides();
     setResizeState({
       active: true,
       handle,
@@ -113,7 +120,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
       startHeight: height,
       currentWidth: width,
       currentHeight: height,
-      startRect: rect ? { left: rect.left, top: rect.top } : null,
+      startRect: rect ? { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom } : null,
     });
     
     setIsResizing(true);
@@ -124,7 +131,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
     if (!resizeState.active || !resizeState.handle || !component) return;
     
     const rect = componentRef.current?.getBoundingClientRect();
-    const origin = resizeState.startRect || { left: e.clientX, top: e.clientY };
+    const origin = resizeState.startRect || { left: e.clientX, top: e.clientY, right: e.clientX, bottom: e.clientY };
     const deltaX = rect
       ? ((e.clientX - origin.left) - (resizeState.startX - origin.left)) / zoom
       : (e.clientX - resizeState.startX) / zoom;
@@ -157,6 +164,47 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
         newWidth = newHeight * aspectRatio;
       }
     }
+
+    // Compute predicted bounds for snap
+    if (!containerRef.current) {
+      containerRef.current = document.querySelector('.flex-1.overflow-hidden') as HTMLElement;
+    }
+    const container = containerRef.current;
+    if (container && resizeState.startRect) {
+      const sr = resizeState.startRect;
+      let pLeft = sr.left;
+      let pTop = sr.top;
+      let pRight = sr.left + resizeState.startWidth;
+      let pBottom = sr.top + resizeState.startHeight;
+
+      if (handle.includes('right')) pRight = sr.left + newWidth;
+      else if (handle.includes('left')) pLeft = sr.right - newWidth;
+
+      if (handle.includes('bottom')) pBottom = sr.top + newHeight;
+      else if (handle.includes('top')) pTop = sr.bottom - newHeight;
+
+      const predictedBounds: Bounds = {
+        left: pLeft, top: pTop, right: pRight, bottom: pBottom,
+        centerX: (pLeft + pRight) / 2, centerY: (pTop + pBottom) / 2,
+      };
+
+      const allEls = document.querySelectorAll<HTMLElement>('[data-component-id]');
+      const siblingEls = Array.from(allEls).filter(
+        (el) => el.getAttribute('data-component-id') !== componentId && el.isConnected
+      );
+
+      const { offsetX, offsetY, guides } = findSnapGuides(predictedBounds, siblingEls, container, 5);
+
+      if (Math.abs(offsetX) > 0 || Math.abs(offsetY) > 0) {
+        if (handle.includes('right')) newWidth += offsetX;
+        else if (handle.includes('left')) newWidth -= offsetX;
+
+        if (handle.includes('bottom')) newHeight += offsetY;
+        else if (handle.includes('top')) newHeight -= offsetY;
+      }
+
+      showGuides(guides);
+    }
     
     newWidth = Math.max(MIN_SIZE, snapToGridValue(newWidth));
     newHeight = Math.max(MIN_SIZE, snapToGridValue(newHeight));
@@ -179,6 +227,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
   const handleMouseUp = useCallback(() => {
     if (resizeState.active) {
       saveToHistory();
+      hideGuides();
       setResizeState({
         active: false,
         handle: null,
