@@ -371,6 +371,7 @@ const EditWrapper = React.memo<EditWrapperProps>(({
 
   return (
     <div
+      data-component-id={component.id}
       ref={setNodeRef}
       className={`relative group ${isSelected ? "" : ""}`}
       onClick={onClick}

@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { MiniMap } from "./MiniMap";
 
 interface CanvasOverlaysProps {
   children: React.ReactNode;
@@ -45,6 +46,8 @@ export const CanvasOverlays = React.memo<CanvasOverlaysProps>(({
           {Math.round(mousePosition.x)}, {Math.round(mousePosition.y)}
         </div>
       )}
+
+      <MiniMap />
     </div>
   );
 });
