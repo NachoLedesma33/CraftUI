@@ -89,6 +89,9 @@ export const useKeyboardShortcuts = (options?: {
   const copyComponents = useUIStore((s) => s.copyComponents);
   const clipboard = useUIStore((s) => s.clipboard);
   const addToast = useUIStore((s) => s.addToast);
+  const zoom = useUIStore((s) => s.view.zoom);
+  const saveToHistory = useEditorStore((s) => s.saveToHistory);
+  const updateComponent = useEditorStore((s) => s.updateComponent);
 
   /**
    * Handle copy operation: copy selected components to clipboard
@@ -149,6 +152,58 @@ export const useKeyboardShortcuts = (options?: {
     startRenaming(firstId);
     setIsRenaming(true);
   }, [selectedIds, startRenaming]);
+
+  /**
+   * Nudge selected components by dx,dy (content pixels)
+   */
+  const handleNudge = useCallback(
+    (dx: number, dy: number) => {
+      if (selectedIds.length === 0) return;
+
+      selectedIds.forEach((id) => {
+        const comp = components[id];
+        if (!comp) return;
+
+        const styles = { ...comp.styles };
+        let left = parseFloat(styles.left?.base ?? "");
+        let top = parseFloat(styles.top?.base ?? "");
+
+        if (isNaN(left) || isNaN(top)) {
+          // Initialize from DOM position (absolute-ify)
+          const el = document.querySelector(
+            `[data-component-id="${id}"]`,
+          ) as HTMLElement | null;
+          if (!el) return;
+
+          const parent = el.parentElement;
+          if (!parent) return;
+
+          const elRect = el.getBoundingClientRect();
+          const parentRect = parent.getBoundingClientRect();
+
+          left = Math.round(
+            ((elRect.left - parentRect.left) / zoom) * 100,
+          );
+          top = Math.round(((elRect.top - parentRect.top) / zoom) * 100);
+
+          styles.position = { base: "absolute" };
+        }
+
+        styles.left = {
+          base: `${((left + dx) / 100).toFixed(2)}rem`,
+        };
+        styles.top = {
+          base: `${((top + dy) / 100).toFixed(2)}rem`,
+        };
+        styles.margin = { base: "0" };
+
+        updateComponent(id, { styles });
+      });
+
+      saveToHistory();
+    },
+    [selectedIds, components, zoom, updateComponent, saveToHistory],
+  );
 
   /**
    * Main keyboard event handler
@@ -311,6 +366,21 @@ export const useKeyboardShortcuts = (options?: {
         return;
       }
 
+      // ===== NUDGE (ARROW KEYS) =====
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        if (isTyping) return;
+        e.preventDefault();
+        const step = e.shiftKey ? 10 : 1;
+        let dx = 0;
+        let dy = 0;
+        if (e.key === "ArrowUp") dy = -step;
+        if (e.key === "ArrowDown") dy = step;
+        if (e.key === "ArrowLeft") dx = -step;
+        if (e.key === "ArrowRight") dx = step;
+        handleNudge(dx, dy);
+        return;
+      }
+
       // ===== COMMAND PALETTE =====
       if (isMod && key === "k") {
         e.preventDefault();
@@ -347,6 +417,7 @@ export const useKeyboardShortcuts = (options?: {
       addToast,
       showShortcutsModal,
       options,
+      handleNudge,
     ],
   );
 
