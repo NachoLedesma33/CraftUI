@@ -69,6 +69,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
   
   const [isResizing, setIsResizing] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   
   const componentRef = useRef<HTMLDivElement | null>(null);
   
@@ -130,6 +131,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!resizeState.active || !resizeState.handle || !component) return;
     
+    setCursorPos({ x: e.clientX, y: e.clientY });
     const rect = componentRef.current?.getBoundingClientRect();
     const origin = resizeState.startRect || { left: e.clientX, top: e.clientY, right: e.clientX, bottom: e.clientY };
     const deltaX = rect
@@ -298,14 +300,13 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
       
       {showTooltip && (
         <div
-          className="absolute z-50 px-2 py-1 bg-[var(--bg-secondary)] text-white text-xs border-[var(--border)] shadow-brutal pointer-events-none"
+          className="fixed z-[999] px-3 py-1.5 bg-black text-white text-xs font-mono font-bold border-2 border-black shadow-brutal pointer-events-none"
           style={{
-            top: -28,
-            left: '50%',
-            transform: 'translateX(-50%)',
+            left: cursorPos.x + 16,
+            top: cursorPos.y - 40,
           }}
         >
-          {Math.round(resizeState.currentWidth)}px × {Math.round(resizeState.currentHeight)}px
+          {Math.round(resizeState.currentWidth)} × {Math.round(resizeState.currentHeight)}
         </div>
       )}
       
