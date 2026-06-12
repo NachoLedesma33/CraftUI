@@ -4,6 +4,7 @@ export const INPUT_CLASSES = "w-full px-3 py-2 text-sm bg-[var(--bg-tertiary)] b
 export const LABEL_CLASSES = "text-xs font-medium text-[var(--text-secondary)] mb-2 block";
 export const SECTION_CLASSES = "mb-4";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const debounce = <T extends (...args: any[]) => void>(fn: T, delay: number, options?: { leading?: boolean }) => {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
   let lastArgs: Parameters<T> | null = null;

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useEditorStore } from '@/store';
 import { useUIStore } from '@/store';
@@ -18,12 +18,78 @@ export const Canvas: React.FC = () => {
   const rootId = useEditorStore((s) => s.rootId);
   const components = useEditorStore((s) => s.components);
   const view = useUIStore((s) => s.view);
+  const setPan = useUIStore((s) => s.setPan);
+  const panBy = useUIStore((s) => s.panBy);
+  const setZoom = useUIStore((s) => s.setZoom);
   const clearSelection = useEditorStore((s) => s.clearSelection);
   const canvasConfig = useEditorStore((s) => s.canvasConfig);
-  
+
   const { setNodeRef } = useDroppable({
     id: 'canvas-drop-zone',
   });
+
+  const [isPanning, setIsPanning] = useState(false);
+  const panStart = useRef({ x: 0, y: 0 });
+  const isSpaceHeld = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && !e.repeat && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+        isSpaceHeld.current = true;
+        e.preventDefault();
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        isSpaceHeld.current = false;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isPanning) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      const dx = e.clientX - panStart.current.x;
+      const dy = e.clientY - panStart.current.y;
+      setPan(dx, dy);
+    };
+    const handleMouseUp = () => {
+      setIsPanning(false);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isPanning, setPan]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (e.button === 1 || (e.button === 0 && isSpaceHeld.current)) {
+      e.preventDefault();
+      setIsPanning(true);
+      panStart.current = { x: e.clientX - view.panX, y: e.clientY - view.panY };
+    }
+  }, [view.panX, view.panY]);
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      const delta = -e.deltaY * 0.002;
+      const newZoom = Math.min(2, Math.max(0.5, view.zoom + delta));
+      setZoom(Math.round(newZoom * 10) / 10);
+    } else {
+      panBy(-(e.shiftKey ? e.deltaY : e.deltaX), -e.deltaY);
+    }
+  }, [view.zoom, panBy, setZoom]);
 
   const deviceWidth = useMemo(
     () => getDeviceWidth(view.activeDevice),
@@ -38,7 +104,6 @@ export const Canvas: React.FC = () => {
 
   const gridStyle = useMemo(() => {
     if (!view.showGrid) return {};
-    
     return {
       backgroundImage: `url("${GRID_DOT_SVG}")`,
       backgroundSize: `${view.gridSize}px ${view.gridSize}px`,
@@ -50,10 +115,15 @@ export const Canvas: React.FC = () => {
 
   return (
     <div
-      ref={setNodeRef}
-      className="relative flex-1 overflow-auto"
+      ref={(node) => {
+        setNodeRef(node);
+        containerRef.current = node;
+      }}
+      className={`relative flex-1 overflow-hidden select-none ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
       style={{ backgroundColor: 'var(--bg-primary)' }}
       onClick={handleCanvasClick}
+      onMouseDown={handleMouseDown}
+      onWheel={handleWheel}
     >
       <div
         id="canvas-viewport"
@@ -61,9 +131,9 @@ export const Canvas: React.FC = () => {
         style={{
           minWidth: '100%',
           minHeight: '100%',
-          transform: `scale(${view.zoom})`,
-          transformOrigin: 'center top',
-          transition: 'transform 0.1s ease-out',
+          transform: `translate(${view.panX}px, ${view.panY}px) scale(${view.zoom})`,
+          transformOrigin: isPanning ? '0 0' : 'center top',
+          transition: isPanning ? 'none' : 'transform 0.1s ease-out',
         }}
       >
         <div
@@ -88,8 +158,8 @@ export const Canvas: React.FC = () => {
               <div className="w-16 h-16 bg-[var(--bg-tertiary)] flex items-center justify-center mb-5 border-2 border-black">
                 <span className="text-2xl opacity-60">+</span>
               </div>
-<p className="text-base font-semibold text-[var(--text-secondary)] mb-2">Canvas vacío</p>
-               <p className="text-sm text-[var(--text-muted)] text-center max-w-xs leading-relaxed">
+              <p className="text-base font-semibold text-[var(--text-secondary)] mb-2">Canvas vacío</p>
+              <p className="text-sm text-[var(--text-muted)] text-center max-w-xs leading-relaxed">
                 Arrastrá componentes desde el panel izquierdo o presioná{" "}
                 <kbd className="px-1.5 py-0.5 bg-[var(--bg-tertiary)] border-2 border-black text-xs text-[var(--text-secondary)] font-mono">Ctrl+K</kbd>{" "}
                 para abrir la paleta de comandos

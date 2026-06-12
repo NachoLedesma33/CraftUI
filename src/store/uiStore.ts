@@ -11,6 +11,8 @@ interface Toast {
 
 interface ViewState {
   zoom: number;
+  panX: number;
+  panY: number;
   showGrid: boolean;
   snapToGrid: boolean;
   gridSize: number;
@@ -51,6 +53,8 @@ export interface UIActions {
   zoomIn: () => void;
   zoomOut: () => void;
   resetZoom: () => void;
+  setPan: (x: number, y: number) => void;
+  panBy: (dx: number, dy: number) => void;
   setShowGrid: (show: boolean) => void;
   toggleGrid: () => void;
   setSnapToGrid: (snap: boolean) => void;
@@ -85,6 +89,8 @@ const ZOOM_STEP = 0.1;
 
 const initialView: ViewState = {
   zoom: 1,
+  panX: 0,
+  panY: 0,
   showGrid: true,
   snapToGrid: true,
   gridSize: 8,
@@ -135,6 +141,14 @@ export const useUIStore = create<UIStore>()(
 
         resetZoom: () => {
           set((s) => ({ view: { ...s.view, zoom: 1 } }));
+        },
+
+        setPan: (x: number, y: number) => {
+          set((s) => ({ view: { ...s.view, panX: x, panY: y } }));
+        },
+
+        panBy: (dx: number, dy: number) => {
+          set((s) => ({ view: { ...s.view, panX: s.view.panX + dx, panY: s.view.panY + dy } }));
         },
 
         setShowGrid: (show: boolean) => {

@@ -67,17 +67,16 @@ export const useDragDrop = () => {
     const SCROLL_ZONE = 40;
     const SCROLL_SPEED = 12;
     const id = window.setInterval(() => {
-      const canvas = document.querySelector('.flex-1.overflow-auto') as HTMLElement | null;
-      if (!canvas) return;
-      const rect = canvas.getBoundingClientRect();
+      const store = useUIStore.getState();
+      const rect = document.querySelector('.flex-1.overflow-hidden')?.getBoundingClientRect();
+      if (!rect) return;
       let dx = 0, dy = 0;
       if (mouseCoords.x < rect.left + SCROLL_ZONE) dx = -SCROLL_SPEED;
       else if (mouseCoords.x > rect.right - SCROLL_ZONE) dx = SCROLL_SPEED;
       if (mouseCoords.y < rect.top + SCROLL_ZONE) dy = -SCROLL_SPEED;
       else if (mouseCoords.y > rect.bottom - SCROLL_ZONE) dy = SCROLL_SPEED;
       if (dx || dy) {
-        canvas.scrollLeft += dx;
-        canvas.scrollTop += dy;
+        store.setPan(store.view.panX + dx, store.view.panY + dy);
       }
     }, 50);
     return () => clearInterval(id);
