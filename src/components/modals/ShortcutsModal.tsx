@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { X, Keyboard } from "lucide-react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import { X, Keyboard, Search } from "lucide-react";
 
 interface Shortcut {
   keys: string[];
@@ -163,6 +163,17 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const [search, setSearch] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => searchRef.current?.focus(), 50);
+      return () => clearTimeout(timer);
+    }
+    setSearch("");
+  }, [isOpen]);
+
   const groupedShortcuts = useMemo(() => {
     const grouped = {
       Project: [] as Shortcut[],
@@ -172,26 +183,33 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
     };
 
     SHORTCUTS.forEach((shortcut) => {
+      if (
+        search &&
+        !shortcut.description.toLowerCase().includes(search.toLowerCase()) &&
+        !shortcut.keys.some((k) => k.toLowerCase().includes(search.toLowerCase()))
+      )
+        return;
       grouped[shortcut.category].push(shortcut);
     });
 
     return grouped;
-  }, []);
+  }, [search]);
+
+  const totalVisible = useMemo(
+    () => Object.values(groupedShortcuts).reduce((a, b) => a + b.length, 0),
+    [groupedShortcuts],
+  );
 
   if (!isOpen) return null;
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 z-40 bg-black/80"
         onClick={onClose}
       />
-
-      {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
         <div className="bg-[var(--bg-secondary)] border-2 border-[var(--border)] shadow-brutal-lg max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-          {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-[var(--border)] bg-[var(--bg-tertiary)]">
             <div className="flex items-center gap-3">
               <Keyboard size={20} className="text-[var(--accent)]" />
@@ -208,41 +226,46 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
             </button>
           </div>
 
-          {/* Content */}
+          {/* Search */}
+          <div className="px-6 pt-4">
+            <div className="relative">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
+              <input
+                ref={searchRef}
+                type="text"
+                placeholder="Search shortcuts..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-sm bg-[var(--bg-primary)] border-2 border-[var(--border)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent)]"
+              />
+            </div>
+          </div>
+
           <div className="overflow-y-auto p-6 space-y-6">
-            {/* Project Section */}
-            <ShortcutCategory
-              category="Project Management"
-              shortcuts={groupedShortcuts.Project}
-            />
+            {totalVisible === 0 && (
+              <div className="text-center py-8 text-[var(--text-tertiary)] text-sm">
+                No shortcuts match "{search}"
+              </div>
+            )}
+            {(Object.keys(groupedShortcuts) as Array<keyof typeof groupedShortcuts>).map((cat) => {
+              if (groupedShortcuts[cat].length === 0) return null;
+              return (
+                <ShortcutCategory
+                  key={cat}
+                  category={cat}
+                  shortcuts={groupedShortcuts[cat]}
+                />
+              );
+            })}
 
-            {/* Editing Section */}
-            <ShortcutCategory
-              category="Structural Editing"
-              shortcuts={groupedShortcuts.Editing}
-            />
-
-            {/* Canvas Section */}
-            <ShortcutCategory
-              category="Canvas & Visualization"
-              shortcuts={groupedShortcuts.Canvas}
-            />
-
-            {/* Help Section */}
-            <ShortcutCategory
-              category="Help"
-              shortcuts={groupedShortcuts.Help}
-            />
-
-            {/* Tips */}
             <div className="mt-6 pt-4 border-t border-[var(--border)]">
-      <h4 className="text-xs font-semibold text-[var(--text-secondary)] mb-2 flex items-center gap-2">
+              <h4 className="text-xs font-semibold text-[var(--text-secondary)] mb-2 flex items-center gap-2">
                 <div className="w-1 h-3 bg-green-500 rounded" />
                 Tips
               </h4>
               <ul className="text-xs text-slate-400 space-y-1">
                 <li>
-                  • Platform-specific: Use{" "}
+                  • Use{" "}
                   <kbd className="px-1.5 py-0.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] text-xs border-2 border-[var(--border)]">
                     Cmd
                   </kbd>{" "}
@@ -251,22 +274,11 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({
                     Ctrl
                   </kbd>
                 </li>
-                <li>
-                  • Type-safe: Shortcuts are disabled while editing text in
-                  inputs
-                </li>
-                <li>
-                  • Press{" "}
-                  <kbd className="px-1.5 py-0.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] text-xs border-2 border-[var(--border)]">
-                    ?
-                  </kbd>{" "}
-                  anytime to show this overlay
-                </li>
+                <li>• Press <kbd className="px-1.5 py-0.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] text-xs border-2 border-[var(--border)]">?</kbd> anytime to open this</li>
               </ul>
             </div>
           </div>
 
-          {/* Footer */}
           <div className="flex justify-end gap-2 p-4 border-t border-[var(--border)] bg-[var(--bg-tertiary)]">
             <button
               onClick={onClose}

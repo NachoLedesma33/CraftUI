@@ -293,24 +293,38 @@ export const useDragDrop = () => {
   };
 };
 
+const DRAG_PREVIEW_COLORS: Record<string, string> = {
+  box: "bg-violet-500/30", text: "bg-slate-400/30", button: "bg-violet-500",
+  image: "bg-emerald-500/30", container: "bg-slate-400/10", flex: "bg-violet-400/30",
+  grid: "bg-fuchsia-400/30", heading: "bg-slate-500/30", divider: "bg-slate-300/50",
+  card: "bg-white border-2 border-slate-300", input: "bg-blue-100",
+  navbar: "bg-slate-800", hero: "bg-gradient-to-b from-violet-200 to-violet-50",
+};
+
 export const getDragOverlayContent = (item: DragItem | null): React.ReactNode => {
   if (!item) return null;
-  if (item.type === "new") {
-    return (
-      <div className="px-3 py-2 bg-violet-500 text-white rounded shadow-brutal text-sm">
-        {item.componentType?.charAt(0).toUpperCase()}
-        {item.componentType?.slice(1)}
-      </div>
-    );
-  }
+  const type = item.componentType || item.data?.type;
+  const name = item.data?.metadata.name
+    || (type ? (type.charAt(0).toUpperCase() + type.slice(1)) : "Component");
 
-  if (item.data) {
-    return (
-      <div className="px-3 py-2 bg-white border-2 border-violet-500 rounded shadow-brutal text-sm">
-        {item.data.metadata.name}
-      </div>
-    );
-  }
+  const bg = type ? (DRAG_PREVIEW_COLORS[type] || "bg-[var(--bg-secondary)]") : "bg-[var(--bg-secondary)]";
 
-  return null;
+  return (
+    <div
+      className={`w-48 border-2 border-violet-500 shadow-brutal-lg transition-all duration-150 ${bg}`}
+      style={{
+        transform: "scale(0.95) rotate(-2deg)",
+        boxShadow: "8px 8px 0 rgba(139, 92, 246, 0.3)",
+      }}
+    >
+      <div className="px-3 py-2 text-sm font-bold text-[var(--text-primary)] truncate border-b-2 border-violet-500/30 bg-[var(--bg-primary)]/80">
+        {name}
+      </div>
+      <div className="p-3 flex items-center justify-center">
+        <div className="w-12 h-8 bg-violet-400/20 border-2 border-dashed border-violet-500/40 flex items-center justify-center">
+          <span className="text-violet-500 text-lg">+</span>
+        </div>
+      </div>
+    </div>
+  );
 };

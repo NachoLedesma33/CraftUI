@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
 import { ResizeHandles } from "./ResizeHandles";
 import { AutoLayoutToolbar } from "./AutoLayoutToolbar";
 import { GapHandles } from "./GapHandles";
+import { ContextMenu } from "./ContextMenu";
 import type {
   UIComponent,
   ComponentType,
@@ -297,55 +298,6 @@ interface RendererProps {
   onClick?: (id: string) => void;
   isRoot?: boolean;
 }
-
-const ContextMenu: React.FC<{
-  x: number;
-  y: number;
-  componentId: string;
-  onClose: () => void;
-}> = ({ x, y, componentId, onClose }) => {
-  const component = useEditorStore((s) => s.components[componentId]);
-  const deleteComponent = useEditorStore((s) => s.deleteComponent);
-  const duplicateComponent = useEditorStore((s) => s.duplicateComponent);
-  const startRenaming = useEditorStore((s) => s.startRenaming);
-  const addToast = useUIStore((s) => s.addToast);
-
-  useEffect(() => {
-    const close = () => onClose();
-    document.addEventListener("click", close);
-    return () => document.removeEventListener("click", close);
-  }, [onClose]);
-
-  if (!component) return null;
-
-  return (
-    <div
-      className="fixed bg-slate-800 brutal-card border-2 border-black py-1 z-50 min-w-[150px]"
-      style={{ left: x, top: y }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        onClick={() => { startRenaming(componentId); onClose(); }}
-        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
-      >
-        Rename
-      </button>
-      <button
-        onClick={() => { duplicateComponent(componentId); addToast("Duplicated", "success", 2000); onClose(); }}
-        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
-      >
-        Duplicate
-      </button>
-      <div className="border-t border-[var(--border)] my-1" />
-      <button
-        onClick={() => { deleteComponent(componentId); addToast("Deleted", "info", 2000); onClose(); }}
-        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-400 hover:bg-[var(--bg-tertiary)]"
-      >
-        Delete
-      </button>
-    </div>
-  );
-};
 
 interface EditWrapperProps {
   isSelected: boolean;

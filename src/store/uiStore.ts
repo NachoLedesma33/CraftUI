@@ -8,6 +8,7 @@ interface Toast {
   message: string;
   type: 'success' | 'error' | 'info';
   duration: number;
+  exiting?: boolean;
 }
 
 interface ViewState {
@@ -219,7 +220,12 @@ export const useUIStore = create<UIStore>()(
           }));
 
           setTimeout(() => {
-            get().removeToast(id);
+            set((s) => ({
+              toasts: s.toasts.map((t) =>
+                t.id === id ? { ...t, exiting: true } : t,
+              ),
+            }));
+            setTimeout(() => get().removeToast(id), 200);
           }, duration);
 
           return id;
@@ -227,8 +233,15 @@ export const useUIStore = create<UIStore>()(
 
         removeToast: (id: string) => {
           set((s) => ({
-            toasts: s.toasts.filter((t) => t.id !== id),
+            toasts: s.toasts.map((t) =>
+              t.id === id ? { ...t, exiting: true } : t,
+            ),
           }));
+          setTimeout(() => {
+            set((s) => ({
+              toasts: s.toasts.filter((t) => t.id !== id),
+            }));
+          }, 200);
         },
 
         // Auto-save actions
