@@ -13,7 +13,7 @@ import type {
 } from "@/types/canvas";
 import type { Breakpoint } from "@/types/canvas";
 
-type ElementTag = "div" | "span" | "button" | "img";
+type ElementTag = "div" | "span" | "button" | "img" | "input" | "textarea" | "select" | "table" | "pre" | "blockquote" | "hr" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "ul" | "ol" | "nav" | "header" | "footer" | "section" | "aside";
 
 const componentTypeMap: Record<ComponentType, ElementTag> = {
   box: "div",
@@ -23,6 +23,43 @@ const componentTypeMap: Record<ComponentType, ElementTag> = {
   container: "div",
   flex: "div",
   grid: "div",
+  input: "input",
+  textarea: "textarea",
+  select: "select",
+  checkbox: "input",
+  radio: "input",
+  switch: "div",
+  navbar: "nav",
+  tabs: "div",
+  accordion: "div",
+  dropdown: "div",
+  breadcrumbs: "nav",
+  table: "table",
+  card: "div",
+  badge: "span",
+  avatar: "img",
+  chip: "span",
+  tooltip: "div",
+  alert: "div",
+  toast: "div",
+  modal: "div",
+  progress: "div",
+  skeleton: "div",
+  sidebar: "aside",
+  header: "header",
+  footer: "footer",
+  section: "section",
+  hero: "section",
+  "feature-grid": "div",
+  heading: "h2",
+  blockquote: "blockquote",
+  list: "ul",
+  "code-block": "pre",
+  divider: "hr",
+  video: "div",
+  icon: "span",
+  "icon-grid": "div",
+  gallery: "div",
 };
 
 const getBreakpointOrder = (
@@ -36,6 +73,19 @@ const getBreakpointOrder = (
     case "desktop":
       return ["base", "tablet", "desktop"];
   }
+};
+
+const hasBreakpointOverrides = (styles: Styles): Set<string> => {
+  const overrides = new Set<string>();
+  for (const value of Object.values(styles)) {
+    if (value && typeof value === "object" && "base" in value) {
+      const rv = value as { base: unknown; tablet?: unknown; desktop?: unknown };
+      if (rv.tablet !== undefined) overrides.add("tablet");
+      if (rv.desktop !== undefined) overrides.add("desktop");
+      if (overrides.size >= 2) break;
+    }
+  }
+  return overrides;
 };
 
 const resolveStyleValue = <T,>(
@@ -314,6 +364,18 @@ const areEditWrapperPropsEqual = (prev: Readonly<EditWrapperProps>, next: Readon
   return prev.component === next.component;
 };
 
+const deviceMap: Record<string, string> = {
+  mobile: "base",
+  tablet: "tablet",
+  desktop: "desktop",
+};
+
+const BREAKPOINT_DOTS: { id: string; label: string; color: string }[] = [
+  { id: "base", label: "Base", color: "bg-slate-400" },
+  { id: "tablet", label: "Tablet", color: "bg-blue-400" },
+  { id: "desktop", label: "Desktop", color: "bg-green-400" },
+];
+
 const EditWrapper = React.memo<EditWrapperProps>(({
   isSelected,
   isRoot,
@@ -328,7 +390,10 @@ const EditWrapper = React.memo<EditWrapperProps>(({
   const cancelRenaming = useEditorStore((s) => s.cancelRenaming);
   const lastAddedId = useUIStore((s) => s.lastAddedId);
   const statePreview = useUIStore((s) => s.statePreview);
+  const hiddenOnDevices = useUIStore((s) => s.hiddenOnDevices);
+  const activeDevice = useUIStore((s) => s.view.activeDevice);
   const isNew = component.id === lastAddedId;
+  const overrides = useMemo(() => hasBreakpointOverrides(component.styles), [component.styles]);
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: component.id,
@@ -423,6 +488,23 @@ const EditWrapper = React.memo<EditWrapperProps>(({
             <span>{component.metadata.name}</span>
           )}
 
+          {/* Responsive indicators */}
+          <div className="flex items-center gap-0.5 ml-1.5">
+            {BREAKPOINT_DOTS.map((bp) => (
+              <div
+                key={bp.id}
+                className={`w-1.5 h-1.5 rounded-full ${
+                  bp.id === deviceMap[activeDevice]
+                    ? "bg-white"
+                    : overrides.has(bp.id)
+                      ? bp.color
+                      : "bg-white/20"
+                }`}
+                title={`${bp.label}: ${overrides.has(bp.id) ? "Has custom values" : "No custom values"}`}
+              />
+            ))}
+          </div>
+
           {/* State preview buttons */}
           <div className="flex items-center gap-0.5 ml-2 pointer-events-auto">
             {(["default", "hover", "active", "focus"] as const).map((s) => (
@@ -442,6 +524,37 @@ const EditWrapper = React.memo<EditWrapperProps>(({
               </button>
             ))}
           </div>
+
+          {/* Hide on device toggle */}
+          {!isRoot && (
+            <div className="flex items-center gap-0.5 ml-1 pointer-events-auto">
+              {["mobile", "tablet", "desktop"].map((dev) => {
+                const bpKey = deviceMap[dev];
+                const isHidden = hiddenOnDevices[component.id]?.includes(bpKey);
+                return (
+                  <button
+                    key={dev}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      useUIStore.getState().setHiddenOnDevice(
+                        component.id,
+                        bpKey,
+                        !isHidden,
+                      );
+                    }}
+                    className={`px-1 py-0 text-[8px] font-bold border border-white/30 transition-colors ${
+                      isHidden
+                        ? "bg-red-500 text-white"
+                        : "hover:bg-white/20"
+                    }`}
+                    title={`${isHidden ? "Show" : "Hide"} on ${dev}`}
+                  >
+                    {dev === "mobile" ? "📱" : dev === "tablet" ? "📐" : "💻"}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
@@ -496,6 +609,8 @@ const RendererInner: React.FC<RendererProps> = ({
   const component = useEditorStore((s) => s.components[componentId]);
   const selectedIds = useEditorStore((s) => s.selectedIds);
   const activeDevice = useUIStore((s) => s.view.activeDevice);
+  const hiddenOnDevices = useUIStore((s) => s.hiddenOnDevices);
+  const isHiddenOnDevice = component ? hiddenOnDevices[component.id]?.includes(deviceMap[activeDevice]) : false;
 
   const isSelected = useMemo(
     () => selectedIds.includes(componentId),
@@ -559,17 +674,25 @@ const RendererInner: React.FC<RendererProps> = ({
 
   if (!component) return null;
 
-  const Tag = componentTypeMap[component.type];
+  if (isHiddenOnDevice) return null;
 
-  const element = (
-    <Tag
-      id={`c-${componentId}`}
-      data-component-id={componentId}
-      style={inlineStyles}
-      onClick={handleClick}
-      {...component.props}
-    >
-      {component.type === "text" && isEditingInline ? (
+  const rawTag = componentTypeMap[component.type];
+  // Override heading tag based on level prop; list tag based on ordered prop
+  const Tag: ElementTag = component.type === "heading"
+    ? (`h${Math.min(6, Math.max(1, (component.props.level as number) || 2))}` as ElementTag)
+    : component.type === "list"
+      ? ((component.props.ordered ? "ol" : "ul") as ElementTag)
+      : rawTag;
+  const isSelfClosing = ["img", "hr", "input"].includes(Tag);
+  const isFormControl = ["input", "textarea", "select"].includes(component.type);
+  const textProp = component.props.text as string | undefined;
+  const itemsProp = component.props.items as string | undefined;
+  const labelProp = component.props.label as string | undefined;
+  const placeholderProp = component.props.placeholder as string | undefined;
+
+  const renderTextContent = () => {
+    if (component.type === "text" && isEditingInline) {
+      return (
         <input
           autoFocus
           value={inlineText}
@@ -583,10 +706,138 @@ const RendererInner: React.FC<RendererProps> = ({
           className="w-full bg-transparent border-none outline-none text-inherit font-inherit"
           style={{ all: "unset", width: "100%", display: "inline-block" }}
         />
-      ) : (
-        component.type === "text" && component.props.text
-      )}
+      );
+    }
+    if (["text", "heading", "blockquote", "code-block", "badge", "chip", "alert", "toast", "modal", "accordion"].includes(component.type) && textProp) {
+      return textProp;
+    }
+    if (["button", "header", "footer", "section", "hero", "tooltip", "dropdown"].includes(component.type) && textProp) {
+      return textProp;
+    }
+    return null;
+  };
+
+  const renderFormControl = () => {
+    if (component.type === "input" || component.type === "checkbox" || component.type === "radio") {
+      return null;
+    }
+    if (component.type === "textarea") {
+      return placeholderProp || "";
+    }
+    if (component.type === "select" && itemsProp) {
+      return itemsProp.split("\n").map((opt, i) => (
+        <option key={i} value={opt.trim()}>{opt.trim()}</option>
+      ));
+    }
+    return null;
+  };
+
+  const renderListItems = () => {
+    if (component.type !== "list" || !itemsProp) return null;
+    return itemsProp.split("\n").filter(Boolean).map((item, i) => <li key={i}>{item.trim()}</li>);
+  };
+
+  const renderTable = () => {
+    if (component.type !== "table") return null;
+    const cols = (component.props.columns as string || "").split(",").map(c => c.trim());
+    const rows = (itemsProp || "").split("\n").filter(Boolean).map(r => r.split(",").map(c => c.trim()));
+    return (
+      <>
+        <thead>
+          <tr>
+            {cols.map((col, i) => <th key={i} style={{ padding: "8px", borderBottom: "1px solid #d1d5db", textAlign: "left", fontWeight: 600 }}>{col}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, ri) => (
+            <tr key={ri}>
+              {row.map((cell, ci) => <td key={ci} style={{ padding: "8px", borderBottom: "1px solid #e5e7eb" }}>{cell}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </>
+    );
+  };
+
+  const renderSwitch = () => {
+    if (component.type !== "switch") return null;
+    const checked = component.props.checked as boolean;
+    return (
+      <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+        <div style={{
+          width: "36px", height: "20px", borderRadius: "10px",
+          backgroundColor: checked ? "#8b5cf6" : "#d1d5db",
+          position: "relative", transition: "background-color 0.2s",
+        }}>
+          <div style={{
+            width: "16px", height: "16px", borderRadius: "50%",
+            backgroundColor: "#fff", position: "absolute", top: "2px",
+            left: checked ? "18px" : "2px", transition: "left 0.2s",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+          }} />
+        </div>
+        {labelProp && <span>{labelProp}</span>}
+      </div>
+    );
+  };
+
+  const inputProps: Record<string, unknown> = {};
+  if (isFormControl) {
+    if (component.type === "input") {
+      inputProps.type = (component.props.type as string) || "text";
+      inputProps.placeholder = placeholderProp;
+    } else if (component.type === "checkbox") {
+      inputProps.type = "checkbox";
+      inputProps.checked = component.props.checked;
+    } else if (component.type === "radio") {
+      inputProps.type = "radio";
+      inputProps.checked = component.props.checked;
+    } else if (component.type === "textarea") {
+      inputProps.placeholder = placeholderProp;
+      inputProps.rows = component.props.rows;
+    }
+  }
+  if (component.type === "image" || component.type === "avatar") {
+    inputProps.src = component.props.src;
+    inputProps.alt = component.props.alt || "";
+  }
+
+  const isCheckOrRadio = component.type === "checkbox" || component.type === "radio";
+
+  const element = isCheckOrRadio ? (
+    <div
+      id={`c-${componentId}`}
+      data-component-id={componentId}
+      style={{ ...inlineStyles as React.CSSProperties, display: "inline-flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
+      onClick={handleClick}
+    >
+      <input
+        type={component.type === "checkbox" ? "checkbox" : "radio"}
+        checked={component.props.checked as boolean}
+        readOnly
+        style={{ cursor: "pointer" }}
+      />
+      {labelProp && <span>{labelProp}</span>}
       {childElements}
+    </div>
+  ) : (
+    <Tag
+      id={`c-${componentId}`}
+      data-component-id={componentId}
+      style={inlineStyles}
+      onClick={handleClick}
+      {...inputProps}
+    >
+      {isSelfClosing ? null : (
+        <>
+          {renderTextContent()}
+          {renderFormControl()}
+          {renderListItems()}
+          {renderTable()}
+          {renderSwitch()}
+          {!isFormControl && component.type !== "list" && component.type !== "table" && component.type !== "switch" && childElements}
+        </>
+      )}
     </Tag>
   );
 

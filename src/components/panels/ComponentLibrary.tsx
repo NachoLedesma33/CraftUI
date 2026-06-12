@@ -15,13 +15,14 @@ import {
 } from "lucide-react";
 import {
   componentBlueprints,
+  categories as blueprintCategories,
   type ComponentBlueprint,
 } from "@/constants/componentBlueprints";
 import type { ComponentType } from "@/types/canvas";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
 
-const componentIcons: Record<ComponentType, React.ReactNode> = {
+const componentIcons: Partial<Record<ComponentType, React.ReactNode>> = {
   box: <Square size={16} />,
   text: <Type size={16} />,
   button: <MousePointer2 size={16} />,
@@ -31,7 +32,9 @@ const componentIcons: Record<ComponentType, React.ReactNode> = {
   grid: <LayoutGrid size={16} />,
 };
 
-const componentPreviews: Record<ComponentType, React.ReactNode> = {
+const defaultPreview = <div className="w-full h-full bg-slate-400/20" />;
+
+const componentPreviews: Partial<Record<ComponentType, React.ReactNode>> = {
   box: <div className="w-full h-full bg-violet-500/30" />,
   text: (
     <div className="w-full space-y-1 p-1">
@@ -58,6 +61,43 @@ const componentPreviews: Record<ComponentType, React.ReactNode> = {
       <div className="bg-fuchsia-400/30" />
     </div>
   ),
+  input: <div className="w-full h-full bg-blue-100 border border-blue-300 flex items-center justify-center text-[7px] text-blue-600">input</div>,
+  textarea: <div className="w-full h-full bg-blue-50 border border-blue-200 flex items-center justify-center text-[7px] text-blue-500">textarea</div>,
+  select: <div className="w-full h-full bg-gray-50 border border-gray-300 flex items-center justify-center text-[7px] text-gray-600">▼</div>,
+  checkbox: <div className="w-full h-full flex items-center justify-center text-blue-500">☑</div>,
+  radio: <div className="w-full h-full flex items-center justify-center text-blue-500">◉</div>,
+  switch: <div className="w-full h-full flex items-center justify-center">⤶</div>,
+  navbar: <div className="w-full h-full flex items-end p-1 gap-0.5"><div className="h-2 bg-slate-400/40 flex-1 rounded" /><div className="h-2 bg-slate-400/20 w-4 rounded" /><div className="h-2 bg-slate-400/20 w-4 rounded" /></div>,
+  tabs: <div className="w-full h-full flex items-end p-1 gap-0.5"><div className="h-2 bg-violet-400/50 flex-1 rounded-t" /><div className="h-1.5 bg-slate-300/40 flex-1 rounded-t" /><div className="h-1.5 bg-slate-300/40 flex-1 rounded-t" /></div>,
+  accordion: <div className="w-full h-full flex flex-col gap-0.5 p-1"><div className="h-1.5 bg-slate-300/50 w-full" /><div className="h-1.5 bg-slate-300/50 w-full" /></div>,
+  dropdown: <div className="w-full h-full flex items-center justify-center text-[8px]">↕</div>,
+  breadcrumbs: <div className="w-full h-full flex items-center gap-0.5 p-1"><span className="text-[6px]">Home</span><span className="text-[6px]">›</span><span className="text-[6px]">Page</span></div>,
+  table: <div className="w-full h-full grid grid-cols-3 gap-px p-0.5 bg-slate-300"><div className="bg-slate-100" /><div className="bg-slate-100" /><div className="bg-slate-100" /><div className="bg-slate-50" /><div className="bg-slate-50" /><div className="bg-slate-50" /></div>,
+  card: <div className="w-full h-full border-2 border-slate-300 bg-white shadow-sm" />,
+  badge: <div className="w-full h-full flex items-center justify-center"><span className="text-[6px] bg-violet-500 text-white px-1 rounded-full">new</span></div>,
+  avatar: <div className="w-full h-full bg-emerald-400/40 rounded-full" />,
+  chip: <div className="w-full h-full flex items-center justify-center"><span className="text-[6px] bg-gray-200 px-1 rounded">tag</span></div>,
+  tooltip: <div className="w-full h-full flex items-center justify-center text-[8px]">💬</div>,
+  alert: <div className="w-full h-full bg-yellow-200 border border-yellow-400 flex items-center px-1 text-[7px]">⚠ alert</div>,
+  toast: <div className="w-full h-full bg-gray-800 rounded flex items-center px-1 text-[7px] text-white">toast</div>,
+  modal: <div className="w-full h-full border-2 border-slate-400 bg-white flex items-center justify-center text-[7px]">modal</div>,
+  progress: <div className="w-full h-full bg-slate-200 flex items-center"><div className="w-3/5 h-full bg-violet-500" /></div>,
+  skeleton: <div className="w-full h-full bg-slate-200 rounded animate-pulse" />,
+  sidebar: <div className="w-full h-full bg-slate-100 border-r border-slate-300" />,
+  header: <div className="w-full h-full bg-white border-b border-slate-300" />,
+  footer: <div className="w-full h-full bg-gray-800 flex items-center justify-center text-white text-[6px]">footer</div>,
+  section: <div className="w-full h-full border border-dashed border-slate-400 bg-slate-50" />,
+  hero: <div className="w-full h-full bg-gradient-to-b from-violet-200 to-violet-50 flex items-center justify-center text-[7px]">Hero</div>,
+  "feature-grid": <div className="w-full h-full grid grid-cols-3 gap-0.5 p-0.5"><div className="bg-violet-200/60" /><div className="bg-violet-200/60" /><div className="bg-violet-200/60" /></div>,
+  heading: <div className="w-full h-full flex items-center p-1"><div className="h-2.5 bg-slate-500/50 w-full" /></div>,
+  blockquote: <div className="w-full h-full border-l-2 border-violet-400 pl-1 flex items-center text-[6px] italic">“quote”</div>,
+  list: <div className="w-full h-full flex flex-col gap-0.5 p-1"><div className="h-1 bg-slate-400/30 w-full" /><div className="h-1 bg-slate-400/30 w-4/5" /><div className="h-1 bg-slate-400/30 w-3/5" /></div>,
+  "code-block": <div className="w-full h-full bg-gray-900 flex items-center px-1"><span className="text-[5px] text-green-400 font-mono">{'</>'}</span></div>,
+  divider: <div className="w-full h-full flex items-center"><div className="w-full h-px bg-slate-300" /></div>,
+  video: <div className="w-full h-full bg-gray-900 flex items-center justify-center text-white text-[8px]">▶</div>,
+  icon: <div className="w-full h-full flex items-center justify-center text-amber-500">✦</div>,
+  "icon-grid": <div className="w-full h-full grid grid-cols-3 gap-0.5 p-0.5"><div className="bg-amber-200/50 rounded" /><div className="bg-amber-200/50 rounded" /><div className="bg-amber-200/50 rounded" /></div>,
+  gallery: <div className="w-full h-full grid grid-cols-2 gap-px p-0.5"><div className="bg-emerald-200/40" /><div className="bg-emerald-200/40" /><div className="bg-emerald-200/40" /><div className="bg-emerald-200/40" /></div>,
 };
 
 interface DraggableItemProps {
@@ -113,7 +153,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
         transition-all duration-200
       `}
       >
-        <div className="text-lg">{componentIcons[blueprint.type]}</div>
+        <div className="text-lg">{componentIcons[blueprint.type] ?? blueprint.icon}</div>
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-semibold text-[var(--text-primary)] truncate transition-colors">
@@ -124,7 +164,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
         </div>
       </div>
       <div className="w-10 h-10 flex-shrink-0 overflow-hidden bg-[var(--bg-tertiary)] transition-all">
-        {componentPreviews[blueprint.type]}
+        {componentPreviews[blueprint.type] ?? defaultPreview}
       </div>
     </div>
   );
@@ -185,7 +225,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
 export const ComponentLibrary: React.FC = () => {
   const [search, setSearch] = useState("");
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set(["layout", "basic", "media"]),
+    new Set(["layout", "basic", "media", "form", "typography"]),
   );
 
   const filteredBlueprints = useMemo(() => {
@@ -201,12 +241,8 @@ export const ComponentLibrary: React.FC = () => {
   }, [search]);
 
   const blueprintsByCategory = useMemo(() => {
-    const grouped: Record<string, ComponentBlueprint[]> = {
-      layout: [],
-      basic: [],
-      media: [],
-      form: [],
-    };
+    const grouped: Record<string, ComponentBlueprint[]> = {};
+    blueprintCategories.forEach((cat) => { grouped[cat.id] = []; });
 
     filteredBlueprints.forEach((bp) => {
       if (grouped[bp.category]) {
@@ -229,12 +265,7 @@ export const ComponentLibrary: React.FC = () => {
     });
   }, []);
 
-  const categories = [
-    { id: "layout", label: "Layout", icon: "▦" },
-    { id: "basic", label: "Basic", icon: "□" },
-    { id: "media", label: "Media", icon: "◎" },
-    { id: "form", label: "Form", icon: "▢" },
-  ];
+  const categories = [...blueprintCategories];
 
   return (
     <div className="flex flex-col bg-[var(--bg-secondary)] h-full w-full">

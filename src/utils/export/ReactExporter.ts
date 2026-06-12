@@ -17,14 +17,16 @@ const defaultReactOptions: ReactExportOptions = {
   generatePropsInterface: true,
 };
 
-const componentTypeToJSXTag: Record<ComponentType, string> = {
-  box: 'div',
-  text: 'span',
-  button: 'button',
-  image: 'img',
-  container: 'div',
-  flex: 'div',
-  grid: 'div',
+const jsxTagForType = (type: ComponentType): string => {
+  const map: Record<string, string> = {
+    text: 'span', button: 'button', image: 'img', input: 'input',
+    textarea: 'textarea', select: 'select', checkbox: 'input', radio: 'input',
+    avatar: 'img', divider: 'hr', heading: 'h2', blockquote: 'blockquote',
+    'code-block': 'pre', list: 'ul', navbar: 'nav', breadcrumbs: 'nav',
+    sidebar: 'aside', header: 'header', footer: 'footer', section: 'section',
+    hero: 'section', table: 'table', switch: 'div',
+  };
+  return map[type] || 'div';
 };
 
 const escapeJSX = (str: string | undefined): string => {
@@ -74,7 +76,7 @@ const generateInlineStyles = (component: UIComponent): string => {
 
 const generateComponentProps = (component: UIComponent, options: ReactExportOptions): string => {
   const props: string[] = [];
-  const tag = componentTypeToJSXTag[component.type];
+  const tag = jsxTagForType(component.type);
   
   props.push(`<${tag}`);
   
@@ -134,7 +136,7 @@ const generateJSXElement = (
 ): string => {
   const indentStr = '  '.repeat(indent);
   const childIndent = '  '.repeat(indent + 1);
-  const tag = componentTypeToJSXTag[component.type];
+  const tag = jsxTagForType(component.type);
   
   const props = generateComponentProps(component, options);
   
@@ -253,7 +255,7 @@ const generateStyledComponentsFile = (
   
   for (const comp of allComponents) {
     const name = generateComponentId(comp);
-    const tag = componentTypeToJSXTag[comp.type];
+    const tag = jsxTagForType(comp.type);
     
     const styles = styleObjectToInlineCSS(comp.styles);
     const cssProperties = styles.split(';').filter(Boolean).map(rule => {

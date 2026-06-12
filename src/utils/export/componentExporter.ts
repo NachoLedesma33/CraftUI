@@ -19,27 +19,19 @@ const defaultOptions: ExportOptions = {
   addComments: true,
 };
 
-const componentTypeToTag: Record<ComponentType, string> = {
-  box: 'div',
-  text: 'span',
-  button: 'button',
-  image: 'img',
-  container: 'div',
-  flex: 'div',
-  grid: 'div',
+const tagForType = (type: ComponentType): string => {
+  const map: Record<string, string> = {
+    text: 'span', button: 'button', image: 'img', input: 'input',
+    textarea: 'textarea', select: 'select', checkbox: 'input', radio: 'input',
+    avatar: 'img', divider: 'hr', heading: 'h2', blockquote: 'blockquote',
+    'code-block': 'pre', list: 'ul', navbar: 'nav', breadcrumbs: 'nav',
+    sidebar: 'aside', header: 'header', footer: 'footer', section: 'section',
+    hero: 'section', table: 'table', switch: 'div',
+  };
+  return map[type] || 'div';
 };
 
-const componentTypeToJSX = (type: ComponentType): string => {
-  switch (type) {
-    case 'box': return 'div';
-    case 'text': return 'span';
-    case 'button': return 'button';
-    case 'image': return 'img';
-    case 'container': return 'div';
-    case 'flex': return 'div';
-    case 'grid': return 'div';
-  }
-};
+const componentTypeToJSX = tagForType;
 
 const escapeString = (str: string | undefined): string => {
   if (!str) return '';
@@ -174,7 +166,7 @@ export const generateHTML = (
   options: Partial<ExportOptions> = {}
 ): string => {
   const opts = { ...defaultOptions, ...options };
-  const tag = componentTypeToTag[component.type];
+  const tag = tagForType(component.type);
   const props = generateComponentProps(component, 'html');
   const content = generateComponentContent(component);
   
@@ -205,7 +197,7 @@ export const generateTailwindComponent = (
   options: Partial<ExportOptions> = {}
 ): string => {
   const opts = { ...defaultOptions, ...options };
-  const tag = componentTypeToTag[component.type];
+  const tag = tagForType(component.type);
   const props = generateComponentProps(component, 'tailwind');
   const content = generateComponentContent(component);
   
@@ -237,7 +229,7 @@ export const generateStyledComponent = (
 ): string => {
   const opts = { ...defaultOptions, ...options };
   const name = `${opts.componentPrefix}_${component.id.slice(0, 8)}`;
-  const tag = componentTypeToTag[component.type];
+  const tag = tagForType(component.type);
   
   const styles = styleObjectToInlineCSS(component.styles);
   

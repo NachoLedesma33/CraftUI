@@ -1,5 +1,6 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import type { Styles, UIComponent } from '@/types/canvas';
+import { useUIStore } from '@/store';
 import { debounce, getValue, handleStyleChange } from './shared.utils';
 import { StyleInput, StyleSection } from './shared';
 import { SpacingDiagram } from './SpacingDiagram';
@@ -7,23 +8,16 @@ import { SpacingDiagram } from './SpacingDiagram';
 const colors = ['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#8b5cf6', '#8b5cf6', '#ec4899'];
 
 export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id: string, updates: Partial<UIComponent>) => void }> = ({ component, updateComponent }) => {
-  const [device, setDevice] = useState<'base' | 'tablet' | 'desktop'>('base');
+  const activeBreakpoint = useUIStore((s) => s.activeBreakpoint);
   const styles = component.styles;
 
   const debouncedUpdate = useMemo(() => debounce((updates: Partial<UIComponent>) => updateComponent(component.id, updates), 100, { leading: true }), [component.id, updateComponent]);
 
-  const onStyleChange = useCallback((key: keyof Styles, value: string) => handleStyleChange(key, value, styles, device, debouncedUpdate), [styles, device, debouncedUpdate]);
-  const val = useCallback((key: keyof Styles): string => getValue(key, styles, device), [styles, device]);
+  const onStyleChange = useCallback((key: keyof Styles, value: string) => handleStyleChange(key, value, styles, activeBreakpoint, debouncedUpdate), [styles, activeBreakpoint, debouncedUpdate]);
+  const val = useCallback((key: keyof Styles): string => getValue(key, styles, activeBreakpoint), [styles, activeBreakpoint]);
 
   return (
     <div className="p-2 space-y-2 overflow-auto">
-      <div className="flex gap-1 mb-3">
-        {(['base', 'tablet', 'desktop'] as const).map((d) => (
-          <button key={d} type="button" className={`flex-1 py-1 text-xs border-2 border-[var(--border)] ${device === d ? 'bg-[var(--accent)] text-black' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`} onClick={() => setDevice(d)}>
-            {d === 'base' ? '📱' : d === 'tablet' ? '📐' : '💻'}
-          </button>
-        ))}
-      </div>
 
       <StyleSection title="Colors">
         <div className="flex gap-1 flex-wrap mb-2 w-full">

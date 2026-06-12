@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage, subscribeWithSelector } from 'zustand/middleware';
-import type { UIComponent } from '@/types/canvas';
+import type { UIComponent, Breakpoint, CustomBreakpoint } from '@/types/canvas';
+export type { Breakpoint } from '@/types/canvas';
 
 interface Toast {
   id: string;
@@ -47,6 +48,9 @@ export interface UIState {
   toasts: Toast[];
   autoSave: AutoSaveState;
   statePreview: "default" | "hover" | "active" | "focus";
+  activeBreakpoint: string;
+  customBreakpoints: CustomBreakpoint[];
+  hiddenOnDevices: Record<string, string[]>;
 }
 
 export interface UIActions {
@@ -69,7 +73,6 @@ export interface UIActions {
   clearClipboard: () => void;
   addToast: (message: string, type?: 'success' | 'error' | 'info', duration?: number) => string;
   removeToast: (id: string) => void;
-  // Auto-save actions
   setAutoSaveEnabled: (enabled: boolean) => void;
   setAutoSaveInterval: (interval: number) => void;
   updateLastSaved: (timestamp: number) => void;
@@ -81,6 +84,10 @@ export interface UIActions {
   lastAddedId: string | null;
   setLastAddedId: (id: string | null) => void;
   setStatePreview: (state: "default" | "hover" | "active" | "focus") => void;
+  setActiveBreakpoint: (bp: string) => void;
+  addCustomBreakpoint: (bp: CustomBreakpoint) => void;
+  removeCustomBreakpoint: (id: string) => void;
+  setHiddenOnDevice: (componentId: string, device: string, hidden: boolean) => void;
 }
 
 type UIStore = UIState & UIActions;
@@ -123,6 +130,9 @@ export const useUIStore = create<UIStore>()(
         toasts: [],
         lastAddedId: null,
         statePreview: "default",
+        activeBreakpoint: "base" as Breakpoint,
+        customBreakpoints: [],
+        hiddenOnDevices: {},
         autoSave: initialAutoSave,
 
         setZoom: (zoom: number) => {
@@ -281,6 +291,34 @@ export const useUIStore = create<UIStore>()(
 
         setStatePreview: (state) => {
           set({ statePreview: state });
+        },
+
+        setActiveBreakpoint: (bp) => {
+          set({ activeBreakpoint: bp });
+        },
+
+        addCustomBreakpoint: (bp) => {
+          set((s) => ({
+            customBreakpoints: [...s.customBreakpoints, bp],
+          }));
+        },
+
+        removeCustomBreakpoint: (id) => {
+          set((s) => ({
+            customBreakpoints: s.customBreakpoints.filter((b) => b.id !== id),
+          }));
+        },
+
+        setHiddenOnDevice: (componentId, device, hidden) => {
+          set((s) => {
+            const current = s.hiddenOnDevices[componentId] || [];
+            const next = hidden
+              ? [...current, device]
+              : current.filter((d) => d !== device);
+            return {
+              hiddenOnDevices: { ...s.hiddenOnDevices, [componentId]: next },
+            };
+          });
         },
       }),
       {

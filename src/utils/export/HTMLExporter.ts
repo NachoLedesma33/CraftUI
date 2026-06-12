@@ -61,14 +61,16 @@ const GOOGLE_FONTS = {
   'Inter': 'Inter:wght@400;500;600;700',
 };
 
-const componentTypeToHTMLTag: Record<ComponentType, string> = {
-  box: 'div',
-  text: 'span',
-  button: 'button',
-  image: 'img',
-  container: 'div',
-  flex: 'div',
-  grid: 'div',
+const htmlTagForType = (type: ComponentType): string => {
+  const map: Record<string, string> = {
+    text: 'span', button: 'button', image: 'img', input: 'input',
+    textarea: 'textarea', select: 'select', checkbox: 'input', radio: 'input',
+    avatar: 'img', divider: 'hr', heading: 'h2', blockquote: 'blockquote',
+    'code-block': 'pre', list: 'ul', navbar: 'nav', breadcrumbs: 'nav',
+    sidebar: 'aside', header: 'header', footer: 'footer', section: 'section',
+    hero: 'section', table: 'table', switch: 'div',
+  };
+  return map[type] || 'div';
 };
 
 const escapeHTML = (str: string | undefined): string => {
@@ -157,7 +159,7 @@ const generateHTMLProps = (
   component: UIComponent,
   options: HTMLExportOptions
 ): { tag: string; attrs: string; content: string | null; selfClosing: boolean } => {
-  const tag = componentTypeToHTMLTag[component.type];
+  const tag = htmlTagForType(component.type);
   const attrs: string[] = [];
   let content: string | null = null;
   let selfClosing = false;

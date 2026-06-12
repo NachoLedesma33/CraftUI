@@ -7,6 +7,7 @@ import { StylesTab } from "./properties/StylesTab";
 import { ContentTab } from "./properties/ContentTab";
 import { LayoutTab } from "./properties/LayoutTab";
 import { AdvancedTab } from "./properties/AdvancedTab";
+import { BreakpointSwitcher } from "@/components/canvas/BreakpointSwitcher";
 
 export const PropertiesPanel: React.FC = () => {
   const selectedId = useSelectedId();
@@ -60,6 +61,10 @@ export const PropertiesPanel: React.FC = () => {
             {isRootFallback ? "Page / Root properties" : `(${component.type})`}
           </span>
         </div>
+      </div>
+
+      <div className="px-3 py-2 border-b border-[var(--border)] flex-shrink-0">
+        <BreakpointSwitcher />
       </div>
 
       <div className="flex border-b-2 border-[var(--border)] overflow-x-auto flex-shrink-0">

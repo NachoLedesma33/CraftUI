@@ -6,11 +6,55 @@ export const ComponentType = {
   Container: "container",
   Flex: "flex",
   Grid: "grid",
+  Input: "input",
+  Textarea: "textarea",
+  Select: "select",
+  Checkbox: "checkbox",
+  Radio: "radio",
+  Switch: "switch",
+  Navbar: "navbar",
+  Tabs: "tabs",
+  Accordion: "accordion",
+  Dropdown: "dropdown",
+  Breadcrumbs: "breadcrumbs",
+  Table: "table",
+  Card: "card",
+  Badge: "badge",
+  Avatar: "avatar",
+  Chip: "chip",
+  Tooltip: "tooltip",
+  Alert: "alert",
+  Toast: "toast",
+  Modal: "modal",
+  Progress: "progress",
+  Skeleton: "skeleton",
+  Sidebar: "sidebar",
+  Header: "header",
+  Footer: "footer",
+  Section: "section",
+  Hero: "hero",
+  FeatureGrid: "feature-grid",
+  Heading: "heading",
+  Blockquote: "blockquote",
+  List: "list",
+  CodeBlock: "code-block",
+  Divider: "divider",
+  Video: "video",
+  Icon: "icon",
+  IconGrid: "icon-grid",
+  Gallery: "gallery",
 } as const;
 
 export type ComponentType = (typeof ComponentType)[keyof typeof ComponentType];
 
 export type Breakpoint = "base" | "tablet" | "desktop";
+
+export interface CustomBreakpoint {
+  id: string;
+  name: string;
+  width: number;
+  minWidth: number;
+}
 
 export type ResponsiveValue<T> = {
   base: T;
@@ -20,7 +64,7 @@ export type ResponsiveValue<T> = {
 
 export interface Styles {
   display?: ResponsiveValue<
-    "block" | "inline" | "inline-block" | "flex" | "grid" | "none"
+    "block" | "inline" | "inline-block" | "flex" | "grid" | "none" | "inline-flex" | "table"
   >;
   position?: ResponsiveValue<
     "static" | "relative" | "absolute" | "fixed" | "sticky"
@@ -97,6 +141,7 @@ export interface Styles {
   textTransform?: ResponsiveValue<
     "none" | "uppercase" | "lowercase" | "capitalize"
   >;
+  fontStyle?: ResponsiveValue<"normal" | "italic" | "oblique">;
 
   opacity?: ResponsiveValue<number>;
   overflow?: ResponsiveValue<"visible" | "hidden" | "scroll" | "auto">;
@@ -131,6 +176,13 @@ export interface Styles {
   borderRight?: ResponsiveValue<string>;
   borderBottom?: ResponsiveValue<string>;
   borderLeft?: ResponsiveValue<string>;
+  borderTopWidth?: ResponsiveValue<string>;
+  borderRightWidth?: ResponsiveValue<string>;
+  borderBottomWidth?: ResponsiveValue<string>;
+  borderLeftWidth?: ResponsiveValue<string>;
+  objectFit?: ResponsiveValue<string>;
+  aspectRatio?: ResponsiveValue<string>;
+  borderCollapse?: ResponsiveValue<string>;
 }
 
 export interface KeyframeStep {
@@ -156,8 +208,20 @@ export interface ComponentProps {
   alt?: string;
   placeholder?: string;
   value?: string;
-  type?: "button" | "submit" | "reset";
+  type?: "button" | "submit" | "reset" | "text" | "email" | "password" | "number";
   disabled?: boolean;
+  rows?: number;
+  options?: string;
+  checked?: boolean;
+  label?: string;
+  items?: string;
+  columns?: string;
+  level?: number;
+  ordered?: boolean;
+  language?: string;
+  embedUrl?: string;
+  iconName?: string;
+  images?: string;
 }
 
 export interface ComponentMetadata {

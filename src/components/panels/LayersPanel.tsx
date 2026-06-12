@@ -26,7 +26,7 @@ import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
 import type { ComponentType, UIComponent } from "@/types/canvas";
 
-const componentIcons: Record<ComponentType, React.ReactNode> = {
+const componentIcons: Partial<Record<ComponentType, React.ReactNode>> = {
   box: <Square size={14} />,
   text: <Type size={14} />,
   button: <Box size={14} />,

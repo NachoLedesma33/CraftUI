@@ -68,30 +68,97 @@ const DEFAULT_CANVAS_CONFIG: CanvasConfig = {
 
 const MAX_HISTORY = 50;
 
+const typeNames: Record<string, string> = {
+  'code-block': 'Code Block',
+  'feature-grid': 'Feature Grid',
+  'icon-grid': 'Icon Grid',
+};
+
 const createDefaultComponent = (type: ComponentType, id: string): UIComponent => {
+  const name = typeNames[type] || type.charAt(0).toUpperCase() + type.slice(1);
   const baseMetadata: ComponentMetadata = {
     isVisible: true,
     isLocked: false,
-    name: type.charAt(0).toUpperCase() + type.slice(1),
+    name,
   };
   
   const baseStyles: Styles = {};
   
   switch (type) {
     case 'box':
+    case 'badge':
+    case 'chip':
+    case 'tooltip':
+    case 'sidebar':
+    case 'header':
+    case 'footer':
+    case 'section':
+    case 'skeleton':
+    case 'progress':
+    case 'divider':
+    case 'card':
       return { id, type, props: {}, styles: baseStyles, parent: null, children: [], metadata: baseMetadata };
     case 'text':
       return { id, type, props: { text: 'Text' }, styles: { ...baseStyles, fontSize: { base: '16px' } }, parent: null, children: [], metadata: baseMetadata };
+    case 'heading':
+      return { id, type, props: { text: 'Heading', level: 2 }, styles: { ...baseStyles, fontSize: { base: '32px' }, fontWeight: { base: '700' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Heading' } };
+    case 'blockquote':
+      return { id, type, props: { text: 'Blockquote' }, styles: { ...baseStyles, borderLeft: { base: '4px solid #8b5cf6' }, padding: { base: '12px 16px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Blockquote' } };
+    case 'list':
+      return { id, type, props: { items: 'Item 1\nItem 2\nItem 3', ordered: false }, styles: { ...baseStyles, padding: { base: '0 0 0 24px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'List' } };
+    case 'code-block':
+      return { id, type, props: { text: 'const x = 42;' }, styles: { ...baseStyles, backgroundColor: { base: '#1e293b' }, color: { base: '#e2e8f0' }, padding: { base: '16px' }, fontFamily: { base: 'monospace' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Code Block' } };
     case 'button':
       return { id, type, props: { text: 'Button', type: 'button' }, styles: baseStyles, parent: null, children: [], metadata: baseMetadata };
     case 'image':
+    case 'avatar':
       return { id, type, props: { src: '', alt: 'Image' }, styles: baseStyles, parent: null, children: [], metadata: baseMetadata };
+    case 'video':
+      return { id, type, props: { embedUrl: '' }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Video' } };
+    case 'input':
+      return { id, type, props: { placeholder: 'Enter text...', type: 'text' }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Input' } };
+    case 'textarea':
+      return { id, type, props: { placeholder: 'Enter text...', rows: 4 }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Textarea' } };
+    case 'select':
+      return { id, type, props: { options: 'Option 1\nOption 2\nOption 3' }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Select' } };
+    case 'checkbox':
+      return { id, type, props: { label: 'Checkbox', checked: false }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Checkbox' } };
+    case 'radio':
+      return { id, type, props: { label: 'Option', checked: false }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Radio' } };
+    case 'switch':
+      return { id, type, props: { label: 'Toggle', checked: false }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Switch' } };
+    case 'navbar':
+    case 'tabs':
+      return { id, type, props: { items: 'Item 1\nItem 2\nItem 3' }, styles: { ...baseStyles, display: { base: 'flex' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Navbar' } };
+    case 'accordion':
+      return { id, type, props: { text: 'Accordion Item' }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Accordion' } };
+    case 'dropdown':
+      return { id, type, props: { text: 'Dropdown', items: 'Item 1\nItem 2\nItem 3' }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Dropdown' } };
+    case 'breadcrumbs':
+      return { id, type, props: { items: 'Home / Page / Subpage' }, styles: { ...baseStyles, display: { base: 'flex' }, gap: { base: '8px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Breadcrumbs' } };
+    case 'table':
+      return { id, type, props: { columns: 'Name,Email,Role', items: 'John,john@acme.com,Admin\nJane,jane@acme.com,Editor' }, styles: { ...baseStyles, display: { base: 'table' }, width: { base: '100%' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Table' } };
     case 'container':
       return { id, type, props: {}, styles: { ...baseStyles, display: { base: 'block' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Container' } };
     case 'flex':
       return { id, type, props: {}, styles: { ...baseStyles, display: { base: 'flex' }, flexDirection: { base: 'row' }, gap: { base: '8px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Flex' } };
     case 'grid':
       return { id, type, props: {}, styles: { ...baseStyles, display: { base: 'grid' }, gridTemplateColumns: { base: '1fr 1fr' }, gap: { base: '8px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Grid' } };
+    case 'hero':
+      return { id, type, props: { text: 'Hero Title' }, styles: { ...baseStyles, display: { base: 'flex' }, flexDirection: { base: 'column' }, alignItems: { base: 'center' }, justifyContent: { base: 'center' }, minHeight: { base: '400px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Hero' } };
+    case 'feature-grid':
+      return { id, type, props: {}, styles: { ...baseStyles, display: { base: 'grid' }, gridTemplateColumns: { base: 'repeat(3, 1fr)' }, gap: { base: '24px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Feature Grid' } };
+    case 'alert':
+      return { id, type, props: { text: 'Alert message' }, styles: { ...baseStyles, display: { base: 'flex' }, padding: { base: '12px 16px' }, backgroundColor: { base: '#fef3cd' }, borderRadius: { base: '8px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Alert' } };
+    case 'toast':
+      return { id, type, props: { text: 'Toast notification' }, styles: { ...baseStyles, display: { base: 'flex' }, padding: { base: '12px 16px' }, backgroundColor: { base: '#1f2937' }, color: { base: '#ffffff' }, borderRadius: { base: '8px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Toast' } };
+    case 'modal':
+      return { id, type, props: { text: 'Modal Content' }, styles: { ...baseStyles, padding: { base: '24px' }, backgroundColor: { base: '#ffffff' }, borderRadius: { base: '12px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Modal' } };
+    case 'icon':
+      return { id, type, props: { iconName: 'star', text: '✦' }, styles: { ...baseStyles, display: { base: 'inline-flex' }, fontSize: { base: '24px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Icon' } };
+    case 'icon-grid':
+    case 'gallery':
+      return { id, type, props: {}, styles: { ...baseStyles, display: { base: 'grid' }, gridTemplateColumns: { base: 'repeat(3, 1fr)' }, gap: { base: '8px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Icon Grid' } };
     default:
       return { id, type, props: {}, styles: baseStyles, parent: null, children: [], metadata: baseMetadata };
   }
