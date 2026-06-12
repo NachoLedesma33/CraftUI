@@ -309,13 +309,13 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     label: string;
     icon: React.ReactNode;
   }[] = [
-    { type: "box", label: "Box", icon: <Square size={14} /> },
-    { type: "text", label: "Text", icon: <Type size={14} /> },
-    { type: "button", label: "Button", icon: <Box size={14} /> },
-    { type: "image", label: "Image", icon: <Image size={14} /> },
-    { type: "flex", label: "Flex", icon: <AlignJustify size={14} /> },
-    { type: "grid", label: "Grid", icon: <LayoutGrid size={14} /> },
-  ];
+      { type: "box", label: "Box", icon: <Square size={14} /> },
+      { type: "text", label: "Text", icon: <Type size={14} /> },
+      { type: "button", label: "Button", icon: <Box size={14} /> },
+      { type: "image", label: "Image", icon: <Image size={14} /> },
+      { type: "flex", label: "Flex", icon: <AlignJustify size={14} /> },
+      { type: "grid", label: "Grid", icon: <LayoutGrid size={14} /> },
+    ];
 
   return (
     <div
@@ -476,11 +476,11 @@ export const LayersPanel: React.FC = () => {
 
   if (!rootId || !components[rootId]) {
     return (
-      <div className="bg-[var(--bg-secondary)] flex flex-col h-full w-full">
+      <div className="bg-[var(--bg-secondary)] w-full">
         <div className="p-3 border-b border-[var(--border)] flex items-center justify-between">
           <h2 className="text-sm font-medium text-[var(--text-primary)]">Layers</h2>
         </div>
-        <div className="flex-1 flex items-center justify-center p-4">
+        <div className="flex items-center justify-center p-4">
           <p className="text-xs text-[var(--text-muted)]">No canvas initialized</p>
         </div>
       </div>
@@ -488,8 +488,8 @@ export const LayersPanel: React.FC = () => {
   }
 
   return (
-    <div className="bg-[var(--bg-secondary)] flex flex-col h-full w-full overflow-hidden">
-      <div className="p-3 border-b border-[var(--border)] flex items-center justify-between flex-shrink-0">
+    <div className="bg-[var(--bg-secondary)] w-full">
+      <div className="p-3 border-b border-[var(--border)] flex items-center justify-between">
         <h2 className="text-sm font-medium text-[var(--text-primary)]">Layers</h2>
         <button
           onClick={handleAddRoot}
@@ -500,7 +500,7 @@ export const LayersPanel: React.FC = () => {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto min-h-0 py-1">
+      <div className="py-1">
         <SortableContext
           items={flattenedIds}
           strategy={verticalListSortingStrategy}

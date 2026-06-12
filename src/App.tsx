@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, lazy, Suspense } from "react";
+import { useState, useCallback, useMemo, useRef, lazy, Suspense, useEffect } from "react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { Panel, Group, Separator } from "react-resizable-panels";
 import { Toolbar, CommandPalette } from "@/components/layout";
@@ -6,7 +6,9 @@ import { Canvas, CanvasOverlays, ResponsivePreview } from "@/components/canvas";
 import { PropertiesPanel } from "@/components/panels/PropertiesPanel";
 import { ComponentLibrary } from "@/components/panels/ComponentLibrary";
 import { LayersPanel } from "@/components/panels/LayersPanel";
+import { AssetLibrary } from "@/components/panels/AssetLibrary";
 import { StatusBar, ErrorBoundary, ThemeProvider, ToastContainer } from "@/components/ui";
+import { SidePanelScroll } from "@/components/ui/SidePanelScroll";
 
 const ExportModal = lazy(() => import("@/components/modals/ExportModal").then(m => ({ default: m.ExportModal })));
 const TemplateModal = lazy(() => import("@/components/modals/TemplateModal").then(m => ({ default: m.default })));
@@ -25,9 +27,28 @@ function App() {
     x: number;
     y: number;
   } | null>(null);
-  const [activeRightTab, setActiveRightTab] = useState<"properties" | "layers">(
+  const [activeRightTab, setActiveRightTab] = useState<"properties" | "layers" | "assets">(
     "properties",
   );
+  const [componentsCollapsed, setComponentsCollapsed] = useState(false);
+  const [propertiesCollapsed, setPropertiesCollapsed] = useState(false);
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  const componentsPanelRef = useRef<any>(null);
+  const propertiesPanelRef = useRef<any>(null);
+
+  useEffect(() => {
+    const update = () => setIsNarrow(window.innerWidth < 768);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    if (!isNarrow) return;
+    componentsPanelRef.current?.collapse();
+    propertiesPanelRef.current?.collapse();
+  }, [isNarrow]);
 
   // Initialize hooks
   const { showShortcutsModal, setShowShortcutsModal, showCommandPalette, setShowCommandPalette } = useKeyboardShortcuts({
@@ -46,6 +67,32 @@ function App() {
 
   const previewMode = useUIStore((s) => s.view.previewMode);
   const panels = useUIStore((s) => s.panels);
+
+  const toggleComponentsPanel = useCallback(() => {
+    if (!componentsPanelRef.current) return;
+    const willOpen = componentsPanelRef.current.isCollapsed();
+    if (isNarrow && willOpen) {
+      propertiesPanelRef.current?.collapse();
+    }
+    if (willOpen) {
+      componentsPanelRef.current.expand();
+    } else {
+      componentsPanelRef.current.collapse();
+    }
+  }, [isNarrow]);
+
+  const togglePropertiesPanel = useCallback(() => {
+    if (!propertiesPanelRef.current) return;
+    const willOpen = propertiesPanelRef.current.isCollapsed();
+    if (isNarrow && willOpen) {
+      componentsPanelRef.current?.collapse();
+    }
+    if (willOpen) {
+      propertiesPanelRef.current.expand();
+    } else {
+      propertiesPanelRef.current.collapse();
+    }
+  }, [isNarrow]);
 
   const commands = useMemo(() => [
     { id: "save", label: "Save Project", description: "Save current project state", shortcut: "⌘S", icon: "💾", category: "Project", action: () => performSave() },
@@ -107,6 +154,14 @@ function App() {
               onExport={() => setIsExportOpen(true)}
               onTemplates={() => setIsTemplateModalOpen(true)}
               onAutoSave={() => setIsAutoSaveModalOpen(true)}
+              onToggleComponents={toggleComponentsPanel}
+              onToggleProperties={togglePropertiesPanel}
+              onToggleLayers={() => useUIStore.getState().togglePanel("layers")}
+              onToggleAssets={() => useUIStore.getState().togglePanel("assets")}
+              componentsCollapsed={componentsCollapsed}
+              propertiesCollapsed={propertiesCollapsed}
+              layersOpen={panels.layers}
+              assetsOpen={panels.assets}
               autoSaveStatus={{ lastSaved, isEnabled, hasChanges, performSave }}
             />
 
@@ -114,36 +169,47 @@ function App() {
             <div className="flex-1 min-h-0 relative">
               <Group orientation="horizontal" className="h-full w-full">
                 {/* Left Panel - Component Library */}
-                {panels.components && (
-                  <Panel
-                    defaultSize={18}
-                    minSize={16}
-                    maxSize={35}
-                    className="z-10 overflow-hidden panel-enter-left"
-                    style={{
-                      backgroundColor: "var(--bg-secondary)",
-                      borderRight: "2px solid var(--border)",
-                    }}
-                  >
-                    <ComponentLibrary />
-                  </Panel>
-                )}
+                <Panel
+                  panelRef={componentsPanelRef}
+                  id="components"
+                  defaultSize="16%"
+                  minSize="220px"
+                  maxSize="320px"
+                  groupResizeBehavior="preserve-pixel-size"
+                  collapsible
+                  collapsedSize="0%"
+                  className="z-10 panel-enter-left"
+                  data-collapsed={componentsCollapsed}
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderRight: "2px solid var(--border)",
+                    position: "relative",
+                    height: "100%",
+                    minHeight: 0,
+                    overflow: "hidden",
+                  }}
+                  onResize={(size) => setComponentsCollapsed(size.inPixels <= 1)}
+                >
+                  <ComponentLibrary />
+                </Panel>
 
-                {panels.components && (
-                  <Separator
-                    className="w-[3px] bg-[var(--border)] cursor-col-resize z-20 hover:bg-[var(--accent)] transition-colors duration-100"
-                  />
-                )}
+                <Separator
+                  id="sep-components"
+                  className="group w-[5px] cursor-col-resize z-20 flex items-center justify-center active:w-[7px] transition-all duration-75 hover:bg-[var(--bg-tertiary)]/50"
+                  style={{ display: componentsCollapsed ? "none" : "flex" }}
+                >
+                  <div className="w-[3px] h-8 rounded-sm bg-[var(--border)] group-hover:bg-[var(--accent)] group-hover:h-10 group-active:bg-[var(--accent)] transition-all duration-100 pointer-events-none" />
+                </Separator>
 
                 {/* Center Panel - Canvas */}
                 <Panel
-                  defaultSize={50}
-                  minSize={20}
-                  maxSize={75}
-                  className="relative z-0 overflow-hidden flex flex-col"
+                  id="canvas"
+                  defaultSize="60%"
+                  minSize="240px"
+                  maxSize="85%"
                 >
                   <div
-                    className="flex-1 relative overflow-hidden"
+                    className="flex-1 relative h-full"
                     style={{ backgroundColor: "var(--bg-primary)" }}
                   >
                     <CanvasOverlays onMouseMove={handleMouseMove}>
@@ -152,63 +218,84 @@ function App() {
                   </div>
                 </Panel>
 
-                {panels.properties && (
-                  <Separator
-                    className="w-[3px] bg-[var(--border)] cursor-col-resize z-20 hover:bg-[var(--accent)] transition-colors duration-100"
-                  />
-                )}
+                <Separator
+                  id="sep-properties"
+                  className="group w-[5px] cursor-col-resize z-20 flex items-center justify-center active:w-[7px] transition-all duration-75 hover:bg-[var(--bg-tertiary)]/50"
+                  style={{ display: propertiesCollapsed ? "none" : "flex" }}
+                >
+                  <div className="w-[3px] h-8 rounded-sm bg-[var(--border)] group-hover:bg-[var(--accent)] group-hover:h-10 group-active:bg-[var(--accent)] transition-all duration-100 pointer-events-none" />
+                </Separator>
 
                 {/* Right Panel - Properties/Layers Tabs */}
-                {panels.properties && (
-                  <Panel
-                    defaultSize={18}
-                    minSize={16}
-                    maxSize={35}
-                    className="z-10 flex flex-col overflow-hidden panel-enter-right"
-                    style={{
-                      backgroundColor: "var(--bg-secondary)",
-                      borderLeft: "2px solid var(--border)",
-                    }}
-                  >
-                    {/* Tab Navigation */}
+                <Panel
+                  panelRef={propertiesPanelRef}
+                  id="properties"
+                  defaultSize="24%"
+                  minSize="280px"
+                  maxSize="460px"
+                  groupResizeBehavior="preserve-pixel-size"
+                  collapsible
+                  collapsedSize="0%"
+                  className="z-10 panel-enter-right"
+                  data-collapsed={propertiesCollapsed}
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    borderLeft: "2px solid var(--border)",
+                    position: "relative",
+                    height: "100%",
+                    minHeight: 0,
+                    overflow: "hidden",
+                  }}
+                  onResize={(size) => setPropertiesCollapsed(size.inPixels <= 1)}
+                >
+                  <div className="side-panel-fill">
                     <div
-                      className="flex"
+                      className="flex flex-shrink-0"
                       style={{ borderBottom: "2px solid var(--border)" }}
                     >
                       <button
                         onClick={() => setActiveRightTab("properties")}
-                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${
-                          activeRightTab === "properties"
+                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${activeRightTab === "properties"
                             ? "text-[var(--bg-primary)] bg-[var(--accent)]"
                             : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-tertiary)]"
-                        }`}
+                          }`}
                         style={activeRightTab === "properties" ? { borderBottom: "2px solid var(--accent)", marginBottom: "-2px" } : {}}
                       >
                         Properties
                       </button>
                       <button
                         onClick={() => setActiveRightTab("layers")}
-                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${
-                          activeRightTab === "layers"
+                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${activeRightTab === "layers"
                             ? "text-[var(--bg-primary)] bg-[var(--accent)]"
                             : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-tertiary)]"
-                        }`}
+                          }`}
                         style={activeRightTab === "layers" ? { borderBottom: "2px solid var(--accent)", marginBottom: "-2px" } : {}}
                       >
                         Layers
                       </button>
+                      <button
+                        onClick={() => setActiveRightTab("assets")}
+                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${activeRightTab === "assets"
+                            ? "text-[var(--bg-primary)] bg-[var(--accent)]"
+                            : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-tertiary)]"
+                          }`}
+                        style={activeRightTab === "assets" ? { borderBottom: "2px solid var(--accent)", marginBottom: "-2px" } : {}}
+                      >
+                        Assets
+                      </button>
                     </div>
 
-                    {/* Tab Content */}
-                    <div className="flex-1 overflow-hidden min-h-0 w-full">
+                    <SidePanelScroll>
                       {activeRightTab === "properties" ? (
                         <PropertiesPanel />
-                      ) : (
+                      ) : activeRightTab === "layers" ? (
                         <LayersPanel />
+                      ) : (
+                        <AssetLibrary />
                       )}
-                    </div>
-                  </Panel>
-                )}
+                    </SidePanelScroll>
+                  </div>
+                </Panel>
               </Group>
             </div>
 

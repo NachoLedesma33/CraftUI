@@ -26,6 +26,7 @@ interface PanelsState {
   layers: boolean;
   components: boolean;
   properties: boolean;
+  assets: boolean;
 }
 
 interface AutoSaveState {
@@ -112,6 +113,7 @@ const initialPanels: PanelsState = {
   layers: true,
   components: true,
   properties: true,
+  assets: false,
 };
 
 const initialAutoSave: AutoSaveState = {

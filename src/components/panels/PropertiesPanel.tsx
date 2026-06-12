@@ -50,8 +50,8 @@ export const PropertiesPanel: React.FC = () => {
   };
 
   return (
-    <div className="bg-[var(--bg-secondary)] flex flex-col h-full w-full overflow-hidden">
-      <div className="p-4 border-b border-[var(--border)] flex items-center gap-3 flex-shrink-0">
+    <div className="bg-[var(--bg-secondary)] w-full">
+      <div className="p-4 border-b border-[var(--border)] flex items-center gap-3">
         <div className="w-10 h-10 bg-[var(--bg-tertiary)] flex items-center justify-center">
           <span className="text-lg">{typeIcon(component.type)}</span>
         </div>
@@ -63,11 +63,11 @@ export const PropertiesPanel: React.FC = () => {
         </div>
       </div>
 
-      <div className="px-3 py-2 border-b border-[var(--border)] flex-shrink-0">
+      <div className="px-3 py-2 border-b border-[var(--border)]">
         <BreakpointSwitcher />
       </div>
 
-      <div className="flex border-b-2 border-[var(--border)] overflow-x-auto flex-shrink-0">
+      <div className="flex border-b-2 border-[var(--border)] overflow-x-auto">
         {(["styles", "content", "layout", "advanced", "animations"] as const).map((tab) => (
           <button key={tab} type="button" role="tab" aria-selected={activeTab === tab}
             className={`flex-1 py-3 text-xs font-medium capitalize whitespace-nowrap border-2 border-[var(--border)] -mb-[2px] ${activeTab === tab ? "bg-[var(--accent)] text-black" : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}
@@ -77,7 +77,7 @@ export const PropertiesPanel: React.FC = () => {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto min-h-0">
+      <div className="p-2">
         {activeTab === "styles" && <StylesTab component={component} updateComponent={updateComponent} />}
         {activeTab === "content" && <ContentTab component={component} updateComponent={updateComponent} />}
         {activeTab === "layout" && <LayoutTab component={component} updateComponent={updateComponent} />}

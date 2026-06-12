@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Loader2,
   FileText,
+  Image,
 } from "lucide-react";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
@@ -29,6 +30,14 @@ interface ToolbarProps {
   onExport?: () => void;
   onTemplates?: () => void;
   onAutoSave?: () => void;
+  onToggleComponents?: () => void;
+  onToggleProperties?: () => void;
+  onToggleLayers?: () => void;
+  onToggleAssets?: () => void;
+  componentsCollapsed?: boolean;
+  propertiesCollapsed?: boolean;
+  layersOpen?: boolean;
+  assetsOpen?: boolean;
   autoSaveStatus?: {
     lastSaved: number | null;
     isEnabled: boolean;
@@ -193,44 +202,70 @@ const SelectionIndicator: React.FC = () => {
   );
 };
 
-const PanelToggles: React.FC = () => {
-  const panels = useUIStore((s) => s.panels);
-  const togglePanel = useUIStore((s) => s.togglePanel);
-
+const PanelToggles: React.FC<{
+  onToggleComponents?: () => void;
+  onToggleProperties?: () => void;
+  onToggleLayers?: () => void;
+  onToggleAssets?: () => void;
+  componentsCollapsed?: boolean;
+  propertiesCollapsed?: boolean;
+  layersOpen?: boolean;
+  assetsOpen?: boolean;
+}> = ({
+  onToggleComponents,
+  onToggleProperties,
+  onToggleLayers,
+  onToggleAssets,
+  componentsCollapsed = false,
+  propertiesCollapsed = false,
+  layersOpen = false,
+  assetsOpen = false,
+}) => {
   return (
     <div className="flex items-center gap-1">
       <button
-        onClick={() => togglePanel("layers")}
+        onClick={onToggleLayers}
         className={`p-2 brutal-btn`}
         style={{
-          backgroundColor: panels.layers ? "var(--accent)" : "var(--bg-tertiary)",
-          color: panels.layers ? "var(--bg-primary)" : "var(--text-secondary)",
+          backgroundColor: layersOpen ? "var(--accent)" : "var(--bg-tertiary)",
+          color: layersOpen ? "var(--bg-primary)" : "var(--text-secondary)",
         }}
         title="Toggle Layers Panel"
       >
         <Layers size={16} />
       </button>
       <button
-        onClick={() => togglePanel("components")}
+        onClick={onToggleComponents}
         className={`p-2 brutal-btn`}
         style={{
-          backgroundColor: panels.components ? "var(--accent)" : "var(--bg-tertiary)",
-          color: panels.components ? "var(--bg-primary)" : "var(--text-secondary)",
+          backgroundColor: !componentsCollapsed ? "var(--accent)" : "var(--bg-tertiary)",
+          color: !componentsCollapsed ? "var(--bg-primary)" : "var(--text-secondary)",
         }}
         title="Toggle Components Panel"
       >
         <Box size={16} />
       </button>
       <button
-        onClick={() => togglePanel("properties")}
+        onClick={onToggleProperties}
         className={`p-2 brutal-btn`}
         style={{
-          backgroundColor: panels.properties ? "var(--accent)" : "var(--bg-tertiary)",
-          color: panels.properties ? "var(--bg-primary)" : "var(--text-secondary)",
+          backgroundColor: !propertiesCollapsed ? "var(--accent)" : "var(--bg-tertiary)",
+          color: !propertiesCollapsed ? "var(--bg-primary)" : "var(--text-secondary)",
         }}
         title="Toggle Properties Panel"
       >
         <Settings size={16} />
+      </button>
+      <button
+        onClick={onToggleAssets}
+        className={`p-2 brutal-btn`}
+        style={{
+          backgroundColor: assetsOpen ? "var(--accent)" : "var(--bg-tertiary)",
+          color: assetsOpen ? "var(--bg-primary)" : "var(--text-secondary)",
+        }}
+        title="Toggle Assets Panel"
+      >
+        <Image size={16} />
       </button>
     </div>
   );
@@ -347,6 +382,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onExport,
   onTemplates,
   onAutoSave,
+  onToggleComponents,
+  onToggleProperties,
+  onToggleLayers,
+  onToggleAssets,
+  componentsCollapsed,
+  propertiesCollapsed,
+  layersOpen,
+  assetsOpen,
   autoSaveStatus,
 }) => {
   const undo = useEditorStore((s) => s.undo);
@@ -445,7 +488,16 @@ export const Toolbar: React.FC<ToolbarProps> = ({
 
             <SelectionIndicator />
 
-            <PanelToggles />
+            <PanelToggles
+              onToggleComponents={onToggleComponents}
+              onToggleProperties={onToggleProperties}
+              onToggleLayers={onToggleLayers}
+              onToggleAssets={onToggleAssets}
+              componentsCollapsed={componentsCollapsed}
+              propertiesCollapsed={propertiesCollapsed}
+              layersOpen={layersOpen}
+              assetsOpen={assetsOpen}
+            />
 
             <ViewModeToggle />
           </div>

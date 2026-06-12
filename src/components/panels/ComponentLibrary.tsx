@@ -21,6 +21,7 @@ import {
 import type { ComponentType } from "@/types/canvas";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
+import { SidePanelScroll } from "@/components/ui/SidePanelScroll";
 
 const componentIcons: Partial<Record<ComponentType, React.ReactNode>> = {
   box: <Square size={16} />,
@@ -137,7 +138,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ blueprint }) => {
       {...listeners}
       {...attributes}
       onClick={handleClickAdd}
-          className={`
+      className={`
         flex items-center gap-3 p-3 cursor-grab active:cursor-grabbing
         bg-[var(--bg-secondary)] border-2 border-[var(--border)]
         transition-all duration-200 min-w-0 group
@@ -268,8 +269,8 @@ export const ComponentLibrary: React.FC = () => {
   const categories = [...blueprintCategories];
 
   return (
-    <div className="flex flex-col bg-[var(--bg-secondary)] h-full w-full">
-      <div className="p-5 border-b border-[var(--border)]">
+    <div className="side-panel-fill bg-[var(--bg-secondary)]">
+      <div className="flex-shrink-0 p-5 border-b border-[var(--border)]">
         <div className="flex items-center justify-center gap-3 mb-4">
           <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
             <Box size={16} className="text-violet-400" />
@@ -297,7 +298,7 @@ export const ComponentLibrary: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-5 space-y-2">
+      <SidePanelScroll className="px-5 pt-5 space-y-2" alwaysShowScrollbar>
         {search ? (
           <div className="space-y-3">
             {filteredBlueprints.length === 0 ? (
@@ -344,9 +345,10 @@ export const ComponentLibrary: React.FC = () => {
             ))}
           </>
         )}
-      </div>
+        <div className="h-24 flex-shrink-0" aria-hidden="true" />
+      </SidePanelScroll>
 
-      <div className="p-4 border-t border-[var(--border)]">
+      <div className="flex-shrink-0 p-4 border-t border-[var(--border)]">
         <div className="flex items-center justify-center gap-2">
           <div className="w-6 h-6 flex items-center justify-center">
             <span className="text-xs">💡</span>
