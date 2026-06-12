@@ -3,6 +3,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
 import { ResizeHandles } from "./ResizeHandles";
+import { AutoLayoutToolbar } from "./AutoLayoutToolbar";
 import type {
   UIComponent,
   ComponentType,
@@ -431,6 +432,9 @@ const EditWrapper = React.memo<EditWrapperProps>(({
           ×
         </button>
       )}
+
+      {/* Auto-layout toolbar */}
+      {isSelected && <AutoLayoutToolbar componentId={component.id} />}
 
       {/* Functional resize handles */}
       <ResizeHandles componentId={component.id} isSelected={isSelected && !isRoot} />
