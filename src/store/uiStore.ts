@@ -46,6 +46,7 @@ export interface UIState {
   clipboard: UIComponent[] | null;
   toasts: Toast[];
   autoSave: AutoSaveState;
+  statePreview: "default" | "hover" | "active" | "focus";
 }
 
 export interface UIActions {
@@ -79,6 +80,7 @@ export interface UIActions {
   clearToasts: () => void;
   lastAddedId: string | null;
   setLastAddedId: (id: string | null) => void;
+  setStatePreview: (state: "default" | "hover" | "active" | "focus") => void;
 }
 
 type UIStore = UIState & UIActions;
@@ -120,6 +122,7 @@ export const useUIStore = create<UIStore>()(
         clipboard: null,
         toasts: [],
         lastAddedId: null,
+        statePreview: "default",
         autoSave: initialAutoSave,
 
         setZoom: (zoom: number) => {
@@ -274,6 +277,10 @@ export const useUIStore = create<UIStore>()(
 
         setLastAddedId: (id: string | null) => {
           set({ lastAddedId: id });
+        },
+
+        setStatePreview: (state) => {
+          set({ statePreview: state });
         },
       }),
       {

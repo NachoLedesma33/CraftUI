@@ -327,6 +327,7 @@ const EditWrapper = React.memo<EditWrapperProps>(({
   const endRenaming = useEditorStore((s) => s.endRenaming);
   const cancelRenaming = useEditorStore((s) => s.cancelRenaming);
   const lastAddedId = useUIStore((s) => s.lastAddedId);
+  const statePreview = useUIStore((s) => s.statePreview);
   const isNew = component.id === lastAddedId;
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -410,7 +411,7 @@ const EditWrapper = React.memo<EditWrapperProps>(({
       />
 
       {isSelected && (
-        <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 flex items-center gap-1.5 pointer-events-none border-[var(--border)]">
+        <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 flex items-center gap-1.5 border-[var(--border)] pointer-events-none">
           <span className="cursor-grab active:cursor-grabbing" {...(!isRoot ? listeners : {})}>⠿</span>
           {component.metadata.isRenaming ? (
             <input
@@ -421,7 +422,47 @@ const EditWrapper = React.memo<EditWrapperProps>(({
           ) : (
             <span>{component.metadata.name}</span>
           )}
+
+          {/* State preview buttons */}
+          <div className="flex items-center gap-0.5 ml-2 pointer-events-auto">
+            {(["default", "hover", "active", "focus"] as const).map((s) => (
+              <button
+                key={s}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  useUIStore.getState().setStatePreview(s);
+                }}
+                className={`px-1 py-0 text-[9px] uppercase font-bold border border-white/30 transition-colors ${
+                  statePreview === s
+                    ? "bg-white text-violet-700"
+                    : "hover:bg-white/20"
+                }`}
+              >
+                {s === "default" ? "⚪" : s === "hover" ? "H" : s === "active" ? "A" : "F"}
+              </button>
+            ))}
+          </div>
         </div>
+      )}
+
+      {/* State preview overlay */}
+      {isSelected && statePreview !== "default" && (
+        <div
+          className="absolute inset-0 z-30 pointer-events-none"
+          style={{
+            backgroundColor:
+              statePreview === "hover"
+                ? "rgba(59, 130, 246, 0.08)"
+                : statePreview === "active"
+                  ? "rgba(34, 197, 94, 0.08)"
+                  : "rgba(234, 179, 8, 0.08)",
+            outline:
+              statePreview === "focus"
+                ? "2px solid rgba(234, 179, 8, 0.5)"
+                : "none",
+            outlineOffset: 2,
+          }}
+        />
       )}
 
       {/* Delete button */}
