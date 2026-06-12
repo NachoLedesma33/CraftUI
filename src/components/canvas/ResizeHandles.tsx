@@ -143,6 +143,7 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
     let newHeight = resizeState.startHeight;
     
     const handle = resizeState.handle;
+    const aspectRatio = resizeState.startWidth / resizeState.startHeight;
     
     if (handle.includes('right')) {
       newWidth = resizeState.startWidth + deltaX;
@@ -156,8 +157,13 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
       newHeight = resizeState.startHeight - deltaY;
     }
     
-    if (e.shiftKey && (handle.includes('left') || handle.includes('right'))) {
-      const aspectRatio = resizeState.startWidth / resizeState.startHeight;
+    const isCorner = (handle.includes('left') || handle.includes('right')) &&
+                     (handle.includes('top') || handle.includes('bottom'));
+
+    // Apply aspect ratio lock (before snap, used as initial constraint)
+    let aspectLocked = false;
+    if (e.shiftKey && isCorner) {
+      aspectLocked = true;
       if (Math.abs(deltaX) > Math.abs(deltaY)) {
         newHeight = newWidth / aspectRatio;
       } else {
@@ -205,9 +211,27 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({ componentId, isSel
 
       showGuides(guides);
     }
+
+    // Re-apply aspect ratio after snap to preserve the lock
+    if (aspectLocked) {
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        newHeight = newWidth / aspectRatio;
+      } else {
+        newWidth = newHeight * aspectRatio;
+      }
+    }
     
     newWidth = Math.max(MIN_SIZE, snapToGridValue(newWidth));
     newHeight = Math.max(MIN_SIZE, snapToGridValue(newHeight));
+
+    // Final aspect lock after clamping/snapping to grid
+    if (aspectLocked) {
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        newHeight = newWidth / aspectRatio;
+      } else {
+        newWidth = newHeight * aspectRatio;
+      }
+    }
     
     setResizeState((prev) => ({
       ...prev,
