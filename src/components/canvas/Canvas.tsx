@@ -119,7 +119,7 @@ export const Canvas: React.FC = () => {
         setNodeRef(node);
         containerRef.current = node;
       }}
-      className={`relative flex-1 overflow-hidden select-none ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
+      className={`relative flex-1 overflow-hidden select-none pt-5 pl-5 ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
       style={{ backgroundColor: 'var(--bg-primary)' }}
       onClick={handleCanvasClick}
       onMouseDown={handleMouseDown}

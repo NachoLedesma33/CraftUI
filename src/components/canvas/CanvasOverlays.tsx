@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { MiniMap } from "./MiniMap";
 import { SnapGuideOverlay } from "./SnapGuideOverlay";
+import { Rulers } from "./Rulers";
 
 interface CanvasOverlaysProps {
   children: React.ReactNode;
@@ -48,6 +49,7 @@ export const CanvasOverlays = React.memo<CanvasOverlaysProps>(({
         </div>
       )}
 
+      <Rulers />
       <SnapGuideOverlay />
       <MiniMap />
     </div>
