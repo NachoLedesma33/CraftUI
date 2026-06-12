@@ -4,6 +4,7 @@ import { useEditorStore } from "@/store";
 import { useUIStore } from "@/store";
 import { ResizeHandles } from "./ResizeHandles";
 import { AutoLayoutToolbar } from "./AutoLayoutToolbar";
+import { GapHandles } from "./GapHandles";
 import type {
   UIComponent,
   ComponentType,
@@ -435,6 +436,9 @@ const EditWrapper = React.memo<EditWrapperProps>(({
 
       {/* Auto-layout toolbar */}
       {isSelected && <AutoLayoutToolbar componentId={component.id} />}
+
+      {/* Gap handles for flex containers */}
+      <GapHandles componentId={component.id} isSelected={isSelected} />
 
       {/* Functional resize handles */}
       <ResizeHandles componentId={component.id} isSelected={isSelected && !isRoot} />
