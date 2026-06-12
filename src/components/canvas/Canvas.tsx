@@ -22,6 +22,7 @@ export const Canvas: React.FC = () => {
   const panBy = useUIStore((s) => s.panBy);
   const setZoom = useUIStore((s) => s.setZoom);
   const clearSelection = useEditorStore((s) => s.clearSelection);
+  const selectComponent = useEditorStore((s) => s.selectComponent);
   const canvasConfig = useEditorStore((s) => s.canvasConfig);
 
   const { setNodeRef } = useDroppable({
@@ -32,6 +33,11 @@ export const Canvas: React.FC = () => {
   const panStart = useRef({ x: 0, y: 0 });
   const isSpaceHeld = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const [lassoRect, setLassoRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const lassoStart = useRef({ x: 0, y: 0 });
+  const lassoMoved = useRef(false);
+  const lassoFired = useRef(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -77,8 +83,92 @@ export const Canvas: React.FC = () => {
       e.preventDefault();
       setIsPanning(true);
       panStart.current = { x: e.clientX - view.panX, y: e.clientY - view.panY };
+      return;
+    }
+
+    if (e.button === 0 && !isSpaceHeld.current) {
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-component-id]')) return;
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      lassoStart.current = { x, y };
+      lassoMoved.current = false;
+      lassoFired.current = false;
+      setLassoRect({ x, y, w: 0, h: 0 });
     }
   }, [view.panX, view.panY]);
+
+  useEffect(() => {
+    const isLassoing = lassoRect !== null;
+    if (!isLassoing) return;
+
+    const handleMove = (e: MouseEvent) => {
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
+      const dx = Math.abs(cx - lassoStart.current.x);
+      const dy = Math.abs(cy - lassoStart.current.y);
+      if (dx > 3 || dy > 3) lassoMoved.current = true;
+
+      const x = Math.min(lassoStart.current.x, cx);
+      const y = Math.min(lassoStart.current.y, cy);
+      const w = Math.abs(cx - lassoStart.current.x);
+      const h = Math.abs(cy - lassoStart.current.y);
+      setLassoRect({ x, y, w, h });
+    };
+
+    const handleUp = () => {
+      if (!lassoMoved.current) {
+        setLassoRect(null);
+        return;
+      }
+
+      lassoFired.current = true;
+      const lr = lassoRect;
+      if (lr && lr.w > 2 && lr.h > 2) {
+        const container = containerRef.current;
+        if (!container) { setLassoRect(null); return; }
+        const cr = container.getBoundingClientRect();
+        const allEls = document.querySelectorAll<HTMLElement>('[data-component-id]');
+        const rootComp = rootId ? components[rootId] : null;
+        const rootChildren = new Set(rootComp?.children || []);
+        const toSelect: string[] = [];
+
+        allEls.forEach((el) => {
+          const id = el.getAttribute('data-component-id');
+          if (!id || id === rootId) return;
+          if (!rootChildren.has(id)) return;
+
+          const r = el.getBoundingClientRect();
+          const elLeft = r.left - cr.left;
+          const elTop = r.top - cr.top;
+          const elRight = elLeft + r.width;
+          const elBottom = elTop + r.height;
+
+          if (elLeft < lr.x + lr.w && elRight > lr.x && elTop < lr.y + lr.h && elBottom > lr.y) {
+            toSelect.push(id);
+          }
+        });
+
+        if (toSelect.length > 0) {
+          clearSelection();
+          toSelect.forEach((id) => selectComponent(id, true));
+        }
+      }
+      setLassoRect(null);
+    };
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleUp);
+    };
+  }, [lassoRect, components, rootId, clearSelection, selectComponent]);
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     if (e.ctrlKey || e.metaKey) {
@@ -97,6 +187,7 @@ export const Canvas: React.FC = () => {
   );
 
   const handleCanvasClick = useCallback((e: React.MouseEvent) => {
+    if (lassoFired.current) { lassoFired.current = false; return; }
     if (e.target === e.currentTarget || (e.target as HTMLElement).closest('#canvas-viewport') === e.target) {
       clearSelection();
     }
@@ -168,6 +259,20 @@ export const Canvas: React.FC = () => {
           )}
         </div>
       </div>
+
+      {lassoRect && lassoRect.w > 0 && lassoRect.h > 0 && (
+        <div
+          className="absolute pointer-events-none z-50"
+          style={{
+            left: lassoRect.x,
+            top: lassoRect.y,
+            width: lassoRect.w,
+            height: lassoRect.h,
+            backgroundColor: 'rgba(139, 92, 246, 0.08)',
+            border: '1px solid rgba(139, 92, 246, 0.6)',
+          }}
+        />
+      )}
     </div>
   );
 };
