@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   type DragEndEvent,
   type DragOverEvent,
@@ -54,9 +54,13 @@ export const useDragDrop = () => {
 
   // Track mouse position during drag for auto-scroll near canvas edges
   const [mouseCoords, setMouseCoords] = useState<{ x: number; y: number } | null>(null);
+  const mouseCoordsRef = useRef<{ x: number; y: number } | null>(null);
   useEffect(() => {
     if (!activeItem) return;
-    const handler = (e: PointerEvent) => setMouseCoords({ x: e.clientX, y: e.clientY });
+    const handler = (e: PointerEvent) => {
+      setMouseCoords({ x: e.clientX, y: e.clientY });
+      mouseCoordsRef.current = { x: e.clientX, y: e.clientY };
+    };
     document.addEventListener('pointermove', handler);
     return () => document.removeEventListener('pointermove', handler);
   }, [activeItem]);
@@ -96,21 +100,9 @@ export const useDragDrop = () => {
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
       const data = event.active.data.current as DragItem | undefined;
-
-      if (data) {
-        setActiveItem(data);
-
-        if (data.type === "existing" && data.componentId) {
-          updateComponent(data.componentId, {
-            styles: {
-              ...components[data.componentId].styles,
-              opacity: { base: 0.5 },
-            },
-          });
-        }
-      }
+      if (data) setActiveItem(data);
     },
-    [components, updateComponent],
+    [],
   );
 
   const handleDragOver = useCallback(
@@ -158,24 +150,57 @@ export const useDragDrop = () => {
       const label = componentType.charAt(0).toUpperCase() + componentType.slice(1);
       useUIStore.getState().addToast(`${label} added to ${message}`, 'success', 2000);
       useUIStore.getState().setLastAddedId(newId);
+      useEditorStore.getState().selectComponent(newId);
       setTimeout(() => useUIStore.getState().setLastAddedId(null), 800);
     }
     return newId;
   }, [addComponent]);
 
+  const getCanvasDropPosition = useCallback((clientX: number, clientY: number) => {
+    const canvasEl = document.querySelector('#canvas-content');
+    if (!canvasEl) return null;
+    const rect = canvasEl.getBoundingClientRect();
+    const zoom = useUIStore.getState().view.zoom;
+    const x = (clientX - rect.left) / zoom;
+    const y = (clientY - rect.top) / zoom;
+    return { left: `${Math.max(0, Math.round(x))}px`, top: `${Math.max(0, Math.round(y))}px` };
+  }, []);
+
+  const setPositionAbsolute = useCallback((
+    compId: string,
+    pos: { left: string; top: string } | null,
+    delta?: { x: number; y: number },
+  ) => {
+    const comp = useEditorStore.getState().components[compId];
+    if (!comp) return;
+
+    let left = pos?.left || '0px';
+    let top = pos?.top || '0px';
+
+    // When delta is provided from DragEndEvent, compute position from
+    // original + delta/zoom so it matches exactly where the component
+    // was visually during drag (no snap-back).
+    if (delta) {
+      const zoom = useUIStore.getState().view.zoom;
+      const origLeft = parseFloat((comp.styles.left as { base?: string })?.base || '0');
+      const origTop = parseFloat((comp.styles.top as { base?: string })?.base || '0');
+      left = `${Math.max(0, Math.round(origLeft + delta.x / zoom))}px`;
+      top = `${Math.max(0, Math.round(origTop + delta.y / zoom))}px`;
+    }
+
+    useEditorStore.getState().updateComponent(compId, {
+      styles: {
+        ...comp.styles,
+        position: { base: 'absolute' },
+        left: { base: left },
+        top: { base: top },
+      }
+    });
+  }, []);
+
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
-      const { over } = event;
-
-      // Clean up drag overlay opacity
-      if (activeItem?.type === "existing" && activeItem.componentId) {
-        const orig = components[activeItem.componentId];
-        if (orig) {
-          updateComponent(activeItem.componentId, {
-            styles: { ...orig.styles, opacity: { base: 1 } },
-          });
-        }
-      }
+      const { over, delta } = event;
 
       // Clear border highlights from all components
       Object.values(components).forEach((comp) => {
@@ -188,14 +213,9 @@ export const useDragDrop = () => {
         }
       });
 
-      if (!over) {
-        setActiveItem(null);
-        return;
-      }
-
-      const overId = over.id as string;
-      const overComponent = components[overId];
-      const isCanvasDrop = overId === 'canvas-drop-zone' || !overComponent;
+      const overId = over ? (over.id as string) : 'canvas-drop-zone';
+      const overComponent = over ? components[overId] : undefined;
+      const isCanvasDrop = !over || overId === 'canvas-drop-zone' || !overComponent;
 
       // ===== NEW COMPONENT FROM LIBRARY =====
       if (activeItem?.type === "new" && activeItem.componentType && isCanvasDrop && rootId) {
@@ -205,6 +225,11 @@ export const useDragDrop = () => {
           if (rootComponent) {
             useEditorStore.getState().reorderChildren(rootId, [...rootComponent.children, newId]);
           }
+          const pos = getCanvasDropPosition(
+            mouseCoordsRef.current?.x ?? 0,
+            mouseCoordsRef.current?.y ?? 0,
+          );
+          setPositionAbsolute(newId, pos);
         }
         setActiveItem(null);
         return;
@@ -246,7 +271,12 @@ export const useDragDrop = () => {
       if (activeItem?.type === "existing" && activeItem.componentId) {
         const activeId = activeItem.componentId;
 
-        if (overComponent && canDrop(overId, activeId, components)) {
+        // If dropped on itself, treat as canvas reposition
+        if (overId === activeId) {
+          if (rootId) {
+            setPositionAbsolute(activeId, null, delta);
+          }
+        } else if (overComponent && canDrop(overId, activeId, components)) {
           const targetParentId = isContainer(overComponent.type) ? overId : overComponent.parent;
 
           if (targetParentId && components[targetParentId]) {
@@ -275,6 +305,7 @@ export const useDragDrop = () => {
           if (currentParentId !== rootId) {
             moveComponent(activeId, rootId, (components[rootId]?.children || []).length);
           }
+          setPositionAbsolute(activeId, null, delta);
         }
       }
 
@@ -303,26 +334,42 @@ const DRAG_PREVIEW_COLORS: Record<string, string> = {
 
 export const getDragOverlayContent = (item: DragItem | null): React.ReactNode => {
   if (!item) return null;
-  const type = item.componentType || item.data?.type;
-  const name = item.data?.metadata.name
-    || (type ? (type.charAt(0).toUpperCase() + type.slice(1)) : "Component");
 
+  // For existing components, try to read real data from store
+  let comp: UIComponent | undefined;
+  if (item.type === "existing" && item.componentId) {
+    comp = useEditorStore.getState().components[item.componentId];
+  }
+
+  const type = comp?.type || item.componentType || item.data?.type;
+  const name = comp?.metadata.name || item.data?.metadata.name
+    || (type ? (type.charAt(0).toUpperCase() + type.slice(1)) : "Component");
   const bg = type ? (DRAG_PREVIEW_COLORS[type] || "bg-[var(--bg-secondary)]") : "bg-[var(--bg-secondary)]";
+
+  // Use actual component dimensions if available
+  const compStyles = comp?.styles || {};
+  const w = typeof compStyles.width === 'object' ? (compStyles.width as { base?: string }).base : undefined;
+  const h = typeof compStyles.height === 'object' ? (compStyles.height as { base?: string }).base : undefined;
+  const previewW = w ? Math.min(parseInt(w), 180) : 180;
+  const previewH = h ? Math.min(parseInt(h), 60) : 48;
 
   return (
     <div
-      className={`w-48 border-2 border-violet-500 shadow-brutal-lg transition-all duration-150 ${bg}`}
+      className="border-2 border-violet-500 shadow-brutal-lg transition-all duration-150"
       style={{
+        width: `${Math.max(previewW, 120)}px`,
         transform: "scale(0.95) rotate(-2deg)",
         boxShadow: "8px 8px 0 rgba(139, 92, 246, 0.3)",
       }}
     >
-      <div className="px-3 py-2 text-sm font-bold text-[var(--text-primary)] truncate border-b-2 border-violet-500/30 bg-[var(--bg-primary)]/80">
+      <div className="px-3 py-2 text-sm font-bold text-[var(--text-primary)] truncate border-b-2 border-violet-500/30 bg-[var(--bg-primary)]/80 flex items-center gap-2">
+        <span className="text-violet-500">⠿</span>
         {name}
+        <span className="ml-auto text-[9px] uppercase tracking-wider text-violet-400/60 font-mono">{type}</span>
       </div>
-      <div className="p-3 flex items-center justify-center">
-        <div className="w-12 h-8 bg-violet-400/20 border-2 border-dashed border-violet-500/40 flex items-center justify-center">
-          <span className="text-violet-500 text-lg">+</span>
+      <div className="flex items-center justify-center" style={{ height: `${previewH}px` }}>
+        <div className={`w-4/5 h-3/5 border-2 border-dashed border-violet-500/40 flex items-center justify-center ${bg}`}>
+          <span className="text-violet-500 text-lg opacity-60">+</span>
         </div>
       </div>
     </div>
