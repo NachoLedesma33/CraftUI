@@ -172,16 +172,15 @@ function App() {
                 <Panel
                   panelRef={componentsPanelRef}
                   id="components"
-                  defaultSize="16%"
-                  minSize="220px"
-                  maxSize="320px"
+                  defaultSize="18%"
+                  minSize="260px"
+                  maxSize="360px"
                   groupResizeBehavior="preserve-pixel-size"
                   collapsible
                   collapsedSize="0%"
-                  className="z-10 panel-enter-left"
+                  className="z-10 bg-white panel-enter-left"
                   data-collapsed={componentsCollapsed}
                   style={{
-                    backgroundColor: "var(--bg-secondary)",
                     borderRight: "2px solid var(--border)",
                     position: "relative",
                     height: "100%",
@@ -195,11 +194,9 @@ function App() {
 
                 <Separator
                   id="sep-components"
-                  className="group w-[5px] cursor-col-resize z-20 flex items-center justify-center active:w-[7px] transition-all duration-75 hover:bg-[var(--bg-tertiary)]/50"
-                  style={{ display: componentsCollapsed ? "none" : "flex" }}
-                >
-                  <div className="w-[3px] h-8 rounded-sm bg-[var(--border)] group-hover:bg-[var(--accent)] group-hover:h-10 group-active:bg-[var(--accent)] transition-all duration-100 pointer-events-none" />
-                </Separator>
+                  className="w-1 bg-black hover:bg-[#fbbf24] transition-colors cursor-col-resize z-20"
+                  style={{ display: componentsCollapsed ? "none" : "block" }}
+                />
 
                 {/* Center Panel - Canvas */}
                 <Panel
@@ -207,11 +204,9 @@ function App() {
                   defaultSize="60%"
                   minSize="240px"
                   maxSize="85%"
+                  className="dot-grid bg-[#d1d5db]/20"
                 >
-                  <div
-                    className="flex-1 relative h-full"
-                    style={{ backgroundColor: "var(--bg-primary)" }}
-                  >
+                  <div className="flex-1 relative h-full flex items-start justify-center p-12 overflow-auto scrollbar-hide">
                     <CanvasOverlays onMouseMove={handleMouseMove}>
                       <Canvas />
                     </CanvasOverlays>
@@ -220,26 +215,23 @@ function App() {
 
                 <Separator
                   id="sep-properties"
-                  className="group w-[5px] cursor-col-resize z-20 flex items-center justify-center active:w-[7px] transition-all duration-75 hover:bg-[var(--bg-tertiary)]/50"
-                  style={{ display: propertiesCollapsed ? "none" : "flex" }}
-                >
-                  <div className="w-[3px] h-8 rounded-sm bg-[var(--border)] group-hover:bg-[var(--accent)] group-hover:h-10 group-active:bg-[var(--accent)] transition-all duration-100 pointer-events-none" />
-                </Separator>
+                  className="w-1 bg-black hover:bg-[#fbbf24] transition-colors cursor-col-resize z-20"
+                  style={{ display: propertiesCollapsed ? "none" : "block" }}
+                />
 
                 {/* Right Panel - Properties/Layers Tabs */}
                 <Panel
                   panelRef={propertiesPanelRef}
                   id="properties"
-                  defaultSize="24%"
-                  minSize="280px"
+                  defaultSize="22%"
+                  minSize="300px"
                   maxSize="460px"
                   groupResizeBehavior="preserve-pixel-size"
                   collapsible
                   collapsedSize="0%"
-                  className="z-10 panel-enter-right"
+                  className="z-10 bg-white panel-enter-right"
                   data-collapsed={propertiesCollapsed}
                   style={{
-                    backgroundColor: "var(--bg-secondary)",
                     borderLeft: "2px solid var(--border)",
                     position: "relative",
                     height: "100%",
@@ -249,37 +241,31 @@ function App() {
                   onResize={(size) => setPropertiesCollapsed(size.inPixels <= 1)}
                 >
                   <div className="side-panel-fill">
-                    <div
-                      className="flex flex-shrink-0"
-                      style={{ borderBottom: "2px solid var(--border)" }}
-                    >
+                    <div className="flex flex-shrink-0 border-b-2 border-black">
                       <button
                         onClick={() => setActiveRightTab("properties")}
-                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${activeRightTab === "properties"
-                            ? "text-[var(--bg-primary)] bg-[var(--accent)]"
-                            : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-tertiary)]"
+                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${activeRightTab === "properties"
+                            ? "bg-black text-white"
+                            : "hover:bg-[#f5f0eb] border-r-2 border-black"
                           }`}
-                        style={activeRightTab === "properties" ? { borderBottom: "2px solid var(--accent)", marginBottom: "-2px" } : {}}
                       >
-                        Properties
+                        Styles
                       </button>
                       <button
                         onClick={() => setActiveRightTab("layers")}
-                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${activeRightTab === "layers"
-                            ? "text-[var(--bg-primary)] bg-[var(--accent)]"
-                            : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-tertiary)]"
+                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${activeRightTab === "layers"
+                            ? "bg-black text-white"
+                            : "hover:bg-[#f5f0eb] border-r-2 border-black"
                           }`}
-                        style={activeRightTab === "layers" ? { borderBottom: "2px solid var(--accent)", marginBottom: "-2px" } : {}}
                       >
                         Layers
                       </button>
                       <button
                         onClick={() => setActiveRightTab("assets")}
-                        className={`flex-1 px-4 py-3 text-xs font-bold transition-all duration-100 relative ${activeRightTab === "assets"
-                            ? "text-[var(--bg-primary)] bg-[var(--accent)]"
-                            : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--bg-tertiary)]"
+                        className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${activeRightTab === "assets"
+                            ? "bg-black text-white"
+                            : "hover:bg-[#f5f0eb]"
                           }`}
-                        style={activeRightTab === "assets" ? { borderBottom: "2px solid var(--accent)", marginBottom: "-2px" } : {}}
                       >
                         Assets
                       </button>

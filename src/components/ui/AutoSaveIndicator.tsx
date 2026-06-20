@@ -22,59 +22,37 @@ export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
   }, []);
 
   const statusText = useMemo(() => {
-    if (!isEnabled) {
-      return 'Auto-save disabled';
-    }
-
-    if (!lastSaved) {
-      return 'Never saved';
-    }
-
+    if (!isEnabled) return 'Off';
+    if (!lastSaved) return 'Never';
     const diffMs = now - lastSaved;
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
     const diffSeconds = Math.floor(diffMs / 1000);
-
-    if (diffMinutes > 0) {
-      return `Saved ${diffMinutes}m ago`;
-    } else if (diffSeconds > 30) {
-      return `Saved ${diffSeconds}s ago`;
-    } else {
-      return 'Saved just now';
-    }
+    if (diffSeconds < 60) return 'Just now';
+    return `${Math.floor(diffSeconds / 60)}m ago`;
   }, [lastSaved, isEnabled, now]);
 
   const getStatusColor = () => {
-    if (!isEnabled) return 'text-[var(--text-muted)]';
-    if (hasChanges) return 'text-orange-400';
-    return 'text-green-400';
+    if (!isEnabled) return 'text-black/40';
+    if (hasChanges) return 'text-[#ef4444]';
+    return 'text-[#3b82f6]';
   };
 
   const getIcon = () => {
-    if (!isEnabled) return <AlertTriangle size={15} />;
-    if (hasChanges) return <Clock size={15} />;
-    return <HardDrive size={15} />;
+    if (!isEnabled) return <AlertTriangle size={14} />;
+    if (hasChanges) return <Clock size={14} className="animate-pulse" />;
+    return <HardDrive size={14} />;
   };
 
-  if (onClick) {
-    return (
-      <button
-        onClick={onClick}
-        className={`p-2 ${getStatusColor()} brutal-btn`}
-        style={{ backgroundColor: "var(--bg-tertiary)" }}
-        title={statusText}
-      >
-        {getIcon()}
-      </button>
-    );
-  }
-
   return (
-    <div
-      className={`flex items-center gap-1.5 px-2 py-1 text-xs ${getStatusColor()} bg-[var(--bg-tertiary)]`}
-      title={statusText}
+    <button
+      onClick={onClick}
+      className={`h-10 px-3 brutal-btn bg-white flex items-center gap-2 ${getStatusColor()} border-2 border-black`}
+      style={{ boxShadow: '2px 2px 0 0 #000' }}
+      title={isEnabled ? `Last saved: ${statusText}` : 'Auto-save is disabled'}
     >
       {getIcon()}
-      <span className="hidden sm:inline">{statusText}</span>
-    </div>
+      <span className="text-[10px] font-black uppercase tracking-widest hidden lg:inline">
+        {hasChanges ? 'Changes' : 'Synced'}
+      </span>
+    </button>
   );
 };
