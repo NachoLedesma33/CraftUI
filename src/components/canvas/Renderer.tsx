@@ -70,9 +70,9 @@ const getBreakpointOrder = (
     case "mobile":
       return ["base"];
     case "tablet":
-      return ["base", "tablet"];
+      return ["tablet", "base"];
     case "desktop":
-      return ["base", "tablet", "desktop"];
+      return ["desktop", "tablet", "base"];
   }
 };
 
@@ -252,6 +252,16 @@ const resolveStyles = (
   if (styles.boxShadow)
     resolved.boxShadow = resolveStyleValue(styles.boxShadow, device);
   if (styles.zIndex) resolved.zIndex = resolveStyleValue(styles.zIndex, device);
+  if (styles.objectFit)
+    resolved.objectFit = resolveStyleValue(styles.objectFit, device) as React.CSSProperties['objectFit'];
+  if (styles.borderLeft)
+    resolved.borderLeft = resolveStyleValue(styles.borderLeft, device);
+  if (styles.borderRight)
+    resolved.borderRight = resolveStyleValue(styles.borderRight, device);
+  if (styles.borderTop)
+    resolved.borderTop = resolveStyleValue(styles.borderTop, device);
+  if (styles.borderBottom)
+    resolved.borderBottom = resolveStyleValue(styles.borderBottom, device);
   if (styles.top) resolved.top = resolveStyleValue(styles.top, device);
   if (styles.right) resolved.right = resolveStyleValue(styles.right, device);
   if (styles.bottom) resolved.bottom = resolveStyleValue(styles.bottom, device);
@@ -349,7 +359,7 @@ const EditWrapper = React.memo<EditWrapperProps>(({
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: component.id,
-    data: { type: "existing", componentId: component.id, component },
+    data: { type: "existing", componentId: component.id, componentType: component.type, component },
     disabled: isRoot,
   });
 
@@ -377,9 +387,12 @@ const EditWrapper = React.memo<EditWrapperProps>(({
   }, [component.id, endRenaming, cancelRenaming]);
 
   const dragStyle: React.CSSProperties = useMemo(() => {
-    if (!transform || isDragging) return {};
+    if (!transform) return {};
     return {
       transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      opacity: isDragging ? 0.7 : 1,
+      transition: isDragging ? 'none' : undefined,
+      zIndex: isDragging ? 999 : undefined,
     };
   }, [transform, isDragging]);
 
@@ -401,6 +414,17 @@ const EditWrapper = React.memo<EditWrapperProps>(({
       {...(isSelected && !isRoot ? listeners : {})}
       {...(isSelected && !isRoot ? attributes : {})}
     >
+      {/* Hover drag handle - subtly visible at all times, fully on hover */}
+      {!isRoot && !isSelected && (
+        <div
+          className="absolute -top-3 -left-3 w-6 h-6 bg-white border-2 border-black flex items-center justify-center cursor-grab active:cursor-grabbing opacity-30 group-hover:opacity-100 transition-opacity z-40 shadow-brutal-sm"
+          {...(!isRoot ? listeners : {})}
+          {...(!isRoot ? attributes : {})}
+        >
+          <span className="text-[10px] leading-none select-none">⠿</span>
+        </div>
+      )}
+
       {children}
 
       {contextMenu && (
@@ -429,7 +453,7 @@ const EditWrapper = React.memo<EditWrapperProps>(({
 
       {isSelected && (
         <div className="absolute -top-6 left-0 bg-violet-500 text-white text-xs px-2 py-0.5 flex items-center gap-1.5 border-[var(--border)] pointer-events-none">
-          <span className="cursor-grab active:cursor-grabbing" {...(!isRoot ? listeners : {})}>⠿</span>
+          <span className="cursor-grab active:cursor-grabbing pointer-events-auto" {...(!isRoot ? listeners : {})}>⠿</span>
           {component.metadata.isRenaming ? (
             <input
               ref={handleRenameSubmit}
@@ -602,23 +626,49 @@ const RendererInner: React.FC<RendererProps> = ({
   const updateComponent = useEditorStore((s) => s.updateComponent);
   const saveToHistory = useEditorStore((s) => s.saveToHistory);
 
+  const EDITABLE_TEXT_TYPES = ["text", "heading", "button", "blockquote", "badge", "chip", "alert", "toast", "modal", "accordion", "tooltip", "dropdown", "hero", "header", "footer", "section"];
+  const EDITABLE_LONG_TYPES = ["code-block", "list"];
+
   const [isEditingInline, setIsEditingInline] = useState(false);
   const [inlineText, setInlineText] = useState(
-    component?.type === "text" ? (component?.props.text as string) || "" : ""
+    component ? ((component.props.text as string) || (component.props.items as string) || "") : ""
   );
 
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
-    if (component?.type !== "text") return;
-    e.stopPropagation();
-    setIsEditingInline(true);
-    setInlineText((component.props.text as string) || "");
+    if (!component) return;
+    const t = component.type;
+    if (EDITABLE_TEXT_TYPES.includes(t) || EDITABLE_LONG_TYPES.includes(t)) {
+      e.stopPropagation();
+      setIsEditingInline(true);
+      setInlineText(t === "list" ? (component.props.items as string) || "" : (component.props.text as string) || "");
+    }
   }, [component]);
 
   const finishInlineEdit = useCallback(() => {
-    if (component?.type === "text" && inlineText !== component.props.text) {
-      updateComponent(component.id, {
-        props: { ...component.props, text: inlineText },
-      });
+    if (!component) return;
+    const t = component.type;
+    const newProps = { ...component.props };
+    let changed = false;
+
+    if (EDITABLE_TEXT_TYPES.includes(t)) {
+      if (inlineText !== component.props.text) {
+        newProps.text = inlineText;
+        changed = true;
+      }
+    } else if (t === "list") {
+      if (inlineText !== component.props.items) {
+        newProps.items = inlineText;
+        changed = true;
+      }
+    } else if (t === "code-block") {
+      if (inlineText !== component.props.text) {
+        newProps.text = inlineText;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      updateComponent(component.id, { props: newProps });
       saveToHistory();
     }
     setIsEditingInline(false);
@@ -642,8 +692,10 @@ const RendererInner: React.FC<RendererProps> = ({
   const labelProp = component.props.label as string | undefined;
   const placeholderProp = component.props.placeholder as string | undefined;
 
+  const isLongType = component.type === "code-block" || component.type === "list";
+
   const renderTextContent = () => {
-    if (component.type === "text" && isEditingInline) {
+    if (EDITABLE_TEXT_TYPES.includes(component.type) && isEditingInline) {
       return (
         <input
           autoFocus
@@ -660,10 +712,26 @@ const RendererInner: React.FC<RendererProps> = ({
         />
       );
     }
-    if (["text", "heading", "blockquote", "code-block", "badge", "chip", "alert", "toast", "modal", "accordion"].includes(component.type) && textProp) {
+    if (isLongType && isEditingInline) {
+      return (
+        <textarea
+          autoFocus
+          value={inlineText}
+          onChange={(e) => setInlineText(e.target.value)}
+          onBlur={finishInlineEdit}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === "Escape") { setIsEditingInline(false); }
+          }}
+          className="w-full bg-transparent border-none outline-none text-inherit font-inherit resize-none"
+          style={{ all: "unset", width: "100%", minHeight: "40px", display: "block", whiteSpace: "pre-wrap" }}
+        />
+      );
+    }
+    if (EDITABLE_TEXT_TYPES.includes(component.type) && textProp) {
       return textProp;
     }
-    if (["button", "header", "footer", "section", "hero", "tooltip", "dropdown"].includes(component.type) && textProp) {
+    if (component.type === "code-block" && textProp) {
       return textProp;
     }
     return null;
