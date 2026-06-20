@@ -86,18 +86,29 @@ const createDefaultComponent = (type: ComponentType, id: string): UIComponent =>
   
   switch (type) {
     case 'box':
+      return { id, type, props: {}, styles: { width: { base: '200px' }, minHeight: { base: '40px' }, backgroundColor: { base: '#ffffff' }, borderWidth: { base: '2px' }, borderStyle: { base: 'solid' }, borderColor: { base: '#000000' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Box' } };
     case 'badge':
+      return { id, type, props: { text: 'Badge' }, styles: { display: { base: 'inline-flex' }, padding: { base: '4px 12px' }, backgroundColor: { base: '#8b5cf6' }, color: { base: '#ffffff' }, borderRadius: { base: '999px' }, fontSize: { base: '12px' }, fontWeight: { base: '700' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Badge' } };
     case 'chip':
+      return { id, type, props: { text: 'Chip' }, styles: { display: { base: 'inline-flex' }, padding: { base: '4px 12px' }, backgroundColor: { base: '#f5f0eb' }, borderWidth: { base: '2px' }, borderStyle: { base: 'solid' }, borderColor: { base: '#000000' }, borderRadius: { base: '999px' }, fontSize: { base: '12px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Chip' } };
     case 'tooltip':
+      return { id, type, props: { text: 'Tooltip' }, styles: { display: { base: 'inline-flex' }, padding: { base: '8px 12px' }, backgroundColor: { base: '#1f2937' }, color: { base: '#ffffff' }, borderRadius: { base: '6px' }, fontSize: { base: '12px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Tooltip' } };
     case 'sidebar':
+      return { id, type, props: {}, styles: { width: { base: '250px' }, minHeight: { base: '100%' }, backgroundColor: { base: '#f5f0eb' }, padding: { base: '16px' }, borderWidth: { base: '2px' }, borderStyle: { base: 'solid' }, borderColor: { base: '#000000' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Sidebar' } };
     case 'header':
+      return { id, type, props: { text: 'Header' }, styles: { width: { base: '100%' }, padding: { base: '16px 24px' }, backgroundColor: { base: '#ffffff' }, borderWidth: { base: '2px' }, borderStyle: { base: 'solid' }, borderColor: { base: '#000000' }, display: { base: 'flex' }, alignItems: { base: 'center' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Header' } };
     case 'footer':
+      return { id, type, props: { text: 'Footer' }, styles: { width: { base: '100%' }, padding: { base: '16px 24px' }, backgroundColor: { base: '#1f2937' }, color: { base: '#ffffff' }, display: { base: 'flex' }, alignItems: { base: 'center' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Footer' } };
     case 'section':
+      return { id, type, props: { text: 'Section' }, styles: { width: { base: '100%' }, minHeight: { base: '200px' }, padding: { base: '24px' }, backgroundColor: { base: '#ffffff' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Section' } };
     case 'skeleton':
+      return { id, type, props: {}, styles: { width: { base: '100%' }, height: { base: '20px' }, backgroundColor: { base: '#e5e7eb' }, borderRadius: { base: '4px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Skeleton' } };
     case 'progress':
+      return { id, type, props: {}, styles: { width: { base: '100%' }, height: { base: '8px' }, backgroundColor: { base: '#e5e7eb' }, borderRadius: { base: '999px' }, overflow: { base: 'hidden' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Progress' } };
     case 'divider':
+      return { id, type, props: {}, styles: { width: { base: '100%' }, height: { base: '2px' }, backgroundColor: { base: '#000000' }, margin: { base: '16px 0' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Divider' } };
     case 'card':
-      return { id, type, props: {}, styles: baseStyles, parent: null, children: [], metadata: baseMetadata };
+      return { id, type, props: {}, styles: { width: { base: '100%' }, minHeight: { base: '80px' }, padding: { base: '24px' }, backgroundColor: { base: '#ffffff' }, borderWidth: { base: '2px' }, borderStyle: { base: 'solid' }, borderColor: { base: '#000000' }, boxShadow: { base: '4px 4px 0 #000' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Card' } };
     case 'text':
       return { id, type, props: { text: 'Text' }, styles: { ...baseStyles, fontSize: { base: '16px' } }, parent: null, children: [], metadata: baseMetadata };
     case 'heading':
@@ -109,10 +120,11 @@ const createDefaultComponent = (type: ComponentType, id: string): UIComponent =>
     case 'code-block':
       return { id, type, props: { text: 'const x = 42;' }, styles: { ...baseStyles, backgroundColor: { base: '#1e293b' }, color: { base: '#e2e8f0' }, padding: { base: '16px' }, fontFamily: { base: 'monospace' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Code Block' } };
     case 'button':
-      return { id, type, props: { text: 'Button', type: 'button' }, styles: baseStyles, parent: null, children: [], metadata: baseMetadata };
+      return { id, type, props: { text: 'Button', type: 'button' }, styles: { display: { base: 'inline-flex' }, padding: { base: '12px 24px' }, backgroundColor: { base: '#8b5cf6' }, color: { base: '#ffffff' }, fontWeight: { base: '700' }, fontSize: { base: '14px' }, cursor: { base: 'pointer' }, borderWidth: { base: '2px' }, borderStyle: { base: 'solid' }, borderColor: { base: '#000000' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Button' } };
     case 'image':
+      return { id, type, props: { src: 'https://picsum.photos/seed/default/400/300', alt: 'Image' }, styles: { width: { base: '400px' }, height: { base: '300px' }, objectFit: { base: 'cover' }, borderRadius: { base: '4px' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Image' } };
     case 'avatar':
-      return { id, type, props: { src: '', alt: 'Image' }, styles: baseStyles, parent: null, children: [], metadata: baseMetadata };
+      return { id, type, props: { src: 'https://picsum.photos/seed/avatar/80/80', alt: 'Avatar' }, styles: { width: { base: '80px' }, height: { base: '80px' }, borderRadius: { base: '50%' }, objectFit: { base: 'cover' }, borderWidth: { base: '2px' }, borderStyle: { base: 'solid' }, borderColor: { base: '#000000' } }, parent: null, children: [], metadata: { ...baseMetadata, name: 'Avatar' } };
     case 'video':
       return { id, type, props: { embedUrl: '' }, styles: baseStyles, parent: null, children: [], metadata: { ...baseMetadata, name: 'Video' } };
     case 'input':
