@@ -10,9 +10,16 @@ const defaultBps: { id: Breakpoint; label: string; icon: React.ReactNode; width:
   { id: "desktop", label: "Desktop", icon: <Monitor size={14} />, width: "1280px" },
 ];
 
+const breakpointToDevice: Record<string, 'mobile' | 'tablet' | 'desktop'> = {
+  base: 'mobile',
+  tablet: 'tablet',
+  desktop: 'desktop',
+};
+
 export const BreakpointSwitcher: React.FC = () => {
   const activeBreakpoint = useUIStore((s) => s.activeBreakpoint);
   const setActiveBreakpoint = useUIStore((s) => s.setActiveBreakpoint);
+  const setActiveDevice = useUIStore((s) => s.setActiveDevice);
   const customBreakpoints = useUIStore((s) => s.customBreakpoints);
   const [showManager, setShowManager] = useState(false);
 
@@ -36,7 +43,11 @@ export const BreakpointSwitcher: React.FC = () => {
         {allBreakpoints.map((bp) => (
           <button
             key={bp.id}
-            onClick={() => setActiveBreakpoint(bp.id)}
+            onClick={() => {
+              setActiveBreakpoint(bp.id);
+              const device = breakpointToDevice[bp.id];
+              if (device) setActiveDevice(device);
+            }}
             className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium transition-all duration-150 ${
               activeBreakpoint === bp.id
                 ? "bg-[var(--accent)] text-black border-r-2 border-black"

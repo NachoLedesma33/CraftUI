@@ -228,6 +228,7 @@ export const Canvas: React.FC = () => {
         }}
       >
         <div
+          id="canvas-content"
           className="mx-auto mt-8"
           style={{
             width: `${deviceWidth}px`,
