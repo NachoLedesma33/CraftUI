@@ -73,6 +73,8 @@ export const StylesTab: React.FC<{ component: UIComponent; updateComponent: (id:
       <StyleSection title="Position">
         <StyleInput label="Position" value={val('position')} onChange={(v) => onStyleChange('position', v)} type="select" options={['static', 'relative', 'absolute', 'fixed', 'sticky']} />
         <StyleInput label="Top" value={val('top')} onChange={(v) => onStyleChange('top', v)} placeholder="auto" />
+        <StyleInput label="Right" value={val('right')} onChange={(v) => onStyleChange('right', v)} placeholder="auto" />
+        <StyleInput label="Bottom" value={val('bottom')} onChange={(v) => onStyleChange('bottom', v)} placeholder="auto" />
         <StyleInput label="Left" value={val('left')} onChange={(v) => onStyleChange('left', v)} placeholder="auto" />
         <StyleInput label="Z-Index" value={val('zIndex')?.toString() || ''} onChange={(v) => onStyleChange('zIndex', v)} type="number" placeholder="0" />
       </StyleSection>

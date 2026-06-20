@@ -6,6 +6,7 @@ import { ContentTab } from "./properties/ContentTab";
 import { LayoutTab } from "./properties/LayoutTab";
 import { AdvancedTab } from "./properties/AdvancedTab";
 import { AnimationPanel } from "./AnimationPanel";
+import { BreakpointSwitcher } from "@/components/canvas/BreakpointSwitcher";
 import { ChevronDown, Trash2 } from "lucide-react";
 
 export const PropertiesPanel: React.FC = () => {
@@ -33,6 +34,10 @@ export const PropertiesPanel: React.FC = () => {
 
   return (
     <div className="bg-white w-full flex flex-col h-full overflow-hidden">
+      {/* Breakpoint Switcher */}
+      <div className="px-3 py-2 border-b-2 border-black bg-[#f5f0eb]">
+        <BreakpointSwitcher />
+      </div>
       {/* Header Tabs */}
       <div className="flex border-b-2 border-black sticky top-0 bg-white z-20 shrink-0 overflow-x-auto scrollbar-hide">
         {(["styles", "layout", "config", "advanced", "animations"] as const).map((tab) => (
