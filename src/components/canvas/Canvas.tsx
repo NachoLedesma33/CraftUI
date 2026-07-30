@@ -211,7 +211,7 @@ export const Canvas: React.FC = () => {
         containerRef.current = node;
       }}
       className={`relative flex-1 overflow-hidden select-none pt-5 pl-5 ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
-      style={{ backgroundColor: 'var(--bg-primary)' }}
+      style={{ backgroundColor: '#e8e2d8' }}  // fixed light, unaffected by theme
       onClick={handleCanvasClick}
       onMouseDown={handleMouseDown}
       onWheel={handleWheel}

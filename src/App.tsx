@@ -206,7 +206,7 @@ function App() {
                   minSize="240px"
                   maxSize="85%"
                   className="dot-grid"
-                  style={{ backgroundColor: 'var(--bg-primary)' }}
+                  style={{ backgroundColor: '#e8e2d8' }}
                 >
                   <div className="flex-1 relative h-full flex items-start justify-center p-12 overflow-auto scrollbar-hide">
                     <CanvasOverlays onMouseMove={handleMouseMove}>
