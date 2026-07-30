@@ -210,7 +210,7 @@ export const Canvas: React.FC = () => {
         setNodeRef(node);
         containerRef.current = node;
       }}
-      className={`relative flex-1 overflow-hidden select-none pt-5 pl-5 ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
+      className={`relative flex-1 overflow-hidden select-none pt-5 pl-5 ${isPanning ? 'canvas-grabbing-cursor' : 'canvas-grab-cursor'}`}
       style={{ backgroundColor: '#e8e2d8' }}  // fixed light, unaffected by theme
       onClick={handleCanvasClick}
       onMouseDown={handleMouseDown}
@@ -235,7 +235,6 @@ export const Canvas: React.FC = () => {
             minHeight: `${canvasConfig.height}px`,
             backgroundColor: '#ffffff',
             boxShadow: '0 0 0 1px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.08)',
-            cursor: 'default',
             ...gridStyle,
           }}
         >

@@ -76,6 +76,14 @@
       background-color 0.2s ease;
   }
 
+  .canvas-grab-cursor {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='28' viewBox='0 0 24 28'%3E%3Cpath d='M9 4v8.5l-3-2-2 1.5L8.5 17l1 2 1.5 3h6l1.5-3 1-2 4.5-5-2-1.5-3 2V4c0-.8-.5-1.5-1.2-1.5S16 3.2 16 4v6h-1V4c0-.8-.5-1.5-1.2-1.5S12 3.2 12 4v6h-1V4c0-.8-.5-1.5-1.2-1.5S9 3.2 9 4z' fill='white' stroke='black' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, grab;
+  }
+
+  .canvas-grabbing-cursor {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='28' viewBox='0 0 24 28'%3E%3Cpath d='M5 8l5 4-2 6 2 2 6-2 2-6-2-2 4-5-3-3-5 4-3-4-4 6z' fill='white' stroke='black' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, grabbing;
+  }
+
   #root {
     width: 100vw;
     height: 100vh;
