@@ -191,7 +191,7 @@
 
   .brutal-btn-ghost {
     @apply brutal-btn-base;
-    background-color: #fff;
+    background-color: var(--bg-secondary);
   }
 
   .brutal-btn-ghost:hover {
