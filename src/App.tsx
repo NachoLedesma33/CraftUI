@@ -178,9 +178,10 @@ function App() {
                   groupResizeBehavior="preserve-pixel-size"
                   collapsible
                   collapsedSize="0%"
-                  className="z-10 bg-white panel-enter-left"
+                  className="z-10 panel-enter-left"
                   data-collapsed={componentsCollapsed}
                   style={{
+                    backgroundColor: 'var(--bg-secondary)',
                     borderRight: "2px solid var(--border)",
                     position: "relative",
                     height: "100%",
@@ -204,7 +205,8 @@ function App() {
                   defaultSize="60%"
                   minSize="240px"
                   maxSize="85%"
-                  className="dot-grid bg-[#d1d5db]/20"
+                  className="dot-grid"
+                  style={{ backgroundColor: 'var(--bg-primary)' }}
                 >
                   <div className="flex-1 relative h-full flex items-start justify-center p-12 overflow-auto scrollbar-hide">
                     <CanvasOverlays onMouseMove={handleMouseMove}>
@@ -229,9 +231,10 @@ function App() {
                   groupResizeBehavior="preserve-pixel-size"
                   collapsible
                   collapsedSize="0%"
-                  className="z-10 bg-white panel-enter-right"
+                  className="z-10 panel-enter-right"
                   data-collapsed={propertiesCollapsed}
                   style={{
+                    backgroundColor: 'var(--bg-secondary)',
                     borderLeft: "2px solid var(--border)",
                     position: "relative",
                     height: "100%",

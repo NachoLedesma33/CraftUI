@@ -21,11 +21,11 @@ export const PropertiesPanel: React.FC = () => {
 
   if (!component) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 h-full w-full bg-white">
-        <div className="w-16 h-16 border-2 border-black flex items-center justify-center mb-4 bg-[#f5f0eb] shadow-[4px_4px_0_0_#000]">
+      <div className="flex flex-col items-center justify-center p-12 h-full w-full" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <div className="w-16 h-16 border-2 border-black flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
           <span className="text-2xl opacity-20">⚙️</span>
         </div>
-        <p className="text-black/40 text-[10px] font-black uppercase tracking-[0.2em] text-center leading-relaxed">
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-center leading-relaxed" style={{ color: 'var(--text-muted)' }}>
           Select an element<br/>to edit properties
         </p>
       </div>
@@ -33,13 +33,13 @@ export const PropertiesPanel: React.FC = () => {
   }
 
   return (
-    <div className="bg-white w-full flex flex-col h-full overflow-hidden">
+    <div className="w-full flex flex-col h-full overflow-hidden" style={{ backgroundColor: 'var(--bg-secondary)' }}>
       {/* Breakpoint Switcher */}
-      <div className="px-3 py-2 border-b-2 border-black bg-[#f5f0eb]">
+      <div className="px-3 py-2 border-b-2 border-black" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
         <BreakpointSwitcher />
       </div>
       {/* Header Tabs */}
-      <div className="flex border-b-2 border-black sticky top-0 bg-white z-20 shrink-0 overflow-x-auto scrollbar-hide">
+      <div className="flex border-b-2 border-black sticky top-0 z-20 shrink-0 overflow-x-auto scrollbar-hide" style={{ backgroundColor: 'var(--bg-secondary)' }}>
         {(["styles", "layout", "config", "advanced", "animations"] as const).map((tab) => (
           <button
             key={tab}
@@ -47,7 +47,7 @@ export const PropertiesPanel: React.FC = () => {
             className={`flex-1 min-w-[80px] py-3 text-[10px] font-black uppercase tracking-[0.1em] transition-all ${
               activeTab === tab 
                 ? "bg-black text-white" 
-                : "hover:bg-[#f5f0eb] border-r border-black last:border-r-0"
+                : "hover:bg-[var(--bg-tertiary)] border-r border-black last:border-r-0"
             }`}
           >
             {tab}
@@ -108,7 +108,7 @@ export const PropertiesPanel: React.FC = () => {
       </div>
 
       {/* Footer Action */}
-      <div className="p-5 border-t-2 border-black bg-[#fbbf24] mt-auto shrink-0 z-10">
+      <div className="p-5 border-t-2 border-black mt-auto shrink-0 z-10" style={{ backgroundColor: 'var(--accent)' }}>
         <button 
           onClick={deleteSelected}
           className="w-full bg-black text-white border-2 border-black py-3 font-black brutal-shadow flex items-center justify-center gap-2 text-[10px] tracking-[0.2em] hover:bg-[#ef4444] transition-colors group"

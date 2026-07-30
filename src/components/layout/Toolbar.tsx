@@ -95,7 +95,7 @@ const ZoomControls: React.FC = () => {
   const setZoom = useUIStore((s) => s.setZoom);
 
   return (
-    <div className="flex items-center gap-1.5 p-1 border-2 border-black bg-[#f5f0eb] shadow-[2px_2px_0_0_#000]">
+    <div className="flex items-center gap-1.5 p-1 border-2 border-black shadow-[2px_2px_0_0_#000]" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
       <button onClick={zoomOut} className="p-1 hover:bg-[#fbbf24] transition-colors" title="Zoom Out"><ZoomOut size={14} /></button>
       <input
         type="number"
@@ -157,7 +157,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   }, [components, loadState, saveToHistory, addToast]);
 
   return (
-    <header className="h-16 bg-white border-b-2 border-black flex items-center justify-between px-6 z-50 sticky top-0">
+    <header className="h-16 border-b-2 border-black flex items-center justify-between px-6 z-50 sticky top-0" style={{ backgroundColor: 'var(--bg-secondary)' }}>
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-3 group cursor-pointer mr-4">
           <div className="w-10 h-10 bg-black flex items-center justify-center border-2 border-black shadow-[3px_3px_0_0_#fbbf24] transition-all group-hover:shadow-[5px_5px_0_0_#fbbf24] group-active:translate-x-[2px] group-active:translate-y-[2px] group-active:shadow-none">
@@ -168,7 +168,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           </span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-1 border-2 border-black bg-[#f5f0eb] p-1 shadow-[2px_2px_0_0_#000]">
+        <nav className="hidden md:flex items-center gap-1 border-2 border-black p-1 shadow-[2px_2px_0_0_#000]" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
           <button className="px-3 py-1.5 font-black text-[10px] uppercase hover:bg-black hover:text-white transition-all" onClick={onTemplates}>Project</button>
           <button className="px-3 py-1.5 font-black text-[10px] uppercase bg-black text-white">Editor</button>
           <button 
@@ -211,14 +211,14 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         <div className="flex items-center gap-2 ml-4 border-l-2 border-black pl-6">
           <button 
             onClick={onToggleLayers} 
-            className={`p-2 brutal-btn transition-colors ${layersOpen ? 'bg-black text-white' : 'bg-white hover:bg-[#fbbf24]'}`}
+            className={`p-2 brutal-btn transition-colors ${layersOpen ? 'bg-black text-white' : 'bg-[var(--bg-secondary)] hover:bg-[var(--accent)]'}`}
             title="Layers Panel"
           >
             <Layers size={18} className="stroke-[2.5]" />
           </button>
           <button 
             onClick={onToggleAssets} 
-            className={`p-2 brutal-btn transition-colors ${assetsOpen ? 'bg-black text-white' : 'bg-white hover:bg-[#fbbf24]'}`}
+            className={`p-2 brutal-btn transition-colors ${assetsOpen ? 'bg-black text-white' : 'bg-[var(--bg-secondary)] hover:bg-[var(--accent)]'}`}
             title="Asset Library"
           >
             <ImageIcon size={18} className="stroke-[2.5]" />
@@ -226,9 +226,9 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           
           <div className="w-px h-6 bg-black/10 mx-1" />
           
-          <button onClick={handleClear} className="p-2 brutal-btn bg-white hover:bg-[#ef4444] hover:text-white" title="Clear Canvas"><Trash2 size={18} className="stroke-[2.5]" /></button>
-          <button onClick={toggleTheme} className="p-2 brutal-btn bg-white hover:bg-[#fbbf24]" title="Toggle Theme">{isDark ? <Sun size={18} className="stroke-[2.5]" /> : <Moon size={18} className="stroke-[2.5]" />}</button>
-          <button className="p-2 brutal-btn bg-white hover:bg-[#fbbf24]" title="Keyboard Shortcuts"><Keyboard size={18} className="stroke-[2.5]" /></button>
+          <button onClick={handleClear} className="p-2 brutal-btn bg-[var(--bg-secondary)] hover:bg-[#ef4444] hover:text-white" title="Clear Canvas"><Trash2 size={18} className="stroke-[2.5]" /></button>
+          <button onClick={toggleTheme} className="p-2 brutal-btn bg-[var(--bg-secondary)] hover:bg-[var(--accent)]" title="Toggle Theme">{isDark ? <Sun size={18} className="stroke-[2.5]" /> : <Moon size={18} className="stroke-[2.5]" />}</button>
+          <button className="p-2 brutal-btn bg-[var(--bg-secondary)] hover:bg-[var(--accent)]" title="Keyboard Shortcuts"><Keyboard size={18} className="stroke-[2.5]" /></button>
         </div>
       </div>
     </header>

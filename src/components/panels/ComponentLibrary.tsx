@@ -67,7 +67,7 @@ const DraggableItem: React.FC<{ blueprint: ComponentBlueprint; isForm?: boolean 
         {...listeners}
         {...attributes}
         onClick={handleClick}
-        className={`bg-white border-2 border-black p-3 flex items-center gap-4 cursor-grab active:cursor-grabbing hover:border-[var(--accent-blue)] transition-all group ${isDragging ? "opacity-50" : ""}`}
+        className={`bg-[var(--bg-secondary)] border-2 border-black p-3 flex items-center gap-4 cursor-grab active:cursor-grabbing hover:border-[var(--accent-blue)] transition-all group ${isDragging ? "opacity-50" : ""}`}
       >
         <div className="w-8 h-8 border-2 border-black flex items-center justify-center bg-[#f5f0eb] group-hover:bg-[var(--accent-blue)] group-hover:text-white transition-colors">
           {componentIcons[blueprint.type] ?? <Square size={16} />}
@@ -84,7 +84,7 @@ const DraggableItem: React.FC<{ blueprint: ComponentBlueprint; isForm?: boolean 
       {...attributes}
       onClick={handleClick}
       className={`
-        bg-white border-2 border-black p-3 flex flex-col items-center justify-center gap-2 
+        bg-[var(--bg-secondary)] border-2 border-black p-3 flex flex-col items-center justify-center gap-2 
         cursor-grab active:cursor-grabbing transition-all hover:bg-[var(--accent)] group
         ${isDragging ? "opacity-50" : "hover:shadow-[3px_3px_0_0_#000] hover:-translate-x-0.5 hover:-translate-y-0.5"}
       `}
@@ -108,15 +108,15 @@ export const ComponentLibrary: React.FC = () => {
   }, [search]);
 
   return (
-    <div className="side-panel-fill bg-white">
-      <div className="p-4 border-b-2 border-black bg-[#f5f0eb]">
+    <div className="side-panel-fill" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+      <div className="p-4 border-b-2 border-black" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
         <div className="relative group">
           <input
             type="text"
             placeholder="SEARCH COMPONENTS..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border-2 border-black px-4 py-2 text-xs font-black placeholder:text-black/40 focus:shadow-[4px_4px_0_0_#000] outline-none transition-all"
+            className="w-full border-2 border-black px-4 py-2 text-xs font-black placeholder:text-black/40 focus:shadow-[4px_4px_0_0_#000] outline-none transition-all" style={{ backgroundColor: 'var(--bg-secondary)' }}
           />
           <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-black" />
         </div>

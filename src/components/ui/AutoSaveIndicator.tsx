@@ -45,8 +45,8 @@ export const AutoSaveIndicator: React.FC<AutoSaveIndicatorProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`h-10 px-3 brutal-btn bg-white flex items-center gap-2 ${getStatusColor()} border-2 border-black`}
-      style={{ boxShadow: '2px 2px 0 0 #000' }}
+      className={`h-10 px-3 brutal-btn flex items-center gap-2 ${getStatusColor()} border-2 border-black`}
+      style={{ backgroundColor: 'var(--bg-secondary)', boxShadow: '2px 2px 0 0 #000' }}
       title={isEnabled ? `Last saved: ${statusText}` : 'Auto-save is disabled'}
     >
       {getIcon()}
